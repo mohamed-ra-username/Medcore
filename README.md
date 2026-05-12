@@ -1,4 +1,5 @@
 # Medcore
+![logo](frontend/img/logo.png)
 Grad project
 
-[run](init.bat)
+Run [`init.bat`](init.bat)
