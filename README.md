@@ -4,7 +4,7 @@ Department of **Computer Science** | Year 2026-2027
 >[!NOTE]Mission Statement: To develop a 
 >[Solution] that addresses the critical gap in [Problem Area], focusing on efficiency, scalability, and [Key Benefit].
 
-مشروع تخرج [_فريق الاحلام_](#the-project-board) (حلمهم يتخرجوا)
+مشروع تخرج [_فريق الاحلام_](#-the-project-board) (حلمهم يتخرجوا)
 ## فكرة المشروع
 المشروع عبارة عن سيستم كامل للعيادات الطبية
 
