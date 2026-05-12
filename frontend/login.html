@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Medcore – Login</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1B4F8A;
+  --teal:#1AAB8A;
+  --blue-dark:#133a66;
+  --teal-light:#e0f8f4;
+  --bg:#F4F7FB;
+  --white:#fff;
+  --text:#1a2b3c;
+  --muted:#6b7c93;
+  --border:rgba(0,0,0,0.09);
+  --error:#e53935;
+  --grad:linear-gradient(135deg,var(--blue) 0%,#1d6fa0 50%,var(--teal) 100%);
+}
+
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
+[lang=ar] body,[dir=rtl]{font-family:'Tajawal',sans-serif}
+
+/* ── LAYOUT ── */
+.shell{
+  display:flex;
+  min-height:100vh;
+}
+
+/* ── LEFT PANEL ── */
+.panel-left{
+  flex:1;
+  background:var(--grad);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:48px 56px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* decorative shapes */
+.panel-left::before{
+  content:'';
+  position:absolute;
+  width:420px;height:420px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.06);
+  top:-80px;right:-80px;
+  pointer-events:none;
+}
+.panel-left::after{
+  content:'';
+  position:absolute;
+  width:280px;height:280px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.05);
+  bottom:60px;left:-60px;
+  pointer-events:none;
+}
+
+.panel-deco-ring{
+  position:absolute;
+  width:320px;height:320px;
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:50%;
+  bottom:-40px;right:40px;
+  pointer-events:none;
+}
+
+.panel-deco-ring2{
+  position:absolute;
+  width:200px;height:200px;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:50%;
+  bottom:40px;right:120px;
+  pointer-events:none;
+}
+
+/* ECG line SVG */
+.ecg-line{
+  position:absolute;
+  bottom:200px;left:0;right:0;
+  opacity:0.15;
+}
+
+.panel-logo{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+.panel-logo svg{width:48px;height:48px}
+.panel-logo-name{
+  font-size:26px;font-weight:700;color:#fff;letter-spacing:1.5px;
+}
+
+.panel-hero{position:relative;z-index:1}
+.panel-headline{
+  font-size:clamp(28px,3.5vw,40px);
+  font-weight:700;
+  color:#fff;
+  line-height:1.25;
+  margin-bottom:16px;
+}
+.panel-sub{
+  font-size:15px;color:rgba(255,255,255,0.75);
+  line-height:1.65;max-width:360px;
+}
+
+.panel-features{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;gap:16px;
+}
+.feat-item{
+  display:flex;align-items:center;gap:14px;
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:12px;
+  padding:14px 18px;
+  backdrop-filter:blur(6px);
+  animation:fadeSlideUp .6s ease both;
+}
+.feat-item:nth-child(1){animation-delay:.1s}
+.feat-item:nth-child(2){animation-delay:.2s}
+.feat-item:nth-child(3){animation-delay:.3s}
+.feat-icon{
+  width:38px;height:38px;border-radius:10px;
+  background:rgba(255,255,255,0.15);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.feat-text p{font-size:13px;font-weight:600;color:#fff;margin-bottom:2px}
+.feat-text span{font-size:11px;color:rgba(255,255,255,0.65)}
+
+/* ── RIGHT PANEL ── */
+.panel-right{
+  width:520px;
+  flex-shrink:0;
+  background:var(--white);
+  display:flex;
+  flex-direction:column;
+  padding:0;
+  position:relative;
+}
+
+.panel-right-inner{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:48px 52px;
+  overflow-y:auto;
+}
+
+/* ── LANG BTN ── */
+.lang-wrap{
+  position:absolute;
+  top:24px;right:24px;z-index:10;
+}
+[dir=rtl] .lang-wrap{right:auto;left:24px}
+.lang-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 16px;border-radius:8px;
+  border:1.5px solid var(--teal);background:transparent;
+  color:var(--teal);font-size:13px;font-weight:600;cursor:pointer;transition:.2s;
+  font-family:inherit;
+}
+.lang-btn:hover{background:var(--teal);color:#fff}
+
+/* ── TAB SWITCHER ── */
+.auth-tabs{
+  display:flex;
+  background:var(--bg);
+  border-radius:12px;
+  padding:4px;
+  margin-bottom:32px;
+}
+.auth-tab{
+  flex:1;padding:10px;text-align:center;font-size:14px;font-weight:600;
+  border:none;background:transparent;cursor:pointer;border-radius:9px;
+  color:var(--muted);transition:.2s;font-family:inherit;
+}
+.auth-tab.active{background:var(--white);color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+
+/* ── FORM HEADER ── */
+.form-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--teal-light);color:var(--teal);
+  font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  padding:5px 12px;border-radius:20px;margin-bottom:16px;
+}
+.form-title{font-size:26px;font-weight:700;color:var(--text);margin-bottom:6px}
+.form-sub{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.5}
+
+/* ── FORM ── */
+.form-group{margin-bottom:18px;position:relative}
+.form-label{
+  display:block;font-size:12px;font-weight:600;
+  color:var(--muted);margin-bottom:6px;
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.input-wrap{position:relative}
+.form-input{
+  width:100%;padding:12px 14px 12px 44px;
+  border:1.5px solid var(--border);
+  border-radius:10px;font-size:14px;color:var(--text);
+  background:var(--bg);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+  font-family:inherit;
+}
+[dir=rtl] .form-input{padding:12px 44px 12px 14px}
+.form-input:focus{
+  border-color:var(--teal);
+  box-shadow:0 0 0 3px rgba(26,171,138,0.12);
+  background:var(--white);
+}
+.form-input.error{border-color:var(--error);box-shadow:0 0 0 3px rgba(229,57,53,0.1)}
+.input-icon{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  color:var(--muted);pointer-events:none;
+  display:flex;align-items:center;
+}
+[dir=rtl] .input-icon{left:auto;right:14px}
+.input-toggle{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:var(--muted);
+  display:flex;align-items:center;padding:0;
+}
+[dir=rtl] .input-toggle{right:auto;left:14px}
+.input-toggle:hover{color:var(--blue)}
+.err-msg{font-size:11px;color:var(--error);margin-top:5px;display:none}
+.err-msg.show{display:block}
+
+/* 2-col grid */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ── ROLE SELECT ── */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.role-card{
+  border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;
+  cursor:pointer;transition:.2s;display:flex;align-items:center;gap:10px;
+  background:var(--bg);
+}
+.role-card:hover{border-color:var(--teal);background:var(--teal-light)}
+.role-card.selected{border-color:var(--teal);background:var(--teal-light)}
+.role-card input{display:none}
+.role-icon{width:32px;height:32px;border-radius:8px;background:var(--white);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.role-card.selected .role-icon{background:var(--teal);color:#fff}
+.role-label{font-size:12px;font-weight:600;color:var(--text)}
+.role-sub{font-size:10px;color:var(--muted)}
+
+/* ── DIVIDER ── */
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0}
+.divider span{font-size:12px;color:var(--muted);font-weight:500;white-space:nowrap}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── SUBMIT BTN ── */
+.btn-submit{
+  width:100%;padding:14px;
+  background:var(--grad);
+  color:#fff;border:none;border-radius:10px;
+  font-size:15px;font-weight:700;cursor:pointer;
+  transition:.2s;font-family:inherit;letter-spacing:.3px;
+  position:relative;overflow:hidden;
+}
+.btn-submit::after{
+  content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,0);
+  transition:.2s;
+}
+.btn-submit:hover::after{background:rgba(255,255,255,0.08)}
+.btn-submit:active{transform:scale(.99)}
+
+/* loading spinner */
+.btn-submit.loading .btn-text{opacity:0}
+.btn-submit.loading::before{
+  content:'';position:absolute;
+  width:20px;height:20px;border-radius:50%;
+  border:2px solid rgba(255,255,255,0.4);
+  border-top-color:#fff;
+  animation:spin .7s linear infinite;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+}
+
+/* ── FORGOT / SWITCH ── */
+.form-footer{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}
+.form-footer a,.form-link{color:var(--teal);font-weight:600;cursor:pointer;text-decoration:none}
+.form-footer a:hover,.form-link:hover{text-decoration:underline}
+.forgot-link{
+  text-align:right;margin-top:-12px;margin-bottom:16px;
+  font-size:12px;
+}
+[dir=rtl] .forgot-link{text-align:left}
+
+/* ── STRENGTH BAR ── */
+.strength-wrap{margin-top:6px}
+.strength-bar{height:4px;border-radius:2px;background:var(--border);overflow:hidden;display:flex;gap:2px}
+.strength-seg{flex:1;border-radius:2px;background:transparent;transition:.3s}
+.strength-label{font-size:11px;margin-top:4px;color:var(--muted)}
+
+/* ── CHECKBOX ── */
+.check-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:18px}
+.check-row input[type=checkbox]{
+  width:16px;height:16px;margin-top:2px;accent-color:var(--teal);cursor:pointer;flex-shrink:0;
+}
+.check-row label{font-size:12px;color:var(--muted);line-height:1.5;cursor:pointer}
+.check-row label a{color:var(--teal);font-weight:600}
+
+/* ── SUCCESS STATE ── */
+.success-screen{
+  display:none;text-align:center;padding:20px 0;
+  animation:fadeSlideUp .4s ease;
+}
+.success-screen.show{display:block}
+.success-icon{
+  width:72px;height:72px;border-radius:50%;
+  background:var(--teal-light);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;
+  animation:pop .4s cubic-bezier(.175,.885,.32,1.275);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+
+.form-view{animation:fadeSlideUp .35s ease}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .panel-left{display:none}
+  .panel-right{width:100%}
+  .panel-right-inner{padding:40px 28px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- LEFT DECORATIVE PANEL -->
+  <div class="panel-left">
+    <div class="panel-deco-ring"></div>
+    <div class="panel-deco-ring2"></div>
+    <svg class="ecg-line" viewBox="0 0 600 80" fill="none" preserveAspectRatio="none">
+      <polyline points="0,40 80,40 110,10 130,70 150,20 170,60 200,40 600,40" stroke="white" stroke-width="2" fill="none"/>
+    </svg>
+
+    <div class="panel-logo">
+      <img src="/frontend/img/white logo.png" width="80">
+      <span class="panel-logo-name">MEDCORE</span>
+    </div>
+
+    <div class="panel-hero">
+      <div class="panel-headline" id="panel-headline">Smart Clinic Management,<br>Built for Care.</div>
+      <div class="panel-sub" id="panel-sub">One platform for patients, appointments, insurance claims, and billing — all in one place.</div>
+    </div>
+
+    <div class="panel-features">
+      <div class="feat-item">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7z"/></svg></div>
+        <div class="feat-text"><p id="f1p">Insurance & Claims</p><span id="f1s">Approve, reject and track claims instantly</span></div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+        <div class="feat-text"><p id="f2p">Appointments</p><span id="f2s">Smart scheduling with real-time updates</span></div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <div class="feat-text"><p id="f3p">Billing & Finance</p><span id="f3s">Full invoicing and payment tracking</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT AUTH PANEL -->
+  <div class="panel-right">
+    <div class="lang-wrap">
+      <button class="lang-btn" onclick="toggleLang()" id="langBtn">🌐 العربية</button>
+    </div>
+
+    <div class="panel-right-inner">
+
+      <!-- TAB SWITCHER -->
+      <div class="auth-tabs" id="auth-tabs">
+        <button class="auth-tab active" onclick="switchTab('login',this)" id="tab-login">Sign In</button>
+        <button class="auth-tab" onclick="switchTab('register',this)" id="tab-register">Create Account</button>
+      </div>
+
+      <!-- ══ LOGIN FORM ══ -->
+      <div id="view-login" class="form-view">
+        <div class="form-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7z"/></svg>
+          <span id="badge-login">Secure Access</span>
+        </div>
+        <div class="form-title" id="login-title">Welcome back</div>
+        <div class="form-sub" id="login-sub">Sign in to your Medcore clinic account</div>
+
+        <div class="form-group">
+          <label class="form-label" id="lbl-email">Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+            <input class="form-input" type="email" id="login-email" placeholder="doctor@clinic.com" autocomplete="email">
+          </div>
+          <div class="err-msg" id="err-login-email">Please enter a valid email</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" id="lbl-pass">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+            <input class="form-input" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+            <button class="input-toggle" type="button" onclick="togglePass('login-pass',this)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="err-msg" id="err-login-pass">Password is required</div>
+        </div>
+
+        <div class="forgot-link"><a class="form-link" id="forgot-link">Forgot password?</a></div>
+
+        <button class="btn-submit" id="btn-login" onclick="handleLogin()">
+          <span class="btn-text" id="login-btn-text">Sign In</span>
+        </button>
+
+        <div class="form-footer">
+          <span id="no-account-text">Don't have an account?</span>
+          <a class="form-link" onclick="switchTabByName('register')" id="go-register"> Create one</a>
+        </div>
+      </div>
+
+      <!-- ══ REGISTER FORM ══ -->
+      <div id="view-register" class="form-view" style="display:none">
+        <div class="form-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          <span id="badge-reg">New Account</span>
+        </div>
+        <div class="form-title" id="reg-title">Create your account</div>
+        <div class="form-sub" id="reg-sub">Join Medcore and manage your clinic smarter</div>
+
+        <!-- Role selector -->
+        <label class="form-label" id="lbl-role" style="margin-bottom:8px">I am a</label>
+        <div class="role-grid" id="role-grid">
+          <label class="role-card selected" onclick="selectRole(this)">
+            <input type="radio" name="role" value="doctor" checked>
+            <div class="role-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div><div class="role-label" id="role-doctor">Doctor</div><div class="role-sub" id="role-doctor-sub">Physician / Specialist</div></div>
+          </label>
+          <label class="role-card" onclick="selectRole(this)">
+            <input type="radio" name="role" value="admin">
+            <div class="role-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+            <div><div class="role-label" id="role-admin">Admin</div><div class="role-sub" id="role-admin-sub">Clinic Manager</div></div>
+          </label>
+          <label class="role-card" onclick="selectRole(this)">
+            <input type="radio" name="role" value="receptionist">
+            <div class="role-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+            <div><div class="role-label" id="role-recep">Receptionist</div><div class="role-sub" id="role-recep-sub">Front Desk</div></div>
+          </label>
+          <label class="role-card" onclick="selectRole(this)">
+            <input type="radio" name="role" value="nurse">
+            <div class="role-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7z"/></svg></div>
+            <div><div class="role-label" id="role-nurse">Nurse</div><div class="role-sub" id="role-nurse-sub">Medical Staff</div></div>
+          </label>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" id="lbl-fname">First Name</label>
+            <div class="input-wrap">
+              <span class="input-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+              <input class="form-input" type="text" id="reg-fname" placeholder="Ahmed">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" id="lbl-lname">Last Name</label>
+            <div class="input-wrap">
+              <span class="input-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+              <input class="form-input" type="text" id="reg-lname" placeholder="Hassan">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" id="lbl-regemail">Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+            <input class="form-input" type="email" id="reg-email" placeholder="doctor@clinic.com">
+          </div>
+          <div class="err-msg" id="err-reg-email">Please enter a valid email</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" id="lbl-clinic">Clinic / Hospital Name</label>
+          <div class="input-wrap">
+            <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></span>
+            <input class="form-input" type="text" id="reg-clinic" placeholder="Cairo Medical Center">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" id="lbl-regpass">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+            <input class="form-input" type="password" id="reg-pass" placeholder="••••••••" oninput="checkStrength(this.value)" autocomplete="new-password">
+            <button class="input-toggle" type="button" onclick="togglePass('reg-pass',this)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="strength-wrap">
+            <div class="strength-bar">
+              <div class="strength-seg" id="seg1"></div>
+              <div class="strength-seg" id="seg2"></div>
+              <div class="strength-seg" id="seg3"></div>
+              <div class="strength-seg" id="seg4"></div>
+            </div>
+            <div class="strength-label" id="strength-label"></div>
+          </div>
+          <div class="err-msg" id="err-reg-pass">Password must be at least 8 characters</div>
+        </div>
+
+        <div class="check-row">
+          <input type="checkbox" id="terms-check">
+          <label for="terms-check" id="terms-label">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+        </div>
+
+        <button class="btn-submit" id="btn-register" onclick="handleRegister()">
+          <span class="btn-text" id="reg-btn-text">Create Account</span>
+        </button>
+
+        <div class="form-footer">
+          <span id="have-account-text">Already have an account?</span>
+          <a class="form-link" onclick="switchTabByName('login')" id="go-login"> Sign in</a>
+        </div>
+      </div>
+
+      <!-- ══ SUCCESS SCREEN ══ -->
+      <div class="success-screen" id="success-screen">
+        <div class="success-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1AAB8A" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>
+        </div>
+        <div class="form-title" id="success-title" style="margin-bottom:8px">Account Created!</div>
+        <div class="form-sub" id="success-sub" style="margin-bottom:24px">Your Medcore account is ready. Redirecting to dashboard...</div>
+        <div style="width:100%;height:4px;background:var(--bg);border-radius:2px;overflow:hidden">
+          <div id="progress-bar" style="height:100%;width:0;background:var(--grad);border-radius:2px;transition:width 2.5s linear"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── TRANSLATIONS ── */
+const T={
+  en:{
+    langBtn:"🌐 العربية",dir:"ltr",
+    "tab-login":"Sign In","tab-register":"Create Account",
+    "badge-login":"Secure Access","login-title":"Welcome back","login-sub":"Sign in to your Medcore clinic account",
+    "lbl-email":"Email Address","lbl-pass":"Password","forgot-link":"Forgot password?",
+    "login-btn-text":"Sign In","no-account-text":"Don't have an account?","go-register":" Create one",
+    "badge-reg":"New Account","reg-title":"Create your account","reg-sub":"Join Medcore and manage your clinic smarter",
+    "lbl-role":"I am a",
+    "role-doctor":"Doctor","role-doctor-sub":"Physician / Specialist",
+    "role-admin":"Admin","role-admin-sub":"Clinic Manager",
+    "role-recep":"Receptionist","role-recep-sub":"Front Desk",
+    "role-nurse":"Nurse","role-nurse-sub":"Medical Staff",
+    "lbl-fname":"First Name","lbl-lname":"Last Name",
+    "lbl-regemail":"Email Address","lbl-clinic":"Clinic / Hospital Name","lbl-regpass":"Password",
+    "reg-btn-text":"Create Account","have-account-text":"Already have an account?","go-login":" Sign in",
+    "terms-label-inner":"I agree to the Terms of Service and Privacy Policy",
+    "success-title":"Account Created!","success-sub":"Your Medcore account is ready. Redirecting to dashboard...",
+    "panel-headline":"Smart Clinic Management,<br>Built for Care.",
+    "panel-sub":"One platform for patients, appointments, insurance claims, and billing — all in one place.",
+    "f1p":"Insurance & Claims","f1s":"Approve, reject and track claims instantly",
+    "f2p":"Appointments","f2s":"Smart scheduling with real-time updates",
+    "f3p":"Billing & Finance","f3s":"Full invoicing and payment tracking",
+    strength:["","Weak","Fair","Good","Strong"],
+    strengthColors:["","#e53935","#E65100","#F9A825","#1AAB8A"],
+    errEmail:"Please enter a valid email",errPass:"Password is required",
+    errPassLen:"Password must be at least 8 characters",
+  },
+  ar:{
+    langBtn:"🌐 English",dir:"rtl",
+    "tab-login":"تسجيل الدخول","tab-register":"إنشاء حساب",
+    "badge-login":"دخول آمن","login-title":"أهلاً بعودتك","login-sub":"سجّل دخولك لحساب Medcore الخاص بعيادتك",
+    "lbl-email":"البريد الإلكتروني","lbl-pass":"كلمة المرور","forgot-link":"نسيت كلمة المرور؟",
+    "login-btn-text":"تسجيل الدخول","no-account-text":"ليس لديك حساب؟","go-register":" أنشئ حساباً",
+    "badge-reg":"حساب جديد","reg-title":"إنشاء حسابك","reg-sub":"انضم لـ Medcore وأدِر عيادتك بذكاء",
+    "lbl-role":"أنا",
+    "role-doctor":"طبيب","role-doctor-sub":"طبيب / أخصائي",
+    "role-admin":"مدير","role-admin-sub":"مدير العيادة",
+    "role-recep":"موظف استقبال","role-recep-sub":"الاستقبال",
+    "role-nurse":"ممرض/ة","role-nurse-sub":"طاقم طبي",
+    "lbl-fname":"الاسم الأول","lbl-lname":"اسم العائلة",
+    "lbl-regemail":"البريد الإلكتروني","lbl-clinic":"اسم العيادة / المستشفى","lbl-regpass":"كلمة المرور",
+    "reg-btn-text":"إنشاء الحساب","have-account-text":"لديك حساب بالفعل؟","go-login":" سجّل دخولك",
+    "terms-label-inner":"أوافق على شروط الخدمة وسياسة الخصوصية",
+    "success-title":"تم إنشاء الحساب!","success-sub":"حسابك في Medcore جاهز. جارٍ تحويلك للوحة التحكم...",
+    "panel-headline":"إدارة عيادات ذكية،<br>مصمّمة للرعاية.",
+    "panel-sub":"منصة واحدة للمرضى والمواعيد ومطالبات التأمين والفواتير — كل شيء في مكان واحد.",
+    "f1p":"التأمين والمطالبات","f1s":"وافق أو ارفض وتابع المطالبات فوراً",
+    "f2p":"المواعيد","f2s":"جدولة ذكية مع تحديثات لحظية",
+    "f3p":"الحسابات والمالية","f3s":"فواتير متكاملة ومتابعة المدفوعات",
+    strength:["","ضعيفة","مقبولة","جيدة","قوية"],
+    strengthColors:["","#e53935","#E65100","#F9A825","#1AAB8A"],
+    errEmail:"برجاء إدخال بريد إلكتروني صحيح",errPass:"كلمة المرور مطلوبة",
+    errPassLen:"كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+  }
+};
+
+let lang="en";
+function d(){return T[lang]}
+
+function applyLang(){
+  const dd=d();
+  document.documentElement.setAttribute("dir",dd.dir);
+  document.documentElement.setAttribute("lang",lang);
+  Object.keys(dd).forEach(k=>{
+    if(typeof dd[k]==="string"&&!["panel-headline"].includes(k)){
+      const el=document.getElementById(k);
+      if(el)el.textContent=dd[k];
+    }
+  });
+  document.getElementById("panel-headline").innerHTML=dd["panel-headline"];
+  document.getElementById("langBtn").textContent=dd.langBtn;
+}
+function toggleLang(){lang=lang==="en"?"ar":"en";applyLang();}
+
+/* ── TAB SWITCH ── */
+let currentTab="login";
+function switchTab(tab,btn){
+  currentTab=tab;
+  document.querySelectorAll(".auth-tab").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("view-login").style.display=tab==="login"?"block":"none";
+  document.getElementById("view-register").style.display=tab==="register"?"block":"none";
+  document.getElementById("success-screen").classList.remove("show");
+}
+function switchTabByName(tab){
+  const btn=document.getElementById("tab-"+tab);
+  switchTab(tab,btn);
+}
+
+/* ── ROLE SELECT ── */
+function selectRole(card){
+  document.querySelectorAll(".role-card").forEach(c=>c.classList.remove("selected"));
+  card.classList.add("selected");
+  card.querySelector("input").checked=true;
+}
+
+/* ── PASSWORD TOGGLE ── */
+function togglePass(inputId,btn){
+  const inp=document.getElementById(inputId);
+  if(inp.type==="password"){
+    inp.type="text";
+    btn.innerHTML=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+  }else{
+    inp.type="password";
+    btn.innerHTML=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  }
+}
+
+/* ── STRENGTH ── */
+function checkStrength(val){
+  let score=0;
+  if(val.length>=8)score++;
+  if(/[A-Z]/.test(val))score++;
+  if(/[0-9]/.test(val))score++;
+  if(/[^A-Za-z0-9]/.test(val))score++;
+  const colors=["","#e53935","#E65100","#F9A825","#1AAB8A"];
+  const segs=document.querySelectorAll(".strength-seg");
+  segs.forEach((s,i)=>s.style.background=i<score?colors[score]:"var(--border)");
+  document.getElementById("strength-label").textContent=val.length?d().strength[score]:"";
+  document.getElementById("strength-label").style.color=colors[score]||"var(--muted)";
+}
+
+/* ── LOGIN ── */
+function handleLogin(){
+  const email=document.getElementById("login-email").value;
+  const pass=document.getElementById("login-pass").value;
+  let ok=true;
+  if(!email||!email.includes("@")){showErr("err-login-email","login-email");ok=false;}
+  else clearErr("err-login-email","login-email");
+  if(!pass){showErr("err-login-pass","login-pass");ok=false;}
+  else clearErr("err-login-pass","login-pass");
+  if(!ok)return;
+  const btn=document.getElementById("btn-login");
+  btn.classList.add("loading");
+  setTimeout(()=>{btn.classList.remove("loading");showSuccess();},1800);
+}
+
+/* ── REGISTER ── */
+function handleRegister(){
+  const email=document.getElementById("reg-email").value;
+  const pass=document.getElementById("reg-pass").value;
+  const terms=document.getElementById("terms-check").checked;
+  let ok=true;
+  if(!email||!email.includes("@")){showErr("err-reg-email","reg-email");ok=false;}
+  else clearErr("err-reg-email","reg-email");
+  if(!pass||pass.length<8){showErr("err-reg-pass","reg-pass");ok=false;}
+  else clearErr("err-reg-pass","reg-pass");
+  if(!terms){alert(lang==="ar"?"يجب الموافقة على الشروط أولاً":"Please accept the terms first");ok=false;}
+  if(!ok)return;
+  const btn=document.getElementById("btn-register");
+  btn.classList.add("loading");
+  setTimeout(()=>{btn.classList.remove("loading");showSuccess();},1800);
+}
+
+function showErr(errId,inputId){
+  document.getElementById(errId).classList.add("show");
+  document.getElementById(inputId).classList.add("error");
+}
+function clearErr(errId,inputId){
+  document.getElementById(errId).classList.remove("show");
+  document.getElementById(inputId).classList.remove("error");
+}
+
+function showSuccess(){
+  document.getElementById("view-login").style.display="none";
+  document.getElementById("view-register").style.display="none";
+  const sc=document.getElementById("success-screen");
+  sc.classList.add("show");
+  setTimeout(()=>{
+    const pb=document.getElementById("progress-bar");
+    pb.style.width="100%";
+  },50);
+}
+
+applyLang();
+</script>
+</body>
+</html>
