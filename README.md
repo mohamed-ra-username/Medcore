@@ -1,3 +1,5 @@
+<img src="frontend/img/logo.png" alt="logo" width="200"/>
+
 # Medcore: Fully Automated System For Clinics
 
 ![Last commit](https://img.shields.io/github/last-commit/mohamed-ra-username/Medcore?logo=github)
@@ -105,5 +107,3 @@ Follow these instructions to set up the project locally.
 - **Supervisor:** د.انجى
 
 ---
-
-![logo](frontend/img/logo.png)
