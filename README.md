@@ -1,4 +1,6 @@
-<img src="frontend/img/logo.png" alt="logo" width="200"/>
+<p align="center">
+    <img src="frontend/img/logo.png" alt="logo" width="200"/>
+</p>
 
 # Medcore: Fully Automated System For Clinics
 
@@ -94,9 +96,11 @@ Follow these instructions to set up the project locally.
 ---
 
 ## 📄 Documentation & Reports
+
 - [📖 Final Project Report (PDF)](docs/Final_Report.pdf "report")
 - [📊 Project Presentation Slides](docs/Presentation.pptx "presentation")
 - [💡 Requirement Specification](docs/SRS.pdf "requirements")
+
 ---
 
 ## 👥 Team
