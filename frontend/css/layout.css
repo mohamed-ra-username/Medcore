@@ -1,4 +1,7 @@
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{
+  /* box-sizing:border-box; */
+  margin:0;
+  padding:0}
 :root{
   --blue:#1B4F8A;--teal:#1AAB8A;--bg:#F4F7FB;--white:#fff;
   --text:#1a2b3c;--muted:#6b7c93;--border:rgba(0,0,0,0.08);
@@ -158,5 +161,6 @@ tbody tr:hover td{background:#f8fbff}
 .form-row input:focus,.form-row select:focus{border-color:var(--teal)}
 .form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .modal-footer{padding:14px 20px;border-top:0.5px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
-. c l i c k a b l e - r o w   {   t r a n s i t i o n :   b a c k g r o u n d   0 . 2 s ;   }   . c l i c k a b l e - r o w : h o v e r   {   b a c k g r o u n d :   v a r ( - - b g - h o v e r ) ;   c u r s o r :   p o i n t e r ;   }  
+. c l i c k a b l e - r o w   {   t r a n s i t i o n :   b a c k g r o u n d   0 . 2 s ;   }   . c l i c k a b l e - r o w : h o v e r   {   b a c k g r o u n d :   v a r ( - - b g - h o v e r ) ;   c u r s o r :   p o i n t e r ;   } 
+ 
  
