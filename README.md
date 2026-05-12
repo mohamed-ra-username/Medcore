@@ -32,7 +32,6 @@ A final-year graduation project focused on **reducing unnecessary manual work in
 6. [Getting Started](#-getting-started)
 7. [Documentation & Reports](#-documentation--reports)
 8. [Team](#-team)
-9. [License](#-license)
 
 ---
 
