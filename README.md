@@ -71,7 +71,7 @@ The system follows a [e.g., Microservices / Monolithic] architecture to ensure [
 
 ---
 
-## 📑Milestones
+## 📑 Milestones
 
 1. frontend :
 
