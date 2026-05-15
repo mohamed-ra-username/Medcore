@@ -80,8 +80,10 @@ The system follows a [e.g., Microservices / Monolithic] architecture to ensure [
 
 2. backend :
 
-- [ ] database
-- [ ] api
+- [ ] database 
+  - a python file is our current database... 🥲
+- [X] api
+- [ ] interface
 
 ---
 
@@ -89,9 +91,9 @@ The system follows a [e.g., Microservices / Monolithic] architecture to ensure [
 
 Follow these instructions to set up the project locally.
 
+- عشان تشغل سرفر frontend افتح [start_frontend.bat](start_frontend.bat)
 - عشان تشغل سرفر الbackend افتح [start_backend.bat](start_backend.bat)
   - لو مشتغلش معاك شغل [init.bat](init.bat)
-
 ---
 
 ## 📄 Documentation & Reports
