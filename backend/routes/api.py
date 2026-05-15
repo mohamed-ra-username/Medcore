@@ -1,7 +1,7 @@
 import flask
 from database import handler
 
-api_bp = flask.Blueprint("api_routes", __name__,subdomain="api")
+api_bp = flask.Blueprint("api_routes", __name__, url_prefix="/api")
 
 
 @api_bp.route("/user/<int:id>/")
@@ -13,6 +13,18 @@ def get_user(id: int):
 @api_bp.route("/users/<int:id>/")
 def get_users(id: int | None = None):
     return flask.jsonify(handler.get_users(id))
+
+
+@api_bp.route("/invoices/")
+@api_bp.route("/invoices/<int:id>/")
+def get_invoices(id: int | None = None):
+    return flask.jsonify(handler.get_invoices(id))
+
+
+@api_bp.route("/phones/")
+@api_bp.route("/phones/<int:id>/")
+def get_phones(id: int | None = None):
+    return flask.jsonify(handler.get_phones(id))
 
 
 @api_bp.route("/appointments/")
