@@ -1,21 +1,22 @@
 const role = localStorage.getItem("role");
+protocol = "http://"
+subdomain = ""
+domainName = "localhost"
+port = ":5001"
+page = "/api"
+api_url = `${protocol}${subdomain}${domainName}${port}${page}`
 
-subdomain="api"
-domainName="localhost"
-port="5001"
-api_url = `http://${subdomain}.${domainName}:${port}`
-
-window.onload = ()=>{
+window.onload = () => {
   applyLang();
 }
 
-let lang =localStorage.getItem("lang") 
-if (lang === null){
+let lang = localStorage.getItem("lang")
+if (lang === null) {
   lang = "en"
-  localStorage.setItem("lang","en")
+  localStorage.setItem("lang", "en")
 }
 
-var companies,claimsData,approvalsData,homePatients,appts,approvalRows
+var companies, claimsData, approvalsData,invoices,phones, homePatients, appts, approvalRows
 // const companies = [
 //   { name: "Misr Insurance", type: "National", color: "#1B4F8A", init: "MI", claims: 87, limit: "500,000", end: "Dec 2026", status: "active" },
 //   { name: "AXA Egypt", type: "International", color: "#1AAB8A", init: "AX", claims: 64, limit: "750,000", end: "Aug 2026", status: "expiring" },
@@ -57,6 +58,16 @@ var companies,claimsData,approvalsData,homePatients,appts,approvalRows
 //     { time: "11:00", patient: "Laila Omar", doctor: "Dr. Sara", type: "Radiology", status: "active" },
 //     { time: "12:30", patient: "Youssef Adel", doctor: "Dr. Mostafa", type: "Consultation", status: "pending" },
 //   ];
+// const phones = ["010-1234-5678", "012-9876-5432", "011-5555-1234", "010-8888-7777", "012-3333-2222"];
+// const invoices = [
+//     { id: "INV-1042", patient: "Ahmed Hassan", date: "May 4", amount: "3,200", ins: "Misr Insurance", status: "pending" },
+//     { id: "INV-1041", patient: "Sara Khalil", date: "May 4", amount: "1,800", ins: "AXA Egypt", status: "done" },
+//     { id: "INV-1040", patient: "Mohamed Ali", date: "May 3", amount: "5,600", ins: "MetLife Egypt", status: "pending" },
+//     { id: "INV-1039", patient: "Laila Omar", date: "May 3", amount: "2,100", ins: "Allianz Egypt", status: "done" },
+//     { id: "INV-1038", patient: "Youssef", date: "May 2", amount: "4,300", ins: "GlobeMed", status: "rejected" },
+//   ];
+// const phones = ["010-1234-5678", "012-9876-5432", "011-5555-1234", "010-8888-7777", "012-3333-2222"];
+
 
 async function GetDataFromBackend(endpoint) {
   try {
@@ -70,7 +81,7 @@ async function GetDataFromBackend(endpoint) {
     return data
 
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error('Error fetching data:', error,"for endpoint:",endpoint);
   }
 }
 
@@ -104,9 +115,9 @@ function applyLang() {
   });
   renderHome(); renderCompanies(); renderClaims(); renderApprovals(); renderPatients(); renderAppts(); renderBilling();
 }
-function toggleLang() { 
-  lang = lang === "en" ? "ar" : "en"; applyLang(); 
-  localStorage.setItem("lang",lang)
+function toggleLang() {
+  lang = lang === "en" ? "ar" : "en"; applyLang();
+  localStorage.setItem("lang", lang)
 }
 
 function initials(name) { return name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() }
@@ -211,8 +222,7 @@ async function renderApprovals() {
   if (ap_badge === null) { return }
   ap_badge.textContent = pending.length || "0";
   if (!pending.length) { tb.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">✓ ${t("noPending")}</td></tr>`; return; }
-  if (tb===null)
-  {return}
+  if (tb === null) { return }
   tb.innerHTML = pending.map((a, i) => `<tr>
     <td style="font-weight:700;color:var(--blue)">${a.ref}</td>
     <td><div class="td-name"><div class="mini-avatar">${initials(a.patient)}</div>${a.patient}</div></td>
@@ -231,7 +241,8 @@ function approveAll() { approvalRows.forEach(a => { if (a.status === "pending") 
 
 async function renderPatients() {
   const tb = document.getElementById("pat-tbody");
-  const phones = ["010-1234-5678", "012-9876-5432", "011-5555-1234", "010-8888-7777", "012-3333-2222"];
+
+  phones = await GetDataFromBackend("/phones/")
   homePatients = await GetDataFromBackend("/homePatients/")
 
   if (tb === null) { return }
@@ -286,8 +297,7 @@ let currentPatientIndex = -1;
 function viewPatient(index) {
   currentPatientIndex = index;
   const p = homePatients[index];
-  const phones = ["010-1234-5678", "012-9876-5432", "011-5555-1234", "010-8888-7777", "012-3333-2222"];
-
+  // TODO: phones api
   document.getElementById("edit-patname").value = lang === "ar" ? (p.arName || p.name) : p.name;
   document.getElementById("edit-patage").value = p.age;
   document.getElementById("edit-patphone").value = p.phone || phones[index] || "";
@@ -350,7 +360,7 @@ function deletePatient() {
 }
 
 async function renderAppts() {
-  
+
   const tb = document.getElementById("appt-tbody");
   appts = await GetDataFromBackend("/appointments/")
 
@@ -362,15 +372,11 @@ async function renderAppts() {
   </tr>`).join("");
 }
 
-function renderBilling() {
+async function renderBilling() {
   const tb = document.getElementById("bill-tbody");
-  const invoices = [
-    { id: "INV-1042", patient: "Ahmed Hassan", date: "May 4", amount: "3,200", ins: "Misr Insurance", status: "pending" },
-    { id: "INV-1041", patient: "Sara Khalil", date: "May 4", amount: "1,800", ins: "AXA Egypt", status: "done" },
-    { id: "INV-1040", patient: "Mohamed Ali", date: "May 3", amount: "5,600", ins: "MetLife Egypt", status: "pending" },
-    { id: "INV-1039", patient: "Laila Omar", date: "May 3", amount: "2,100", ins: "Allianz Egypt", status: "done" },
-    { id: "INV-1038", patient: "Youssef", date: "May 2", amount: "4,300", ins: "GlobeMed", status: "rejected" },
-  ];
+
+  invoices = await GetDataFromBackend("/invoices/")
+
   if (tb === null) { return }
   tb.innerHTML = invoices.map(v => `<tr>
     <td style="font-weight:700;color:var(--blue)">${v.id}</td><td>${v.patient}</td>
