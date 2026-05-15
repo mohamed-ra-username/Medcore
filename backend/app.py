@@ -2,14 +2,10 @@ from flask import Flask
 from routes import api_bp, interface_bp
 from flask_cors import CORS
 
-config = {
-    "name": __name__,
-    "port": 5001,
-    "debug": True,
-}
+PORT = 5001
 
-website_url = 'localhost:'+str(config["port"])
-app = Flask(config["name"])
+website_url = 'localhost:'+str(PORT)
+app = Flask(__name__)
 app.config["SERVER_NAME"] = website_url
 app.register_blueprint(api_bp)
 app.register_blueprint(interface_bp)
@@ -26,4 +22,4 @@ def main_page():
 
 
 if __name__ == '__main__':
-    app.run(debug=config.get('debug', False), port=config["port"])
+    app.run(debug=__debug__, port=PORT)
