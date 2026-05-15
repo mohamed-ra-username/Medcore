@@ -16,9 +16,19 @@ def _get_one_or_all(something, id):
     except KeyError, IndexError, TypeError:
         return something
 
+
+def get_invoices(id=UNKNOWN):
+    return _get_one_or_all(invoices, id)
+
+
+def get_phones(id=UNKNOWN):
+    return _get_one_or_all(phones, id)
+
+
 def get_appointments(id=UNKNOWN):
     return _get_one_or_all(appointments, id)
-    
+
+
 def get_companies(id=UNKNOWN):
     return _get_one_or_all(companies, id)
 
