@@ -81,7 +81,7 @@ The system follows a [e.g., Microservices / Monolithic] architecture to ensure [
 2. backend :
 
 - [ ] database 
-  - a python file is our current database... 🥲
+  - [X] a python file is our current database... 🥲
 - [X] api
 - [ ] interface
 
