@@ -91,8 +91,9 @@ The system follows a [e.g., Microservices / Monolithic] architecture to ensure [
 
 Follow these instructions to set up the project locally.
 
-- عشان تشغل سرفر frontend افتح [start_frontend.bat](start_frontend.bat)
-- عشان تشغل سرفر الbackend افتح [start_backend.bat](start_backend.bat)
+-  frontend شغل [start_frontend.bat](start_frontend.bat)
+-  backend شغل [start_backend.bat](start_backend.bat)
+- افتح [view.bat](view.bat)
   - لو مشتغلش معاك شغل [init.bat](init.bat)
 ---
 
