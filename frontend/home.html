@@ -7,6 +7,8 @@
   <title>Medcore - Clinic Management</title>
   <link rel="stylesheet" href="./css/layout.css">
 
+  <script src="script/badges.js">
+  </script>
   <script src="script/translations.js">
   </script>
   <script src="script/script.js">
@@ -14,7 +16,6 @@
 </head>
 
 <body>
-
   <div class="app" id="app">
 
     <header class="topbar">
@@ -50,7 +51,7 @@
             <circle cx="12" cy="8" r="4" />
             <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
           </svg>
-          <span id="nav-patients">Patients</span><span class="badge">24</span>
+          <span id="nav-patients">Patients</span><span class="badge" id="patients-badge">24</span>
         </button>
         <button class="nav-item" onclick="goPage('appointments',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -58,7 +59,7 @@
             <path d="M16 2v4M8 2v4M3 10h18" />
             <circle cx="12" cy="16" r="1" fill="currentColor" />
           </svg>
-          <span id="nav-appt">Appointments</span><span class="badge">7</span>
+          <span id="nav-appt">Appointments</span><span class="badge" id="appointments-badge">7</span>
         </button>
 
         <span class="nav-section" id="lbl-insurance" style="margin-top:6px">Insurance</span>

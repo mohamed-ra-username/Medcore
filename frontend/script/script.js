@@ -1,13 +1,25 @@
 const role = localStorage.getItem("role");
-protocol = "http://"
-subdomain = ""
-domainName = "localhost"
-port = ":5001"
-page = "/api"
-api_url = `${protocol}${subdomain}${domainName}${port}${page}`
+
+api = {
+  protocol: "http://",
+  subdomain: "",
+  domainName: "localhost",
+  port: ":5001",
+  page: "/api",
+
+  URLlink_with_endpoint: function (endpoint) {
+    return this.URLlink + endpoint
+  },
+
+  get URLlink() {
+    return `${this.protocol}${this.subdomain}${this.domainName}${this.port}${this.page}`;
+  },
+}
 
 window.onload = () => {
   applyLang();
+  display_sidebar_badges();
+  display_dashboard();
 }
 
 let lang = localStorage.getItem("lang")
@@ -16,7 +28,7 @@ if (lang === null) {
   localStorage.setItem("lang", "en")
 }
 
-var companies, claimsData, approvalsData,invoices,phones, homePatients, appts, approvalRows
+var companies, claimsData, approvalsData, invoices, phones, homePatients, appts, approvalRows
 // const companies = [
 //   { name: "Misr Insurance", type: "National", color: "#1B4F8A", init: "MI", claims: 87, limit: "500,000", end: "Dec 2026", status: "active" },
 //   { name: "AXA Egypt", type: "International", color: "#1AAB8A", init: "AX", claims: 64, limit: "750,000", end: "Aug 2026", status: "expiring" },
@@ -68,21 +80,44 @@ var companies, claimsData, approvalsData,invoices,phones, homePatients, appts, a
 //   ];
 // const phones = ["010-1234-5678", "012-9876-5432", "011-5555-1234", "010-8888-7777", "012-3333-2222"];
 
+function update_badge(elementId, value) {
+  badge = document.getElementById(elementId);
+  if (!badge) {
+    console.error(`Couldn't get element: ${elementId}`)
+  }
+  badge.innerHTML = value
+}
 
 async function GetDataFromBackend(endpoint) {
+  const api_link = api.URLlink_with_endpoint(endpoint)
+  console.info(api_link)
   try {
-    const response = await fetch(api_url + endpoint);
-
+    const response = await fetch(api_link);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-
-    var data = await response.json();
+    const data = await response.json();
     return data
-
-  } catch (error) {
-    console.error('Error fetching data:', error,"for endpoint:",endpoint);
   }
+  catch (error) {
+    console.info(`Error fetching data from ${api_link}: ${error} for endpoint ${endpoint}`);
+    return undefined
+  };
+
+  // try {
+  // const response = await fetch(api.api_temp + endpoint);
+
+  //   if (!response.ok) {
+  //     throw new Error('Network response was not ok');
+  //   }
+
+  //   var data = await response.json();
+  //   return data
+
+  // } catch (error) {
+  //   console.info('Error fetching data:', error, "for endpoint:", endpoint);
+  //   return undefined;
+  // }
 }
 
 
@@ -113,7 +148,8 @@ function applyLang() {
   Object.keys(dd).forEach(k => {
     if (typeof dd[k] === "string") { const el = document.getElementById(k); if (el) el.textContent = dd[k]; }
   });
-  renderHome(); renderCompanies(); renderClaims(); renderApprovals(); renderPatients(); renderAppts(); renderBilling();
+  // FIXME useless render
+  // renderHome(); renderCompanies(); renderClaims(); renderApprovals(); renderPatients(); renderAppts(); renderBilling();
 }
 function toggleLang() {
   lang = lang === "en" ? "ar" : "en"; applyLang();
@@ -121,12 +157,15 @@ function toggleLang() {
 }
 
 function initials(name) { return name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() }
-
+function isValid(variable) { return !((variable === null) | (variable === undefined)) }
 async function renderHome() {
   const tb = document.getElementById("home-tbody");
   homePatients = await GetDataFromBackend("/homePatients/")
-
-  if (tb === null) { return }
+  if (!isValid(homePatients)) {
+    console.warn("homePatients has not been fetched")
+    return;
+  }
+  if ((tb === null) | (homePatients === null)) { return }
   tb.innerHTML = homePatients.map((p, i) => `<tr onclick="viewPatient(${i})" class="clickable-row">
     <td><div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div></td>
     <td>${p.age}</td><td style="color:var(--muted)">${lang === "ar" ? p.arDoc : p.doctor}</td>
@@ -150,7 +189,10 @@ function updateDashboardStats() {
 
 async function renderCompanies() {
   companies = await GetDataFromBackend("/companies/")
-
+  if (!isValid(companies)) {
+    console.warn("companies has not been fetched")
+    return;
+  }
   const grid = document.getElementById("company-grid");
   const list = companyFilter === "all" ? companies : companies.filter(c => c.status === companyFilter);
   if (grid === null) { return }
@@ -178,7 +220,10 @@ function filterCompanies(f, btn) {
 async function renderClaims() {
   const tb = document.getElementById("claims-tbody");
   claimsData = await GetDataFromBackend("/claims/")
-
+  if (!isValid(claimsData)) {
+    console.warn("claimsData has not been fetched")
+    return;
+  }
   const list = claimFilter === "all" ? claimsData : claimsData.filter(c => c.status === claimFilter);
   if (tb === null) { return }
   tb.innerHTML = list.map((c, i) => `<tr>
@@ -214,6 +259,10 @@ async function renderApprovals() {
   // FIXME: approval button is not working
   const tb = document.getElementById("approvals-tbody");
   approvalsData = await GetDataFromBackend("/approvals/")
+  if (!isValid(approvalsData)) {
+    console.warn("approvalsData has not been fetched")
+    return;
+  }
   approvalRows = approvalsData.map(a => ({ ...a, status: "pending" }));
 
 
@@ -244,7 +293,10 @@ async function renderPatients() {
 
   phones = await GetDataFromBackend("/phones/")
   homePatients = await GetDataFromBackend("/homePatients/")
-
+  if (!isValid(homePatients)) {
+    console.warn("homePatients has not been fetched")
+    return;
+  }
   if (tb === null) { return }
   tb.innerHTML = homePatients.map((p, i) => `<tr onclick="viewPatient(${i})" class="clickable-row">
     <td><div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div></td>
@@ -297,7 +349,6 @@ let currentPatientIndex = -1;
 function viewPatient(index) {
   currentPatientIndex = index;
   const p = homePatients[index];
-  // TODO: phones api
   document.getElementById("edit-patname").value = lang === "ar" ? (p.arName || p.name) : p.name;
   document.getElementById("edit-patage").value = p.age;
   document.getElementById("edit-patphone").value = p.phone || phones[index] || "";
@@ -363,8 +414,13 @@ async function renderAppts() {
 
   const tb = document.getElementById("appt-tbody");
   appts = await GetDataFromBackend("/appointments/")
-
-  if (tb === null) { return }
+  if (!isValid(appts)) {
+    console.warn("appts has not been fetched");
+    return;
+  }
+  if (tb === null) {
+    return
+  }
   tb.innerHTML = appts.map(a => `<tr>
     <td style="font-weight:700">${a.time}</td><td>${a.patient}</td>
     <td style="color:var(--muted)">${a.doctor}</td><td>${a.type}</td>
@@ -376,7 +432,10 @@ async function renderBilling() {
   const tb = document.getElementById("bill-tbody");
 
   invoices = await GetDataFromBackend("/invoices/")
-
+  if (!isValid(invoices)) {
+    console.warn("invoices has not been fetched")
+    return;
+  }
   if (tb === null) { return }
   tb.innerHTML = invoices.map(v => `<tr>
     <td style="font-weight:700;color:var(--blue)">${v.id}</td><td>${v.patient}</td>
