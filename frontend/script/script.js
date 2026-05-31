@@ -20,6 +20,7 @@ window.onload = () => {
   applyLang();
   display_sidebar_badges();
   display_dashboard();
+  renderHome();
 }
 
 let lang = localStorage.getItem("lang")
@@ -158,6 +159,7 @@ function toggleLang() {
 
 function initials(name) { return name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() }
 function isValid(variable) { return !((variable === null) | (variable === undefined)) }
+
 async function renderHome() {
   const tb = document.getElementById("home-tbody");
   homePatients = await GetDataFromBackend("/homePatients/")
@@ -172,19 +174,22 @@ async function renderHome() {
     <td style="color:var(--muted)">${p.ins}</td><td style="color:var(--muted)">${p.date}</td>
     <td><span class="chip chip-${p.status}">${chip(p.status)}</span></td>
   </tr>`).join("");
-  updateDashboardStats();
+  renderDashboardStats();
 }
 
-function updateDashboardStats() {
+function renderDashboardStats() {
   const elPatients = document.getElementById("stat-patients");
   const elAppts = document.getElementById("stat-appts");
   const elClaims = document.getElementById("stat-claims");
   const elRevenue = document.getElementById("stat-revenue");
 
-  if (elPatients) elPatients.textContent = (1284 + homePatients.length - 5).toLocaleString();
-  if (elAppts) elAppts.textContent = "18";
-  if (elClaims) elClaims.textContent = claimsData.filter(c => c.status === "pending").length;
-  if (elRevenue) elRevenue.textContent = "84,200";
+  // if (elPatients) elPatients.textContent = (1284 + homePatients.length - 5).toLocaleString();
+  // if (elClaims) elClaims.textContent = claimsData.filter(c => c.status === "pending").length;
+  // if (elRevenue) elRevenue.textContent = "84,200";
+  if (elPatients) elPatients.textContent = counters.patients.total.toLocaleString();
+  if (elAppts) elAppts.textContent = counters.appointments.todays.toLocaleString();
+  if (elClaims) elClaims.textContent = counters.claims.pending.toLocaleString();
+  if (elRevenue) elRevenue.textContent = counters.money.revenue.toLocaleString();
 }
 
 async function renderCompanies() {
