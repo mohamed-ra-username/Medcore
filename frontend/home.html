@@ -7,12 +7,10 @@
   <title>Medcore - Clinic Management</title>
   <link rel="stylesheet" href="./css/layout.css">
 
-  <script src="script/badges.js">
-  </script>
-  <script src="script/translations.js">
-  </script>
-  <script src="script/script.js">
-  </script>
+  <script src="script/badges.js"></script>
+  <script src="script/translation_table.js"></script>
+  <script src="script/translations.js"></script>
+  <script src="script/script.js"></script>
 </head>
 
 <body>
@@ -24,7 +22,7 @@
         <span class="logo-name">MEDCORE</span>
       </a>
       <div class="topbar-right">
-        <button class="lang-btn" onclick="toggleLang()" id="langBtn">🌐 العربية</button>
+        <button class="lang-btn" onclick="toggleLang()" id="langBtn">🌐 <span data-langId="langBtn">العربية</span></button>
         <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7c93"
             stroke-width="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -36,7 +34,6 @@
 
     <div class="main">
       <nav class="sidebar">
-        <span class="nav-section" id="lbl-main">Main</span>
         <button class="nav-item active" onclick="goPage('home',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -44,14 +41,14 @@
             <rect x="3" y="14" width="7" height="7" rx="1" />
             <rect x="14" y="14" width="7" height="7" rx="1" />
           </svg>
-          <span id="nav-home">Home</span>
+          <span data-langId="home">Home</span>
         </button>
         <button class="nav-item" onclick="goPage('patients',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="8" r="4" />
             <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
           </svg>
-          <span id="nav-patients">Patients</span><span class="badge" id="patients-badge">0</span>
+          <span data-langId="patients">Patients</span><span class="badge" id="patients-badge">0</span>
         </button>
         <button class="nav-item" onclick="goPage('appointments',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -59,15 +56,15 @@
             <path d="M16 2v4M8 2v4M3 10h18" />
             <circle cx="12" cy="16" r="1" fill="currentColor" />
           </svg>
-          <span id="nav-appt">Appointments</span><span class="badge" id="appointments-badge">0</span>
+          <span data-langId="appt">Appointments</span><span class="badge" id="appointments-badge">0</span>
         </button>
 
-        <span class="nav-section" id="lbl-insurance" style="margin-top:6px">Insurance</span>
+        <span class="nav-section" data-langId="lbl-insurance" style="margin-top:6px">Insurance</span>
         <button class="nav-item" onclick="goPage('insurance',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7z" />
           </svg>
-          <span id="nav-ins">Insurance Companies</span>
+          <span data-langId="ins">Insurance Companies</span>
         </button>
         <button class="nav-item" onclick="goPage('claims',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -75,23 +72,23 @@
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
             <polyline points="14,2 14,8 20,8" />
           </svg>
-          <span id="nav-claims">Claims</span><span class="badge orange" id="claims-badge">0</span>
+          <span data-langId="claims">Claims</span><span class="badge orange" id="claims-badge">0</span>
         </button>
         <button class="nav-item" onclick="goPage('approvals',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
             <polyline points="22,4 12,14.01 9,11.01" />
           </svg>
-          <span id="nav-approvals">Approvals Review</span><span class="badge orange" id="approvals-badge">0</span>
+          <span data-langId="approvals">Approvals Review</span><span class="badge orange" id="approvals-badge">0</span>
         </button>
 
-        <span class="nav-section" id="lbl-finance" style="margin-top:6px">Finance</span>
+        <span class="nav-section" data-langId="lbl-finance" style="margin-top:6px">Finance</span>
         <button class="nav-item" onclick="goPage('billing',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="1" y="4" width="22" height="16" rx="2" />
             <line x1="1" y1="10" x2="23" y2="10" />
           </svg>
-          <span id="nav-billing">Billing &amp; Payments</span>
+          <span data-langId="billing">Billing &amp; Payments</span>
         </button>
         <button class="nav-item" onclick="goPage('reports',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -100,24 +97,24 @@
             <line x1="8" y1="13" x2="16" y2="13" />
             <line x1="8" y1="17" x2="12" y2="17" />
           </svg>
-          <span id="nav-reports">Reports</span>
+          <span data-langId="reports">Reports</span>
         </button>
 
-        <span class="nav-section" id="lbl-sys" style="margin-top:6px">System</span>
+        <span class="nav-section" data-langId="lbl-sys" style="margin-top:6px">System</span>
         <button class="nav-item" onclick="goPage('settings',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="3" />
             <path d="M19.07 4.93A10 10 0 1 0 4.93 19.07M12 2v2M12 20v2M2 12h2M20 12h2" />
           </svg>
-          <span id="nav-settings">Settings</span>
+          <span data-langId="settings">Settings</span>
         </button>
 
         <div class="sidebar-footer">
           <div class="sidebar-user">
             <div class="avatar">DR</div>
             <div>
-              <div class="su-name" id="su-name">Dr. Ahmed</div>
-              <div class="su-role" id="su-role">Administrator</div>
+              <div class="su-name" data-langId="su-name">Dr. Ahmed</div>
+              <div class="su-role" data-langId="su-role">Administrator</div>
             </div>
           </div>
         </div>
@@ -129,14 +126,14 @@
         <div class="page active" id="page-home">
           <div class="ph">
             <div>
-              <div class="ph-title" id="home-title">Dashboard Overview</div>
-              <div class="ph-sub" id="home-sub">Monday, 5 May 2026</div>
+              <div class="ph-title" data-langId="home-title">Dashboard Overview</div>
+              <div class="ph-sub" data-langId="home-sub">Monday, 5 May 2026</div>
             </div>
             <button class="btn-primary" onclick="openModal('addPatient')"><svg width="14" height="14"
                 viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
-              </svg><span id="home-addbtn">New Patient</span></button>
+              </svg><span data-langId="home-addbtn">New Patient</span></button>
           </div>
           <div class="stats-grid">
             <div class="stat-card">
@@ -145,9 +142,9 @@
                   <circle cx="12" cy="8" r="4" />
                   <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
                 </svg></div>
-              <div class="stat-lbl" id="s1">Total Patients</div>
+              <div class="stat-lbl" data-langId="s1">Total Patients</div>
               <div class="stat-val" id="stat-patients">0</div>
-              <div class="stat-trend up" id="s1t">↑ 0% this month</div>
+              <div class="stat-trend up" data-langId="s1t">↑ 12% this month</div>
             </div>
             <div class="stat-card">
               <div class="stat-icon" style="background:#e8f4ff"><svg width="18" height="18" viewBox="0 0 24 24"
@@ -155,9 +152,9 @@
                   <rect x="3" y="4" width="18" height="18" rx="2" />
                   <path d="M16 2v4M8 2v4M3 10h18" />
                 </svg></div>
-              <div class="stat-lbl" id="s2">Today's Appts</div>
+              <div class="stat-lbl" data-langId="s2">Today's Appts</div>
               <div class="stat-val" id="stat-appts">0</div>
-              <div class="stat-trend up" id="s2t">↑ 0 from yesterday</div>
+              <div class="stat-trend up" data-langId="s2t">↑ 3 from yesterday</div>
             </div>
             <div class="stat-card">
               <div class="stat-icon" style="background:#FFF3E0"><svg width="18" height="18" viewBox="0 0 24 24"
@@ -166,9 +163,9 @@
                   <line x1="12" y1="8" x2="12" y2="12" />
                   <line x1="12" y1="16" x2="12.01" y2="16" />
                 </svg></div>
-              <div class="stat-lbl" id="s3">Pending Claims</div>
+              <div class="stat-lbl" data-langId="s3">Pending Claims</div>
               <div class="stat-val" id="stat-claims">0</div>
-              <div class="stat-trend warn" id="s3t">Needs action</div>
+              <div class="stat-trend warn" data-langId="s3t">Needs action</div>
             </div>
             <div class="stat-card">
               <div class="stat-icon" style="background:#f3e5f5"><svg width="18" height="18" viewBox="0 0 24 24"
@@ -176,24 +173,23 @@
                   <rect x="1" y="4" width="22" height="16" rx="2" />
                   <line x1="1" y1="10" x2="23" y2="10" />
                 </svg></div>
-              <div class="stat-lbl" id="s4">Revenue (EGP)</div>
+              <div class="stat-lbl" data-langId="s4">Revenue (EGP)</div>
               <div class="stat-val" id="stat-revenue">0</div>
-              <div class="stat-trend up purple" id="s4t">↑ 8% this week</div>
+              <div class="stat-trend up purple" data-langId="s4t">↑ 8% this week</div>
             </div>
           </div>
           <div class="card">
-            <div class="card-header"><span class="card-title" id="home-recent">Recent Patients</span><input
-                class="search-input" type="text" id="home-search" placeholder="Search..."></div>
+            <div class="card-header"><span class="card-title"> <span data-langId="recent">Recent</span> <span data-langId="patients">Patients</span></span></div>
             <div class="tbl-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th id="ht1">Patient</th>
-                    <th id="ht2">Age</th>
-                    <th id="ht3">Doctor</th>
-                    <th id="ht4">Insurance</th>
-                    <th id="ht5">Date</th>
-                    <th id="ht6">Status</th>
+                    <th data-langId="lbl-patient">Patient</th>
+                    <th data-langId="lbl-age">Age</th>
+                    <th data-langId="lbl-doctor">Doctor</th>
+                    <th data-langId="lbl-insurance">Insurance</th>
+                    <th data-langId="lbl-date">Date</th>
+                    <th data-langId="lbl-status">Status</th>
                   </tr>
                 </thead>
                 <tbody id="home-tbody"></tbody>
@@ -206,43 +202,43 @@
         <div class="page" id="page-insurance">
           <div class="ph">
             <div>
-              <div class="ph-title" id="ins-title">Insurance Companies</div>
-              <div class="ph-sub" id="ins-sub">Manage contracts &amp; coverage</div>
+              <div class="ph-title" data-langId="ins">Insurance Companies</div>
+              <div class="ph-sub" data-langId="ins-sub">Manage contracts &amp; coverage</div>
             </div>
             <button class="btn-primary" onclick="openModal('addCompany')"><svg width="14" height="14"
                 viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
-              </svg><span id="ins-addbtn">Add Company</span></button>
+              </svg><span data-langId="ins-addbtn">Add Company</span></button>
           </div>
           <div class="summary-bar">
             <div class="sb-item">
               <div class="sb-val" style="color:var(--blue)" id="sb-total-val">0</div>
-              <div class="sb-lbl" id="sb-total">Total Partners</div>
+              <div class="sb-lbl" data-langId="sb-total">Total Partners</div>
             </div>
             <div class="sb-div"></div>
             <div class="sb-item">
               <div class="sb-val" style="color:var(--teal)" id="sb-active-val">0</div>
-              <div class="sb-lbl" id="sb-active">Active Contracts</div>
+              <div class="sb-lbl" data-langId="sb-active">Active Contracts</div>
             </div>
             <div class="sb-div"></div>
             <div class="sb-item">
               <div class="sb-val" style="color:#E65100" id="sb-expiring-val">0</div>
-              <div class="sb-lbl" id="sb-expiring">Expiring Soon</div>
+              <div class="sb-lbl" data-langId="sb-expiring">Expiring Soon</div>
             </div>
             <div class="sb-div"></div>
             <div class="sb-item">
               <div class="sb-val" style="color:#7B1FA2" id="sb-claims-total-val">0</div>
-              <div class="sb-lbl" id="sb-claims-total">Total Claims</div>
+              <div class="sb-lbl" data-langId="sb-claims-total">Total Claims</div>
             </div>
           </div>
           <div class="card">
             <div class="card-header">
-              <span class="card-title" id="ins-card-title">All Companies</span>
+              <span class="card-title" data-langId="ins-card-title">All Companies</span>
               <div class="filter-tabs">
-                <button class="ftab on" onclick="filterCompanies('all',this)" id="ft-all">All</button>
-                <button class="ftab" onclick="filterCompanies('active',this)" id="ft-active">Active</button>
-                <button class="ftab" onclick="filterCompanies('expiring',this)" id="ft-exp">Expiring</button>
+                <button class="ftab on" onclick="filterCompanies('all',this)" data-langId="ft-all">All</button>
+                <button class="ftab" onclick="filterCompanies('active',this)" data-langId="ft-active">Active</button>
+                <button class="ftab" onclick="filterCompanies('expiring',this)" data-langId="ft-exp">Expiring</button>
               </div>
             </div>
             <div class="company-grid" id="company-grid"></div>
@@ -253,60 +249,60 @@
         <div class="page" id="page-claims">
           <div class="ph">
             <div>
-              <div class="ph-title" id="claims-title">Claims Management</div>
-              <div class="ph-sub" id="claims-sub">Review and close insurance claims</div>
+              <div class="ph-title" data-langId="claims-title">Claims Management</div>
+              <div class="ph-sub" data-langId="claims-sub">Review and close insurance claims</div>
             </div>
             <button class="btn-primary" onclick="openModal('addClaim')"><svg width="14" height="14" viewBox="0 0 24 24"
                 fill="none" stroke="#fff" stroke-width="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
-              </svg><span id="claims-addbtn">New Claim</span></button>
+              </svg><span data-langId="claims-addbtn">New Claim</span></button>
           </div>
           <div class="summary-bar">
             <div class="sb-item">
               <div class="sb-val" style="color:#E65100" id="c-pending-val">0</div>
-              <div class="sb-lbl" id="c-pending-lbl">Pending</div>
+              <div class="sb-lbl" data-langId="c-pending-lbl">Pending</div>
             </div>
             <div class="sb-div"></div>
             <div class="sb-item">
               <div class="sb-val" style="color:var(--teal)" id="c-approved-val">0</div>
-              <div class="sb-lbl" id="c-approved-lbl">Approved</div>
+              <div class="sb-lbl" data-langId="c-approved-lbl">Approved</div>
             </div>
             <div class="sb-div"></div>
             <div class="sb-item">
               <div class="sb-val" style="color:#C62828" id="c-rejected-val">0</div>
-              <div class="sb-lbl" id="c-rejected-lbl">Rejected</div>
+              <div class="sb-lbl" data-langId="c-rejected-lbl">Rejected</div>
             </div>
             <div class="sb-div"></div>
             <div class="sb-item">
               <div class="sb-val" style="color:var(--blue)" id="c-amount-val">0</div>
-              <div class="sb-lbl" id="c-amount-lbl">Total EGP</div>
+              <div class="sb-lbl" data-langId="c-amount-lbl">Total EGP</div>
             </div>
           </div>
           <div class="card">
             <div class="card-header">
-              <span class="card-title" id="claims-card-title">All Claims</span>
+              <span class="card-title" data-langId="claims-card-title">All Claims</span>
               <div class="card-actions">
                 <div class="filter-tabs" id="claims-filter-tabs">
-                  <button class="ftab on" onclick="filterClaims('all',this)">All</button>
-                  <button class="ftab" onclick="filterClaims('pending',this)" id="cft-pending">Pending</button>
-                  <button class="ftab" onclick="filterClaims('approved',this)" id="cft-approved">Approved</button>
-                  <button class="ftab" onclick="filterClaims('rejected',this)" id="cft-rejected">Rejected</button>
+                  <button class="ftab on" onclick="filterClaims('all',this)" data-langId="ft-all">All</button>
+                  <button class="ftab" onclick="filterClaims('pending',this)" id="cft-pending" data-langId="cft-pending">Pending</button>
+                  <button class="ftab" onclick="filterClaims('approved',this)" id="cft-approved" data-langId="cft-approved">Approved</button>
+                  <button class="ftab" onclick="filterClaims('rejected',this)" id="cft-rejected" data-langId="cft-rejected">Rejected</button>
                 </div>
-                <input class="search-input" type="text" id="claims-search" placeholder="Search...">
+                  <input class="search-input" type="text" data-langId="claims-search" placeholder="Search...">
               </div>
             </div>
             <div class="tbl-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th id="cl1">Claim #</th>
-                    <th id="cl2">Patient</th>
-                    <th id="cl3">Insurance Co.</th>
-                    <th id="cl4">Amount (EGP)</th>
-                    <th id="cl5">Date</th>
-                    <th id="cl6">Status</th>
-                    <th id="cl7">Action</th>
+                    <th data-langId="lbl-claim-number">Claim #</th>
+                    <th data-langId="lbl-patient">Patient</th>
+                    <th data-langId="lbl-insurance-co">Insurance Co.</th>
+                    <th data-langId="lbl-amount">Amount (EGP)</th>
+                    <th data-langId="lbl-date">Date</th>
+                    <th data-langId="lbl-status">Status</th>
+                    <th data-langId="lbl-action">Action</th>
                   </tr>
                 </thead>
                 <tbody id="claims-tbody"></tbody>
@@ -319,29 +315,29 @@
         <div class="page" id="page-approvals">
           <div class="ph">
             <div>
-              <div class="ph-title" id="appr-title">Approvals Review</div>
-              <div class="ph-sub" id="appr-sub">Pending authorizations from insurance companies</div>
+              <div class="ph-title" data-langId="appr-title">Approvals Review</div>
+              <div class="ph-sub" data-langId="appr-sub">Pending authorizations from insurance companies</div>
             </div>
           </div>
           <div class="card">
             <div class="card-header">
-              <span class="card-title" id="appr-card-title">Pending Approvals</span>
+              <span class="card-title" data-langId="appr-card-title">Pending Approvals</span>
               <div class="card-actions">
-                <button class="btn-outline" id="appr-approve-all" onclick="approveAll()">✓ Approve All</button>
-                <input class="search-input" type="text" id="appr-search" placeholder="Search...">
+                <button class="btn-outline" data-langId="appr-approve-all" onclick="approveAll()">✓ Approve All</button>
+                <input class="search-input" type="text" data-langId="appr-search" placeholder="Search...">
               </div>
             </div>
             <div class="tbl-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th id="ap1">Ref #</th>
-                    <th id="ap2">Patient</th>
-                    <th id="ap3">Procedure</th>
-                    <th id="ap4">Insurance Co.</th>
-                    <th id="ap5">Requested</th>
-                    <th id="ap6">Amount (EGP)</th>
-                    <th id="ap7">Action</th>
+                    <th data-langId="lbl-ref-number">Ref #</th>
+                    <th data-langId="lbl-patient">Patient</th>
+                    <th data-langId="lbl-procedure">Procedure</th>
+                    <th data-langId="lbl-insurance-co">Insurance Co.</th>
+                    <th data-langId="lbl-requested">Requested</th>
+                    <th data-langId="lbl-amount">Amount (EGP)</th>
+                    <th data-langId="lbl-action">Action</th>
                   </tr>
                 </thead>
                 <tbody id="approvals-tbody"></tbody>
@@ -354,24 +350,24 @@
         <div class="page" id="page-patients">
           <div class="ph">
             <div>
-              <div class="ph-title" id="pat-title">Patients</div>
-              <div class="ph-sub" id="pat-sub">All registered patients</div>
-            </div><button class="btn-primary" onclick="openModal('addPatient')"><span id="pat-addbtn">+ New
-                Patient</span></button>
+              <div class="ph-title" data-langId="pat-title">Patients</div>
+              <div class="ph-sub" data-langId="pat-sub">All registered patients</div>
+            </div><button class="btn-primary" onclick="openModal('addPatient')"><span data-langId="pat-addbtn">+ New
+              Patient</span></button>
           </div>
           <div class="card">
-            <div class="card-header"><span class="card-title" id="pat-list">Patient List</span><input
-                class="search-input" type="text" placeholder="Search..."></div>
+            <div class="card-header"><span class="card-title" data-langId="pat-list">Patient List</span><input
+              class="search-input" type="text" data-langId="home-search" placeholder="Search..."></div>
             <div class="tbl-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th>Patient</th>
-                    <th>Age</th>
-                    <th>Phone</th>
-                    <th>Insurance</th>
-                    <th>Last Visit</th>
-                    <th>Status</th>
+                    <th data-langId="lbl-patient">Patient</th>
+                    <th data-langId="lbl-age">Age</th>
+                    <th data-langId="lbl-phone">Phone</th>
+                    <th data-langId="lbl-insurance">Insurance</th>
+                    <th data-langId="lbl-lastvisit">Last Visit</th>
+                    <th data-langId="lbl-status">Status</th>
                   </tr>
                 </thead>
                 <tbody id="pat-tbody"></tbody>
@@ -384,21 +380,22 @@
         <div class="page" id="page-appointments">
           <div class="ph">
             <div>
-              <div class="ph-title" id="appt-title">Appointments</div>
-              <div class="ph-sub" id="appt-sub">Today's schedule</div>
-            </div><button class="btn-primary" onclick="openModal('addAppointment')"><span id="appt-addbtn">+ New Appointment</span></button>
+              <div class="ph-title" data-langId="appt-title">Appointments</div>
+              <div class="ph-sub" data-langId="appt-sub">Today's schedule</div>
+            </div><button class="btn-primary" onclick="openModal('addAppointment')"><span data-langId="appt-addbtn">+ New
+              Appointment</span></button>
           </div>
           <div class="card">
-            <div class="card-header"><span class="card-title">Schedule</span></div>
+            <div class="card-header"><span class="card-title" data-langId="lbl-schedule">Schedule</span></div>
             <div class="tbl-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th>Time</th>
-                    <th>Patient</th>
-                    <th>Doctor</th>
-                    <th>Type</th>
-                    <th>Status</th>
+                    <th data-langId="lbl-time">Time</th>
+                    <th data-langId="lbl-patient">Patient</th>
+                    <th data-langId="lbl-doctor">Doctor</th>
+                    <th data-langId="lbl-type">Type</th>
+                    <th data-langId="lbl-status">Status</th>
                   </tr>
                 </thead>
                 <tbody id="appt-tbody"></tbody>
@@ -411,44 +408,45 @@
         <div class="page" id="page-billing">
           <div class="ph">
             <div>
-              <div class="ph-title" id="bill-title">Billing &amp; Payments</div>
-              <div class="ph-sub" id="bill-sub">Invoices and payment tracking</div>
-            </div><button class="btn-primary" onclick="openModal('addInvoice')"><span id="bill-addbtn">+ New Invoice</span></button>
+              <div class="ph-title" data-langId="billing">Billing &amp; Payments</div>
+              <div class="ph-sub" data-langId="bill-sub">Invoices and payment tracking</div>
+            </div><button class="btn-primary" onclick="openModal('addInvoice')"><span data-langId="bill-addbtn">+ New
+              Invoice</span></button>
           </div>
           <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-lbl" id="bill-s1">Total Revenue</div>
+              <div class="stat-lbl" data-langId="bill-s1">Total Revenue</div>
               <div class="stat-val">84,200</div>
               <div class="stat-trend up">↑ 8% this week</div>
             </div>
             <div class="stat-card">
-              <div class="stat-lbl" id="bill-s2">Collected</div>
+              <div class="stat-lbl" data-langId="bill-s2">Collected</div>
               <div class="stat-val">71,600</div>
               <div class="stat-trend up">85% rate</div>
             </div>
             <div class="stat-card">
-              <div class="stat-lbl" id="bill-s3">Insurance Due</div>
+              <div class="stat-lbl" data-langId="bill-s3">Insurance Due</div>
               <div class="stat-val">42,800</div>
               <div class="stat-trend warn">Awaiting</div>
             </div>
             <div class="stat-card">
-              <div class="stat-lbl" id="bill-s4">Overdue</div>
+              <div class="stat-lbl" data-langId="bill-s4">Overdue</div>
               <div class="stat-val">6,400</div>
               <div class="stat-trend warn">3 invoices</div>
             </div>
           </div>
           <div class="card">
-            <div class="card-header"><span class="card-title" id="bill-card-title">Recent Invoices</span></div>
+            <div class="card-header"><span class="card-title" data-langId="bill-card-title">Recent Invoices</span></div>
             <div class="tbl-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th>Invoice #</th>
-                    <th>Patient</th>
-                    <th>Date</th>
-                    <th>Amount (EGP)</th>
-                    <th>Insurance</th>
-                    <th>Status</th>
+                    <th data-langId="lbl-claim-number">Invoice #</th>
+                    <th data-langId="lbl-patient">Patient</th>
+                    <th data-langId="lbl-date">Date</th>
+                    <th data-langId="lbl-amount">Amount (EGP)</th>
+                    <th data-langId="lbl-insurance">Insurance</th>
+                    <th data-langId="lbl-status">Status</th>
                   </tr>
                 </thead>
                 <tbody id="bill-tbody"></tbody>
@@ -460,14 +458,14 @@
         <!-- REPORTS / SETTINGS -->
         <div class="page" id="page-reports">
           <div class="ph">
-            <div class="ph-title" id="rep-title">Reports</div>
+            <div class="ph-title" data-langId="rep-title">Reports</div>
           </div>
           <div class="card" style="padding:50px;text-align:center;color:var(--muted);font-size:15px">Reports module —
             coming soon.</div>
         </div>
         <div class="page" id="page-settings">
           <div class="ph">
-            <div class="ph-title" id="set-title">Settings</div>
+            <div class="ph-title" data-langId="set-title">Settings</div>
           </div>
           <div class="card" style="padding:50px;text-align:center;color:var(--muted);font-size:15px">Settings module —
             coming soon.</div>
@@ -481,42 +479,42 @@
   <div class="modal-bg" id="modal-addCompany">
     <div class="modal">
       <div class="modal-head">
-        <h3 id="m-addco-title">Add Insurance Company</h3><button class="modal-close"
+        <h3 id="m-addco-title" data-langId="m-addco-title">Add Insurance Company</h3><button class="modal-close"
           onclick="closeModal('addCompany')">×</button>
       </div>
       <div class="modal-body">
-        <div class="form-grid-2">
-          <div class="form-row"><label id="m-coname">Company Name</label><input type="text"
+          <div class="form-grid-2">
+          <div class="form-row"><label id="m-coname" data-langId="m-coname">Company Name</label><input type="text"
               placeholder="e.g. Misr Insurance"></div>
-          <div class="form-row"><label id="m-cotype">Type</label><select>
+          <div class="form-row"><label data-langId="lbl-type">Type</label><select>
               <option>National</option>
               <option>Private</option>
               <option>International</option>
             </select></div>
         </div>
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-costart">Contract Start</label><input type="date"></div>
-          <div class="form-row"><label id="m-coend">Contract End</label><input type="date"></div>
+          <div class="form-row"><label id="m-costart" data-langId="m-costart">Contract Start</label><input type="date"></div>
+          <div class="form-row"><label id="m-coend" data-langId="m-coend">Contract End</label><input type="date"></div>
         </div>
-        <div class="form-row"><label id="m-colimit">Coverage Limit (EGP)</label><input type="number"
+        <div class="form-row"><label id="m-colimit" data-langId="m-colimit">Coverage Limit (EGP)</label><input type="number"
             placeholder="500000"></div>
-        <div class="form-row"><label id="m-cocontact">Contact Person</label><input type="text"
+        <div class="form-row"><label id="m-cocontact" data-langId="m-cocontact">Contact Person</label><input type="text"
             placeholder="Name &amp; phone"></div>
       </div>
       <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addCompany')"
-          id="m-cancel">Cancel</button><button class="btn-primary btn-sm" id="m-save">Save Company</button></div>
+          id="m-cancel" data-langId="m-cancel">Cancel</button><button class="btn-primary btn-sm" id="m-save" data-langId="m-save">Save Company</button></div>
     </div>
   </div>
 
   <div class="modal-bg" id="modal-addClaim">
     <div class="modal">
       <div class="modal-head">
-        <h3 id="m-addcl-title">New Claim</h3><button class="modal-close" onclick="closeModal('addClaim')">×</button>
+        <h3 id="m-addcl-title" data-langId="m-addcl-title">New Claim</h3><button class="modal-close" onclick="closeModal('addClaim')">×</button>
       </div>
       <div class="modal-body">
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-clpat">Patient</label><input type="text" placeholder="Patient name"></div>
-          <div class="form-row"><label id="m-clins">Insurance Company</label><select>
+          <div class="form-row"><label id="m-clpat" data-langId="m-clpat">Patient</label><input type="text" placeholder="Patient name"></div>
+          <div class="form-row"><label id="m-clins" data-langId="m-clins">Insurance Company</label><select>
               <option>Misr Insurance</option>
               <option>AXA Egypt</option>
               <option>MetLife Egypt</option>
@@ -524,41 +522,41 @@
             </select></div>
         </div>
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-clamt">Amount (EGP)</label><input type="number" placeholder="0"></div>
-          <div class="form-row"><label id="m-cldate">Service Date</label><input type="date"></div>
+          <div class="form-row"><label id="m-clamt" data-langId="m-clamt">Amount (EGP)</label><input type="number" placeholder="0"></div>
+          <div class="form-row"><label id="m-cldate" data-langId="m-cldate">Service Date</label><input type="date"></div>
         </div>
-        <div class="form-row"><label id="m-clnotes">Notes</label><input type="text"
+        <div class="form-row"><label id="m-clnotes" data-langId="m-clnotes">Notes</label><input type="text"
             placeholder="Diagnosis / procedure..."></div>
       </div>
       <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addClaim')"
-          id="m-cancel2">Cancel</button><button class="btn-primary btn-sm" id="m-save2">Submit Claim</button></div>
+          id="m-cancel2" data-langId="m-cancel2">Cancel</button><button class="btn-primary btn-sm" id="m-save2" data-langId="m-save2">Submit Claim</button></div>
     </div>
   </div>
 
   <div class="modal-bg" id="modal-addPatient">
     <div class="modal">
       <div class="modal-head">
-        <h3 id="m-addpat-title">New Patient</h3><button class="modal-close"
+        <h3 id="m-addpat-title" data-langId="m-addpat-title">New Patient</h3><button class="modal-close"
           onclick="closeModal('addPatient')">×</button>
       </div>
       <div class="modal-body">
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-patname">Name</label><input type="text" id="inp-patname"
+          <div class="form-row"><label id="m-patname" data-langId="m-patname">Name</label><input type="text" id="inp-patname"
               placeholder="Patient Name"></div>
-          <div class="form-row"><label id="m-patage">Age</label><input type="number" id="inp-patage" placeholder="Age">
+          <div class="form-row"><label id="m-patage" data-langId="m-patage">Age</label><input type="number" id="inp-patage" placeholder="Age">
           </div>
         </div>
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-patphone">Phone Number</label><input type="tel" id="inp-patphone"
+          <div class="form-row"><label id="m-patphone" data-langId="m-patphone">Phone Number</label><input type="tel" id="inp-patphone"
               placeholder="01X-XXXX-XXXX"></div>
-          <div class="form-row"><label id="m-patwa">Whatsapp Number</label><input type="tel" id="inp-patwa"
+          <div class="form-row"><label id="m-patwa" data-langId="m-patwa">Whatsapp Number</label><input type="tel" id="inp-patwa"
               placeholder="01X-XXXX-XXXX"></div>
         </div>
-        <div class="form-row"><label id="m-patnid">National ID</label><input type="text" id="inp-patnid"
+        <div class="form-row"><label id="m-patnid" data-langId="m-patnid">National ID</label><input type="text" id="inp-patnid"
             placeholder="14-digit National ID"></div>
         <div class="form-grid-2">
           <div class="form-row">
-            <label id="m-patins">Insurance Company</label>
+            <label id="m-patins" data-langId="m-patins">Insurance Company</label>
             <select id="inp-patins">
               <option>None</option>
               <option>Misr Insurance</option>
@@ -568,7 +566,7 @@
             </select>
           </div>
           <div class="form-row">
-            <label id="m-patins2">Secondary Insurance</label>
+            <label id="m-patins2" data-langId="m-patins2">Secondary Insurance</label>
             <select id="inp-patins2">
               <option>None</option>
               <option>Misr Insurance</option>
@@ -579,7 +577,7 @@
           </div>
         </div>
         <div class="form-row">
-          <label id="m-patdoc">Doctor</label>
+          <label id="m-patdoc" data-langId="m-patdoc">Doctor</label>
           <select id="inp-patdoc">
             <option>Dr. Nour</option>
             <option>Dr. Mostafa</option>
@@ -588,7 +586,7 @@
         </div>
       </div>
       <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addPatient')"
-          id="m-cancel3">Cancel</button><button class="btn-primary btn-sm" id="m-save3" onclick="savePatient()">Save
+          id="m-cancel3" data-langId="m-cancel3">Cancel</button><button class="btn-primary btn-sm" id="m-save3" data-langId="m-save3" onclick="savePatient()">Save
           Patient</button></div>
     </div>
   </div>
@@ -596,25 +594,25 @@
   <div class="modal-bg" id="modal-editPatient">
     <div class="modal">
       <div class="modal-head">
-        <h3 id="m-editpat-title">Patient Details</h3>
+        <h3 id="m-editpat-title" data-langId="m-editpat-title">Patient Details</h3>
         <button class="modal-close" onclick="closeModal('editPatient')">×</button>
       </div>
       <div class="modal-body">
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-epatname">Name</label><input type="text" id="edit-patname" disabled></div>
-          <div class="form-row"><label id="m-epatage">Age</label><input type="number" id="edit-patage" disabled></div>
+          <div class="form-row"><label id="m-epatname" data-langId="m-epatname">Name</label><input type="text" id="edit-patname" disabled></div>
+          <div class="form-row"><label id="m-epatage" data-langId="m-epatage">Age</label><input type="number" id="edit-patage" disabled></div>
         </div>
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-epatphone">Phone Number</label><input type="tel" id="edit-patphone"
+          <div class="form-row"><label id="m-epatphone" data-langId="m-epatphone">Phone Number</label><input type="tel" id="edit-patphone"
               disabled></div>
-          <div class="form-row"><label id="m-epatwa">Whatsapp Number</label><input type="tel" id="edit-patwa" disabled>
+          <div class="form-row"><label id="m-epatwa" data-langId="m-epatwa">Whatsapp Number</label><input type="tel" id="edit-patwa" disabled>
           </div>
         </div>
-        <div class="form-row"><label id="m-epatnid">National ID</label><input type="text" id="edit-patnid" disabled>
+        <div class="form-row"><label id="m-epatnid" data-langId="m-epatnid">National ID</label><input type="text" id="edit-patnid" disabled>
         </div>
         <div class="form-grid-2">
           <div class="form-row">
-            <label id="m-epatins">Insurance Company</label>
+            <label id="m-epatins" data-langId="m-epatins">Insurance Company</label>
             <select id="edit-patins" disabled>
               <option>None</option>
               <option>Misr Insurance</option>
@@ -624,7 +622,7 @@
             </select>
           </div>
           <div class="form-row">
-            <label id="m-epatins2">Secondary Insurance</label>
+            <label id="m-epatins2" data-langId="m-epatins2">Secondary Insurance</label>
             <select id="edit-patins2" disabled>
               <option>None</option>
               <option>Misr Insurance</option>
@@ -635,7 +633,7 @@
           </div>
         </div>
         <div class="form-row">
-          <label id="m-epatdoc">Doctor</label>
+          <label id="m-epatdoc" data-langId="m-epatdoc">Doctor</label>
           <select id="edit-patdoc" disabled>
             <option>Dr. Nour</option>
             <option>Dr. Mostafa</option>
@@ -645,10 +643,10 @@
       </div>
       <div class="modal-footer" style="justify-content: space-between;">
         <button class="btn-outline" style="color:#C62828;border-color:#C62828" onclick="deletePatient()"
-          id="m-edel">Delete Patient</button>
+          id="m-edel" data-langId="m-edel">Delete Patient</button>
         <div style="display:flex;gap:10px">
-          <button class="btn-outline" onclick="toggleEditPatient()" id="m-eedit">Edit</button>
-          <button class="btn-primary btn-sm" id="m-esave" onclick="updatePatient()" style="display:none">Save
+          <button class="btn-outline" onclick="toggleEditPatient()" id="m-eedit" data-langId="m-eedit">Edit</button>
+          <button class="btn-primary btn-sm" id="m-esave" data-langId="m-esave" onclick="updatePatient()" style="display:none">Save
             Changes</button>
         </div>
       </div>

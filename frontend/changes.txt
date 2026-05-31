@@ -1,3 +1,5 @@
 - fixed insurance totally broken dashboard
     - incorrect ids causing counters to turn into text
 - added dynamic badges and number counters
+- fixed translations logic
+- improved translations
