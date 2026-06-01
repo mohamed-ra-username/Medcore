@@ -6,14 +6,15 @@ file_name = "data.json"
 file = pathlib.Path(__file__).parent/file_name
 
 # initizalize variables to avoid NameError when using partial before assignment
-users = appointments = companies = phones = invoices = claimsData = approvalsData = homePatients = dict()
-
+users = appointments = companies = phones = invoices = claimsData = approvalsData = homePatients = []
 
 def load_data():
-    with open(file, "r", encoding="utf-8") as f:
-        for k, v in json.load(f).items():
-            globals()[k] = v
-
+    try:
+        with open(file, "r", encoding="utf-8") as f:
+            for k, v in json.load(f).items():
+                globals()[k] = v
+    except FileNotFoundError:
+        print("Data file not found.")
 
 def save_data():
     data = {
@@ -29,6 +30,8 @@ def save_data():
 
     with open(file, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
+
+load_data()
 
 # now use some_key directly (but avoid this)
 # users = ("User-1", "User-2")

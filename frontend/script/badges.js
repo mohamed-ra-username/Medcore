@@ -19,7 +19,6 @@ async function updateAllDashboards() {
   if (document.getElementById("c-approved-val")) document.getElementById("c-approved-val").textContent = stats.claims.approved;
   if (document.getElementById("c-rejected-val")) document.getElementById("c-rejected-val").textContent = stats.claims.rejected;
   if (document.getElementById("c-amount-val")) document.getElementById("c-amount-val").textContent = stats.claims.total_amount.toLocaleString();
-  if (document.getElementById("claims-total-sum")) document.getElementById("claims-total-sum").textContent = stats.claims.total_amount.toLocaleString();
 
   // Billing Page
   if (document.getElementById("bill-total-revenue")) document.getElementById("bill-total-revenue").textContent = stats.billing.total.toLocaleString();

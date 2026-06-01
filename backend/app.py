@@ -14,7 +14,11 @@ CORS(app)
 
 @app.route("/")
 def main_page():
-    return "hello world"
+    return """hello world
+    <br>
+    This is the main page of the Medcore API. You can access the API endpoints at <a href="/api/">/api/</a>.
+    <br>
+    <a href="/interface/">Go to interface</a>""",200
 
 # print("Registered Endpoints:")
 # for rule in app.url_map.iter_rules():

@@ -1,21 +1,19 @@
-from collections.abc import Mapping
 from functools import partial
 from typing import Any
 
-from ..data_handler import *
 from ..enums import status
+from ..data_handler import *
 
 UNKNOWN = object()
 
-
-def _get_one_or_none(something: Mapping, id: slice | int | None):
+def _get_one_or_none(something: list, id: slice | int):
     try:
         return something[id]
     except KeyError, IndexError, TypeError:
         return None
 
 
-def _get_one_or_all(something: Mapping, id: slice | int | None):
+def _get_one_or_all(something: list, id: slice | int):
     try:
         return something[id]
     except KeyError, IndexError, TypeError:

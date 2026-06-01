@@ -122,6 +122,12 @@ function filterCompanies(f, btn) {
   renderCompanies();
 }
 
+function showTotal(list){
+  const total_elemnt = document.getElementById("claims-total-sum");
+  const sum = list.map(c => c.amount).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  total_elemnt.textContent = sum.toLocaleString();
+}
+
 async function renderClaims() {
   const tb = document.getElementById("claims-tbody");
   claimsData = await GetDataFromBackend("/claims/");
@@ -130,8 +136,9 @@ async function renderClaims() {
     return;
   }
   const list = claimFilter === "all" ? claimsData : claimsData.filter(c => c.status === claimFilter);
+  showTotal(list);
   if (tb === null) return;
-  
+      
   tb.innerHTML = list.map((c, i) => `<tr>
     <td style="font-weight:700;color:var(--blue)">${c.id}</td>
     <td><div class="td-name"><div class="mini-avatar">${initials(c.patient)}</div>${c.patient}</div></td>
@@ -353,15 +360,11 @@ async function renderBilling() {
   
   tb.innerHTML = invoices.map(v => `<tr>
     <td style="font-weight:700;color:var(--blue)">${v.id}</td><td>${v.patient}</td>
-    <td style="color:var(--muted)">${v.date}</td><td style="font-weight:600">${v.amount}</td>
+    <td style="color:var(--muted)">${v.date}</td><td style="font-weight:600">${v.amount.toLocaleString()}</td>
     <td style="color:var(--muted)">${v.ins}</td>
     <td><span class="chip chip-${v.status}">${chip(v.status)}</span></td>
   </tr>`).join("");
-
-  const total = invoices.reduce((sum, v) => sum + parseAmount(v.amount), 0);
-  if (document.getElementById("bill-total-sum")) {
-    document.getElementById("bill-total-sum").textContent = total.toLocaleString();
-  }
+  
 }
 
 function openModal(id) { document.getElementById("modal-" + id).classList.add("show"); }
