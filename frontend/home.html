@@ -7,7 +7,7 @@
   <title>Medcore - Clinic Management</title>
   <link rel="stylesheet" href="./css/layout.css">
 
-  <script src="script/badges.js"></script>
+  <!-- <script src="script/badges.js"></script> -->
   <script src="script/translation_table.js"></script>
   <script src="script/translations.js"></script>
   <script src="script/script.js"></script>
@@ -306,8 +306,14 @@
                   </tr>
                 </thead>
                 <tbody id="claims-tbody"></tbody>
-              </table>
-            </div>
+                <tfoot id="claims-tfoot">
+                  <tr class="table-footer">
+                    <td colspan="3" data-langId="total">Total</td>
+                    <td id="claims-total-sum">0</td>
+                    <td colspan="3"></td>
+                  </tr>
+                </tfoot>
+                </table>            </div>
           </div>
         </div>
 
@@ -416,22 +422,22 @@
           <div class="stats-grid">
             <div class="stat-card">
               <div class="stat-lbl" data-langId="bill-s1">Total Revenue</div>
-              <div class="stat-val">84,200</div>
+              <div class="stat-val" id="bill-total-revenue">0</div>
               <div class="stat-trend up">↑ 8% this week</div>
             </div>
             <div class="stat-card">
               <div class="stat-lbl" data-langId="bill-s2">Collected</div>
-              <div class="stat-val">71,600</div>
+              <div class="stat-val" id="bill-collected">0</div>
               <div class="stat-trend up">85% rate</div>
             </div>
             <div class="stat-card">
               <div class="stat-lbl" data-langId="bill-s3">Insurance Due</div>
-              <div class="stat-val">42,800</div>
+              <div class="stat-val" id="bill-ins-due">0</div>
               <div class="stat-trend warn">Awaiting</div>
             </div>
             <div class="stat-card">
               <div class="stat-lbl" data-langId="bill-s4">Overdue</div>
-              <div class="stat-val">6,400</div>
+              <div class="stat-val" id="bill-overdue">0</div>
               <div class="stat-trend warn">3 invoices</div>
             </div>
           </div>

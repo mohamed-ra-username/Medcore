@@ -18,11 +18,44 @@ const api = {
 
 window.onload = () => {
   applyLang();
-  // Protected from throwing ReferenceError if these functions aren't loaded yet from another file
-  if (typeof display_sidebar_badges === "function") display_sidebar_badges();
-  if (typeof display_dashboard === "function") display_dashboard();
+  updateAllDashboards();
   renderHome();
 };
+
+async function updateAllDashboards() {
+  const stats = await GetDataFromBackend("/stats/");
+  if (!stats) return;
+
+  // Home Dashboard
+  if (document.getElementById("stat-patients")) document.getElementById("stat-patients").textContent = stats.home.patients.toLocaleString();
+  if (document.getElementById("stat-appts")) document.getElementById("stat-appts").textContent = stats.home.appts.toLocaleString();
+  if (document.getElementById("stat-claims")) document.getElementById("stat-claims").textContent = stats.home.claims.toLocaleString();
+  if (document.getElementById("stat-revenue")) document.getElementById("stat-revenue").textContent = stats.home.revenue.toLocaleString();
+
+  // Insurance Page
+  if (document.getElementById("sb-total-val")) document.getElementById("sb-total-val").textContent = stats.insurance.total;
+  if (document.getElementById("sb-active-val")) document.getElementById("sb-active-val").textContent = stats.insurance.active;
+  if (document.getElementById("sb-expiring-val")) document.getElementById("sb-expiring-val").textContent = stats.insurance.expiring;
+  if (document.getElementById("sb-claims-total-val")) document.getElementById("sb-claims-total-val").textContent = stats.insurance.claims;
+
+  // Claims Page
+  if (document.getElementById("c-pending-val")) document.getElementById("c-pending-val").textContent = stats.claims.pending;
+  if (document.getElementById("c-approved-val")) document.getElementById("c-approved-val").textContent = stats.claims.approved;
+  if (document.getElementById("c-rejected-val")) document.getElementById("c-rejected-val").textContent = stats.claims.rejected;
+  if (document.getElementById("c-amount-val")) document.getElementById("c-amount-val").textContent = stats.claims.total_amount.toLocaleString();
+
+  // Billing Page
+  if (document.getElementById("bill-total-revenue")) document.getElementById("bill-total-revenue").textContent = stats.billing.total.toLocaleString();
+  if (document.getElementById("bill-collected")) document.getElementById("bill-collected").textContent = stats.billing.collected.toLocaleString();
+  if (document.getElementById("bill-ins-due")) document.getElementById("bill-ins-due").textContent = stats.billing.ins_due.toLocaleString();
+  if (document.getElementById("bill-overdue")) document.getElementById("bill-overdue").textContent = stats.billing.overdue.toLocaleString();
+
+  // Sidebar Badges
+  update_badge("patients-badge", stats.home.patients);
+  update_badge("appointments-badge", stats.home.appts);
+  update_badge("claims-badge", stats.claims.pending);
+  update_badge("approvals-badge", stats.claims.pending); 
+}
 
 let lang = localStorage.getItem("lang");
 if (lang === null) {
@@ -73,7 +106,6 @@ function goPage(id, btn) {
 }
 
 function initials(name) { return name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase(); }
-// FIX: switched bitwise OR (|) to logical OR (||) for boolean safety
 function isValid(variable) { return !(variable === null || variable === undefined); }
 
 async function renderHome() {
@@ -90,28 +122,6 @@ async function renderHome() {
     <td style="color:var(--muted)">${p.ins}</td><td style="color:var(--muted)">${p.date}</td>
     <td><span class="chip chip-${p.status}">${chip(p.status)}</span></td>
   </tr>`).join("");
-  renderDashboardStats();
-}
-
-function renderDashboardStats() {
-  const elPatients = document.getElementById("stat-patients");
-  const elAppts = document.getElementById("stat-appts");
-  const elClaims = document.getElementById("stat-claims");
-  const elRevenue = document.getElementById("stat-revenue");
-
-  // FIX: Protected this block so it doesn't crash if 'counters' hasn't loaded yet
-  if (typeof counters !== 'undefined') {
-    if (elPatients) elPatients.textContent = counters.patients.total.toLocaleString();
-    if (elAppts) elAppts.textContent = counters.appointments.todays.toLocaleString();
-    if (elClaims) elClaims.textContent = counters.claims.pending.toLocaleString();
-    if (elRevenue) elRevenue.textContent = counters.money.revenue.toLocaleString();
-  } else {
-    // Fallback if counters aren't available yet
-    if (elPatients) elPatients.textContent = homePatients ? homePatients.length.toLocaleString() : "0";
-    if (elAppts) elAppts.textContent = appts ? appts.length.toLocaleString() : "0";
-    if (elClaims) elClaims.textContent = claimsData ? claimsData.filter(c => c.status === "pending").length : "0";
-    if (elRevenue) elRevenue.textContent = "84,200"; 
-  }
 }
 
 async function renderCompanies() {
@@ -155,7 +165,6 @@ async function renderClaims() {
   const list = claimFilter === "all" ? claimsData : claimsData.filter(c => c.status === claimFilter);
   if (tb === null) return;
   
-  // NOTE: Assuming "reject" is added to translations or relies on fallback.
   tb.innerHTML = list.map((c, i) => `<tr>
     <td style="font-weight:700;color:var(--blue)">${c.id}</td>
     <td><div class="td-name"><div class="mini-avatar">${initials(c.patient)}</div>${c.patient}</div></td>
@@ -173,11 +182,7 @@ function closeClaim(i, decision) {
   const gi = claimsData.indexOf(item);
   if (gi >= 0) claimsData[gi].status = decision;
   
-  const pending = claimsData.filter(c => c.status === "pending").length;
-  document.getElementById("claims-badge").textContent = pending;
-  document.getElementById("c-pending-val").textContent = pending;
-  document.getElementById("c-approved-val").textContent = claimsData.filter(c => c.status === "approved").length;
-  document.getElementById("c-rejected-val").textContent = claimsData.filter(c => c.status === "rejected").length;
+  updateAllDashboards();
   renderClaims();
 }
 
@@ -202,7 +207,6 @@ async function renderApprovals() {
   if (ap_badge === null) return;
   ap_badge.textContent = pending.length || "0";
   
-  // FIX: Stitched together using the single-word dictionary keys
   if (!pending.length) { 
     tb.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">✓ ${t("no")} ${t("pending")} ${t("approvals")}</td></tr>`; 
     return; 
@@ -241,7 +245,6 @@ async function renderPatients() {
   }
   if (tb === null) return;
   
-  // FIX: Added (phones && phones[i]) to ensure we don't crash if phones API failed to fetch
   tb.innerHTML = homePatients.map((p, i) => `<tr onclick="viewPatient(${i})" class="clickable-row">
     <td><div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div></td>
     <td>${p.age}</td><td style="color:var(--muted)">${p.phone || (phones && phones[i]) || "010-0000-0000"}</td>
@@ -261,7 +264,6 @@ function savePatient() {
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const dateStr = `${months[today.getMonth()]} ${today.getDate()}`;
 
-  // FIX: Ensure homePatients exists before pushing to it
   if (!homePatients) homePatients = [];
 
   homePatients.unshift({
@@ -279,6 +281,7 @@ function savePatient() {
 
   renderHome();
   renderPatients();
+  updateAllDashboards();
 
   document.getElementById("inp-patname").value = "";
   document.getElementById("inp-patage").value = "";
@@ -340,6 +343,7 @@ function updatePatient() {
 
   renderHome();
   renderPatients();
+  updateAllDashboards();
   closeModal('editPatient');
 }
 
@@ -349,6 +353,7 @@ function deletePatient() {
     homePatients.splice(currentPatientIndex, 1);
     renderHome();
     renderPatients();
+    updateAllDashboards();
     closeModal('editPatient');
   }
 }
@@ -385,10 +390,14 @@ async function renderBilling() {
     <td style="color:var(--muted)">${v.ins}</td>
     <td><span class="chip chip-${v.status}">${chip(v.status)}</span></td>
   </tr>`).join("");
+
+  const total = invoices.reduce((sum, v) => sum + parseAmount(v.amount), 0);
+  if (document.getElementById("bill-total-sum")) {
+    document.getElementById("bill-total-sum").textContent = total.toLocaleString();
+  }
 }
 
 function openModal(id) { document.getElementById("modal-" + id).classList.add("show"); }
 function closeModal(id) { document.getElementById("modal-" + id).classList.remove("show"); }
 document.querySelectorAll(".modal-bg").forEach(m => m.addEventListener("click", e => { if (e.target === m) m.classList.remove("show"); }));
-
-// NOTE: applyLang is already called in window.onload at the top.
+); }));

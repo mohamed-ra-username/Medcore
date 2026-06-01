@@ -51,3 +51,39 @@ def get_users(id=UNKNOWN):
 
 def get_homePatients(id=UNKNOWN):
     return _get_one_or_all(homePatients, id)
+
+
+def get_stats():
+    # Helper to clean currency strings like "3,200"
+    def clean_val(v):
+        if isinstance(v, str):
+            return int(v.replace(",", ""))
+        return int(v)
+
+    stats = {
+        "home": {
+            "patients": len(homePatients),
+            "appts": len([a for a in appointments if a['status'] != 'done']),
+            "claims": len([c for c in claimsData if c['status'] == 'pending']),
+            "revenue": sum(clean_val(c['amount']) for c in claimsData if c['status'] == 'approved')
+        },
+        "insurance": {
+            "total": len(companies),
+            "active": len([c for c in companies if c['status'] == 'active']),
+            "expiring": len([c for c in companies if c['status'] == 'expiring']),
+            "claims": sum(c['claims'] for c in companies)
+        },
+        "claims": {
+            "pending": len([c for c in claimsData if c['status'] == 'pending']),
+            "approved": len([c for c in claimsData if c['status'] == 'approved']),
+            "rejected": len([c for c in claimsData if c['status'] == 'rejected']),
+            "total_amount": sum(clean_val(c['amount']) for c in claimsData)
+        },
+        "billing": {
+            "total": sum(clean_val(v['amount']) for v in invoices),
+            "collected": sum(clean_val(v['amount']) for v in invoices if v['status'] == 'done'),
+            "ins_due": sum(clean_val(v['amount']) for v in invoices if v['status'] == 'pending'),
+            "overdue": sum(clean_val(v['amount']) for v in invoices if v['status'] == 'rejected')
+        }
+    }
+    return stats

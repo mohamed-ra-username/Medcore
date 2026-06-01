@@ -55,3 +55,8 @@ def get_companies(id: int | None = None):
 @api_bp.route("/homePatients/<int:id>/")
 def get_homePatients(id: int | None = None):
     return flask.jsonify(handler.get_homePatients(id))
+
+
+@api_bp.route("/stats/")
+def get_stats():
+    return flask.jsonify(handler.get_stats())
