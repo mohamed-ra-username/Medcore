@@ -1,5 +1,11 @@
-- fixed insurance totally broken dashboard
-    - incorrect ids causing counters to turn into text
-- added dynamic badges and number counters
-- fixed translations logic
-- improved translations
+- Fixed backend syntax error in exception handling for Python 3 compatibility.
+- Implemented "Data Promise" pattern in frontend to eliminate race conditions and 'not fetched' warnings.
+- Centralized data fetching in update_data.js with automatic 5-minute background refreshes.
+- Expanded Backend API to include 30+ CRUD endpoints (POST, PUT, DELETE) for all data entities.
+- Implemented full data persistence using JSON-based storage (data.json).
+- Added functional search/filtering for Patients and Claims pages.
+- Modularized backend logic into get/post/put/delete_functions.py files.
+- Refactored script.js to utilize async/await with centralized global data loaded via Promise.
+- Fixed RTL (Arabic) UI layout issues, sidebar highlights, and badge alignments.
+- Removed redundant badges.js script and consolidated dashboard update logic.
+- Updated requirements.txt with exact dependency versions for environment stability.

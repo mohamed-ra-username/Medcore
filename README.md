@@ -9,7 +9,7 @@
 ![GitHub language count](https://img.shields.io/github/languages/count/mohamed-ra-username/Medcore)
 ![GitHub top language](https://img.shields.io/github/languages/top/mohamed-ra-username/Medcore?color=yellow)
 
-_مشروع تخرج [فريق الاحلام](#-team) <sub><small>(حلمهم يتخرجوا)</small>_</sub>
+_مشروع تخرج [فريق الاحلام](#team) <sub><small>(حلمهم يتخرجوا)</small>_</sub>
 
 A final-year graduation project focused on **reducing unnecessary manual work in clinics**. This project was developed as part of the requirements for the degree of `Computer Science` at **Akhbar-El-Youm**[^College].
 [^College]:[_اخبار اليوم_](https://www.facebook.com/AkhbarelyomAcademy/) هى اكادمية فى 6 اكتوبر
@@ -24,72 +24,103 @@ A final-year graduation project focused on **reducing unnecessary manual work in
 
 ## 📖 Table of Contents
 
-1. [Project Overview](#-project-overview)
-2. [Key Features](#-key-features)
-3. [Tech Stack](#-tech-stack)
-4. [Architecture & Design](#-architecture--design)
-5. [Milestones](#-milestones)
-6. [Getting Started](#-getting-started)
-7. [Documentation & Reports](#-documentation--reports)
-8. [Team](#-team)
+1. [Project Overview](#project-overview)
+2. [Key Features](#key-features)
+3. [Tech Stack](#tech-stack)
+4. [Architecture & Design](#architecture--design)
+5. [Modular Structure](#modular-structure)
+6. [Milestones](#milestones)
+7. [Getting Started](#getting-started)
+8. [Documentation & Reports](#documentation--reports)
+9. [Team](#team)
 
 ---
 
 ## ⚡ Project Overview
 
-The **Medcore** aims to solve the problem of excessive manual labor and time consumption by implementing fully automated system that calculates cost and handles patient management for the clinic. This system enables users to register patients and calculates efficiency. It is designed to be scalable, user-friendly, and accurate.
+The **Medcore** aims to solve the problem of excessive manual labor and time consumption by implementing a fully automated system that calculates costs and handles patient management for clinics.
 
-- **Problem Statement:** [Briefly describe the pain point]
-- **Proposed Solution:** [Briefly describe your approach]
+**Problem Statement:** Clinics often struggle with manual data entry, leading to errors and slow processing times for patients and insurance claims.
+
+**Proposed Solution:** A centralized web-based management system with a robust API that automates data persistence, real-time analytics, and insurance claim tracking.
 
 ---
 
 ## ✨ Key Features
 
-- **Real-time Analytics:** Dashboard displaying [Data].
-- **[Feature 2]:** [Description]
-- **[Feature 3]:** [Description]
-- **User Authentication:** Secure login using [Method].
+**Real-time Analytics Dashboard:** Visual overview of patient counts, appointments, pending claims, and revenue.
+
+**Full CRUD Management:** Create, Read, Update, and Delete capabilities for patients, insurance companies, invoices, and appointments.
+
+**Insurance Claims Tracking:** Specialized module for submitting and reviewing insurance claims and authorizations.
+
+**Multi-language Support:** Full support for English and Arabic (RTL) with dynamic translation switching.
+
+**Automated Data Sync:** Background data synchronization using a Promise-based architecture to ensure a race-condition-free UI.
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Frontend:** html, css, javascript
-- **Backend:** Python flask
-- **Database:** <!> hasn't been decided yet
+**Frontend:** HTML5, CSS3, JavaScript (Vanilla ES6+)
+
+**Backend:** Python 3.10+ (Flask Framework)
+
+**Database:** JSON-based persistence (Scalable to SQLite/SQLAlchemy)
+
+**Networking:** RESTful API with CORS support
 
 ---
 
 ## 🏗 Architecture & Design
 
-_(Include images of your System Architecture, ERD, or Data Flow Diagrams)_
-![Architecture Diagram](path/to/diagram.png)
+The system follows a modular Monolithic architecture with a clear separation between the UI and the Data Access Layer.
 
-The system follows a [e.g., Microservices / Monolithic] architecture to ensure [e.g., modularity].
+**Frontend Logic:** Driven by a centralized "Data Promise" pattern in `update_data.js` to handle asynchronous state management.
+
+**Backend Logic:** Modularized into specific handlers to ensure a clean and maintainable API.
+
+---
+
+## 📂 Modular Structure
+
+The backend has been refactored into a highly modular system for better maintainability:
+
+**get_functions.py:** Handles all data retrieval operations (GET requests).
+
+**post_functions.py:** Handles data creation logic (POST requests).
+
+**put_functions.py:** Handles data update and modification logic (PUT requests).
+
+**delete_functions.py:** Handles data removal operations (DELETE requests).
+
+**data_handler.py:** Manages the core data loading and saving to `data.json`.
 
 ---
 
 ## 📑 Milestones
 
-1. frontend :
+### 1. Frontend
+✅ Responsive HTML/CSS Layout  
+✅ Dynamic JavaScript Rendering  
+✅ Arabic (RTL) Support & Localization  
+✅ Asynchronous Data Sync (Promise Pattern)  
 
-- [ ] html
-- [ ] styles
-- [ ] javascript
-  - [ ] Data Persistence Gap<details> The savePatient and updatePatient functions in script.js only modify the local JavaScript variables. They do not send any data to the backend, so all additions are lost on page refresh. </details>
+### 2. Backend
+✅ Flask API Infrastructure  
+✅ JSON Data Persistence Layer  
+✅ Full CRUD API Endpoints (30+ routes)  
+✅ Modular Function Handlers  
 
-2. backend :
+### 3. Database
+✅ Persistent JSON Storage  
+⬜ SQLite/PostgreSQL Integration (Future Milestone)  
 
-- [ ] database
-  - [x] a python file is our current database... 🥲
-- [x] api
-  - [ ] Missing API Functionality:
-    - [x] GET (retrive)
-    - [ ] POST (create)
-    - [ ] PUT (edit)
-    - [ ] DELETE (remove)
-- [ ] interface
+---
+
+## 🚀 Roadmap
+
+For a detailed list of planned improvements, bug fixes, and upcoming features, please refer to the [TODO.md](TODO.md) file.
 
 ---
 
@@ -97,26 +128,34 @@ The system follows a [e.g., Microservices / Monolithic] architecture to ensure [
 
 Follow these instructions to set up the project locally.
 
-- frontend شغل [start_frontend.bat](start_frontend.bat)
-- backend شغل [start_backend.bat](start_backend.bat)
-- افتح [view.bat](view.bat)
-  - لو مشتغلش معاك شغل [init.bat](init.bat)
+**Backend:** Run [start_backend.bat](start_backend.bat) (Starts Flask on port 5001)
+
+**Frontend:** Run [start_frontend.bat](start_frontend.bat) (Starts HTTP server on port 5000)
+
+**View:** Open [view.bat](view.bat) or navigate to `http://localhost:5000/frontend/pages/home.html`
+
+**Initial Setup:** If dependencies are missing, run [init.bat](init.bat)
 
 ---
 
 ## 📄 Documentation & Reports
 
-- [📖 Final Project Report (PDF)](docs/Final_Report.pdf "report")
-- [📊 Project Presentation Slides](docs/Presentation.pptx "presentation")
-- [💡 Requirement Specification](docs/SRS.pdf "requirements")
+[📖 Final Project Report (PDF)](docs/Final_Report.pdf "report")
+
+[📊 Project Presentation Slides](docs/Presentation.pptx "presentation")
+
+[💡 Requirement Specification](docs/SRS.pdf "requirements")
 
 ---
 
 ## 👥 Team
 
-- **Omar Hamdallah** - Team Leader/Frontend Dev - 010########
-- **Mohamed Ragab Mubarak** - Backend Dev - 010########
-- **Adham Galal** - Frontend Dev - 010########
-- **Supervisor:** د.انجى
+**Omar Hamdallah** - Team Leader/Frontend Dev
+
+**Mohamed Ragab Mubarak** - Fullstack Dev
+
+**Adham Galal** - Frontend Dev
+
+**Supervisor:** د.انجى
 
 ---

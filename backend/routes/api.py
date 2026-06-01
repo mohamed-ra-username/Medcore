@@ -3,8 +3,6 @@ from database import handler
 
 api_bp = flask.Blueprint("api_routes", __name__, url_prefix="/api")
 
-# --- GET ROUTES ---
-
 @api_bp.route("/user/<int:id>/")
 def get_user(id: int):
     return flask.jsonify(handler.get_user(id))
