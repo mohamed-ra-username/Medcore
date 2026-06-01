@@ -91,7 +91,7 @@ For developers looking to dive deeper into the code:
 
 **Omar Hamdallah** - Team Leader/Frontend Dev
 
-**Mohamed Ragab Mubarak** - Backend Dev
+**Mohamed Ragab Mubarak** - Fullstack Dev
 
 **Adham Galal** - Frontend Dev
 
