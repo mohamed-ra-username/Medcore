@@ -1,56 +1,38 @@
-from ..data import *
+from collections.abc import Mapping
+from functools import partial
+from typing import Any
+
+from ..data_handler import *
 from ..enums import status
 
 UNKNOWN = object()
 
 
-def _get_one_or_none(something, id):
+def _get_one_or_none(something: Mapping, id: slice | int | None):
     try:
         return something[id]
     except KeyError, IndexError, TypeError:
         return None
 
 
-def _get_one_or_all(something, id):
+def _get_one_or_all(something: Mapping, id: slice | int | None):
     try:
         return something[id]
     except KeyError, IndexError, TypeError:
         return something
 
 
-def get_invoices(id=UNKNOWN):
-    return _get_one_or_all(invoices, id)
+get_user = partial(_get_one_or_none, users)
+get_users = partial(_get_one_or_all, users)
+get_invoices = partial(_get_one_or_all, invoices)
+get_phones = partial(_get_one_or_all, phones)
+get_appointments = partial(_get_one_or_all, appointments)
+get_companies = partial(_get_one_or_all, companies)
+get_claims = partial(_get_one_or_all, claimsData)
+get_approvals = partial(_get_one_or_all, approvalsData)
 
 
-def get_phones(id=UNKNOWN):
-    return _get_one_or_all(phones, id)
-
-
-def get_appointments(id=UNKNOWN):
-    return _get_one_or_all(appointments, id)
-
-
-def get_companies(id=UNKNOWN):
-    return _get_one_or_all(companies, id)
-
-
-def get_claims(id=UNKNOWN):
-    return _get_one_or_all(claimsData, id)
-
-
-def get_approvals(id=UNKNOWN):
-    return _get_one_or_all(approvalsData, id)
-
-
-def get_user(id=UNKNOWN):
-    return _get_one_or_none(users, id)
-
-
-def get_users(id=UNKNOWN):
-    return _get_one_or_all(users, id)
-
-
-def get_homePatients(id=UNKNOWN):
+def get_homePatients(id: int | slice | Any = UNKNOWN):
     return _get_one_or_all(homePatients, id)
 
 

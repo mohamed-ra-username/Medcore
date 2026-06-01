@@ -1,2 +1,3 @@
+title Medcore View
 start frontend/home.html
-start "browser" "http://localhost:5001/api/users"
+start "browser" "http://localhost:5001/"
