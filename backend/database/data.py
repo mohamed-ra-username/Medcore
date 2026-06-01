@@ -36,15 +36,15 @@ phones = ["010-1234-5678", "012-9876-5432",
 
 invoices = [
     {"id": "INV-1042", "patient": "Ahmed Hassan", "date": "May 4",
-        "amount": "3,200", "ins": "Misr Insurance", "status": status.PENDING},
+        "amount": 3200, "ins": "Misr Insurance", "status": status.PENDING},
     {"id": "INV-1041", "patient": "Sara Khalil", "date": "May 4",
-        "amount": "1,800", "ins": "AXA Egypt", "status": status.DONE},
+        "amount": 1800, "ins": "AXA Egypt", "status": status.DONE},
     {"id": "INV-1040", "patient": "Mohamed Ali", "date": "May 3",
-        "amount": "5,600", "ins": "MetLife Egypt", "status": status.PENDING},
+        "amount": 5600, "ins": "MetLife Egypt", "status": status.PENDING},
     {"id": "INV-1039", "patient": "Laila Omar", "date": "May 3",
-        "amount": "2,100", "ins": "Allianz Egypt", "status": status.DONE},
+        "amount": 2100, "ins": "Allianz Egypt", "status": status.DONE},
     {"id": "INV-1038", "patient": "Youssef", "date": "May 2",
-        "amount": "4,300", "ins": "GlobeMed", "status": status.REJECTED},
+        "amount": 4300, "ins": "GlobeMed", "status": status.REJECTED},
 ]
 claimsData = [
     {"id": "CLM-2405", "patient": "Ahmed Hassan", "ins": "Misr Insurance",

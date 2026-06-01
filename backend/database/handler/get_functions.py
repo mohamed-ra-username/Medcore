@@ -55,18 +55,13 @@ def get_homePatients(id=UNKNOWN):
 
 
 def get_stats():
-    # Helper to clean currency strings like "3,200"
-    def clean_val(v):
-        if isinstance(v, str):
-            return int(v.replace(",", ""))
-        return int(v)
 
     stats = {
         "home": {
             "patients": len([p for p in homePatients if p["status"] == status.ACTIVE]),
             "appts": len([a for a in appointments if a["status"] == status.ACTIVE]),
             "claims": len([c for c in claimsData if c["status"] == status.PENDING]),
-            "revenue": sum(clean_val(c["amount"]) for c in claimsData if c["status"] == status.APPROVED)
+            "revenue": sum((c["amount"]) for c in claimsData if c["status"] == status.APPROVED)
         },
         "insurance": {
             "total": len(companies),
@@ -79,13 +74,13 @@ def get_stats():
             "pending": len([c for c in claimsData if c["status"] == status.PENDING]),
             "approved": len([c for c in claimsData if c["status"] == status.APPROVED]),
             "rejected": len([c for c in claimsData if c["status"] == status.REJECTED]),
-            "total_amount": sum(clean_val(c["amount"]) for c in claimsData)
+            "total_amount": sum((c["amount"]) for c in claimsData)
         },
         "billing": {
-            "total": sum(clean_val(v["amount"]) for v in invoices),
-            "collected": sum(clean_val(v["amount"]) for v in invoices if v["status"] == status.DONE),
-            "ins_due": sum(clean_val(v["amount"]) for v in invoices if v["status"] == status.PENDING),
-            "overdue": sum(clean_val(v["amount"]) for v in invoices if v["status"] == status.REJECTED)
+            "total": sum((v["amount"]) for v in invoices),
+            "collected": sum((v["amount"]) for v in invoices if v["status"] == status.DONE),
+            "ins_due": sum((v["amount"]) for v in invoices if v["status"] == status.PENDING),
+            "overdue": sum((v["amount"]) for v in invoices if v["status"] == status.REJECTED)
         }
     }
     return stats
