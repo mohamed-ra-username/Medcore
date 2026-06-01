@@ -1,4 +1,4 @@
-from ..data_handler import homePatients, claimsData, invoices, companies, appointments, save_data
+from ..data_handler import homePatients, claimsData, invoices, companies, appointments, users, phones, approvalsData, save_data
 
 def add_homePatient(data: dict):
     homePatients.insert(0, data)
@@ -22,5 +22,20 @@ def add_company(data: dict):
 
 def add_appointment(data: dict):
     appointments.insert(0, data)
+    save_data()
+    return {"status": "success", "data": data}
+
+def add_user(data: str):
+    users.insert(0, data)
+    save_data()
+    return {"status": "success", "data": data}
+
+def add_phone(data: str):
+    phones.insert(0, data)
+    save_data()
+    return {"status": "success", "data": data}
+
+def add_approval(data: dict):
+    approvalsData.insert(0, data)
     save_data()
     return {"status": "success", "data": data}
