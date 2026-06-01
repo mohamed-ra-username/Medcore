@@ -1,76 +1,28 @@
-let homePatients, companies, claimsData, approvalsData, phones, appts, invoices;
-
-const api = {
-  protocol: "http://",
-  subdomain: "",
-  domainName: "localhost",
-  port: ":5001",
-  page: "/api",
-
-  URLlink_with_endpoint: function (endpoint) {
-    return this.URLlink + endpoint;
-  },
-
-  get URLlink() {
-    return `${this.protocol}${this.subdomain}${this.domainName}${this.port}${this.page}`;
-  },
-};
-
-async function GetDataFromBackend(endpoint) {
-  const api_link = api.URLlink_with_endpoint(endpoint);
-  console.info("Fetching: ", api_link);
-  try {
-    const response = await fetch(api_link);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.info(`Error fetching data from ${api_link}: ${error} for endpoint ${endpoint}`);
-    return undefined;
-  }
-}
-
-async function auto_update_data() {
-  setTimeout(auto_update_data, 5 * 60 * 1000); // Refresh data every 5 minutes
-  try {
-    [homePatients,
-      companies,
-      claimsData,
-      approvalsData,
-      phones,
-      appts,
-      invoices,
-    ] = await Promise.all([GetDataFromBackend("/homePatients/"),
-    GetDataFromBackend("/companies/"),
-    GetDataFromBackend("/claims/"),
-    GetDataFromBackend("/approvals/"),
-    GetDataFromBackend("/phones/"),
-    GetDataFromBackend("/appointments/"),
-    GetDataFromBackend("/invoices/")]);
-  }
-  catch (error) {
-    console.error("Error fetching data from backend:", error);
-  }
-  console.info("Data updated from backend.");
-}
-console.log("Initial Data Fetch...");
-auto_update_data(); // Initial data fetch on page load
-
 const role = localStorage.getItem("role");
 
 window.onload = () => {
   applyLang();
-  updateAllDashboards();
-  renderHome();
+  setupSearch();
 };
 
+function setupSearch() {
+  const patientSearch = document.getElementById("home-search");
+  if (patientSearch) {
+    patientSearch.addEventListener("input", (e) => {
+      renderHome(e.target.value.toLowerCase());
+    });
+  }
 
+  const claimsSearch = document.getElementById("claims-search");
+  if (claimsSearch) {
+    claimsSearch.addEventListener("input", (e) => {
+      renderClaims(e.target.value.toLowerCase());
+    });
+  }
+}
 
 var lang = localStorage.getItem("lang") ?? "en";
-localStorage.setItem("lang", "en");
-
+localStorage.setItem("lang", lang);
 
 function update_badge(elementId, value) {
   let badge = document.getElementById(elementId);
@@ -79,6 +31,41 @@ function update_badge(elementId, value) {
     return;
   }
   badge.innerHTML = value;
+}
+
+async function updateAllDashboards() {
+  await window.dataLoaded;
+  if (!stats) return;
+
+  // Home Dashboard
+  if (document.getElementById("stat-patients")) document.getElementById("stat-patients").textContent = stats.home.patients.toLocaleString();
+  if (document.getElementById("stat-appts")) document.getElementById("stat-appts").textContent = stats.home.appts.toLocaleString();
+  if (document.getElementById("stat-claims")) document.getElementById("stat-claims").textContent = stats.home.claims.toLocaleString();
+  if (document.getElementById("stat-revenue")) document.getElementById("stat-revenue").textContent = stats.home.revenue.toLocaleString();
+
+  // Insurance Page
+  if (document.getElementById("sb-total-val")) document.getElementById("sb-total-val").textContent = stats.insurance.total;
+  if (document.getElementById("sb-active-val")) document.getElementById("sb-active-val").textContent = stats.insurance.active;
+  if (document.getElementById("sb-expiring-val")) document.getElementById("sb-expiring-val").textContent = stats.insurance.expiring;
+  if (document.getElementById("sb-claims-total-val")) document.getElementById("sb-claims-total-val").textContent = stats.insurance.claims;
+
+  // Claims Page
+  if (document.getElementById("c-pending-val")) document.getElementById("c-pending-val").textContent = stats.claims.pending;
+  if (document.getElementById("c-approved-val")) document.getElementById("c-approved-val").textContent = stats.claims.approved;
+  if (document.getElementById("c-rejected-val")) document.getElementById("c-rejected-val").textContent = stats.claims.rejected;
+  if (document.getElementById("c-amount-val")) document.getElementById("c-amount-val").textContent = stats.claims.total_amount.toLocaleString();
+
+  // Billing Page
+  if (document.getElementById("bill-total-revenue")) document.getElementById("bill-total-revenue").textContent = stats.billing.total.toLocaleString();
+  if (document.getElementById("bill-collected")) document.getElementById("bill-collected").textContent = stats.billing.collected.toLocaleString();
+  if (document.getElementById("bill-ins-due")) document.getElementById("bill-ins-due").textContent = stats.billing.ins_due.toLocaleString();
+  if (document.getElementById("bill-overdue")) document.getElementById("bill-overdue").textContent = stats.billing.overdue.toLocaleString();
+
+  // Sidebar Badges
+  update_badge("patients-badge", stats.home.patients);
+  update_badge("appointments-badge", stats.home.appts);
+  update_badge("claims-badge", stats.claims.pending);
+  update_badge("approvals-badge", stats.insurance.pending); 
 }
 
 
@@ -100,11 +87,9 @@ function goPage(id, btn) {
 function initials(name) { return name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase(); }
 function isValid(variable) { return !(variable === null || variable === undefined); }
 
-async function renderHome() {
+async function renderHome(filter = "") {
+  await window.dataLoaded;
   const tb = document.getElementById("home-tbody");
-  if (!isValid(homePatients)) {
-    homePatients = await GetDataFromBackend("/homePatients/");
-  }
   if (!isValid(homePatients)) {
     console.warn("homePatients has not been fetched");
     return;
@@ -113,10 +98,18 @@ async function renderHome() {
 
   tb.innerHTML = '';
 
-  homePatients.forEach((p, i) => {
+  const list = filter 
+    ? homePatients.filter(p => 
+        p.name.toLowerCase().includes(filter) || 
+        (p.arName && p.arName.toLowerCase().includes(filter))
+      )
+    : homePatients;
+
+  list.forEach((p) => {
+    const originalIndex = homePatients.indexOf(p);
     const tr = document.createElement("tr");
     tr.classList.add("clickable-row");
-    tr.onclick = () => viewPatient(i);
+    tr.onclick = () => viewPatient(originalIndex);
 
     const tdName = document.createElement("td");
     tdName.innerHTML = `<div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div>`;
@@ -147,19 +140,10 @@ async function renderHome() {
 
     tb.appendChild(tr);
   });
-
-  // homePatients.map((p, i) => `<tr onclick="viewPatient(${i})" class="clickable-row">
-  //   <td><div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div></td>
-  //   <td>${p.age}</td><td style="color:var(--muted)">${lang === "ar" ? p.arDoc : p.doctor}</td>
-  //   <td style="color:var(--muted)">${p.ins}</td><td style="color:var(--muted)">${p.date}</td>
-  //   <td><span class="chip chip-${p.status}">${chip(p.status)}</span></td>
-  // </tr>`).join("");
 }
 
 async function renderCompanies() {
-  if (!isValid(companies)) {
-    companies = await GetDataFromBackend("/companies/");
-  }
+  await window.dataLoaded;
   if (!isValid(companies)) {
     console.warn("companies has not been fetched");
     return;
@@ -191,42 +175,53 @@ function filterCompanies(f, btn) {
 
 function showTotal(list) {
   const total_elemnt = document.getElementById("claims-total-sum");
+  if (!total_elemnt) return;
   const sum = list.map(c => c.amount).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   total_elemnt.textContent = sum.toLocaleString();
 }
 
-async function renderClaims() {
+async function renderClaims(filter = "") {
+  await window.dataLoaded;
   const tb = document.getElementById("claims-tbody");
-  if (!isValid(claimsData)) {
-    claimsData = await GetDataFromBackend("/claims/");
-  }
   if (!isValid(claimsData)) {
     console.warn("claimsData has not been fetched");
     return;
   }
-  const list = claimFilter === "all" ? claimsData : claimsData.filter(c => c.status === claimFilter);
+  let list = claimFilter === "all" ? claimsData : claimsData.filter(c => c.status === claimFilter);
+  
+  if (filter) {
+    list = list.filter(c => 
+      c.id.toLowerCase().includes(filter) || 
+      c.patient.toLowerCase().includes(filter) ||
+      c.ins.toLowerCase().includes(filter)
+    );
+  }
+
   showTotal(list);
   if (tb === null) return;
 
-  tb.innerHTML = list.map((c, i) => `<tr>
+  tb.innerHTML = list.map((c) => {
+    const originalIndex = claimsData.indexOf(c);
+    return `<tr>
     <td style="font-weight:700;color:var(--blue)">${c.id}</td>
     <td><div class="td-name"><div class="mini-avatar">${initials(c.patient)}</div>${c.patient}</div></td>
     <td style="color:var(--muted)">${c.ins}</td>
     <td style="font-weight:600">${c.amount.toLocaleString()}</td>
     <td style="color:var(--muted)">${c.date}</td>
     <td><span class="chip chip-${c.status}">${chip(c.status)}</span></td>
-    <td>${c.status === "pending" ? `<div class="act-btns"><button class="act-approve" onclick="closeClaim(${i},'approved')">${t("approve")}</button><button class="act-reject" onclick="closeClaim(${i},'rejected')">${t("reject")}</button></div>` : `<button class="act-view">${t("view")}</button>`}</td>
-  </tr>`).join("");
+    <td>${c.status === "pending" ? `<div class="act-btns"><button class="act-approve" onclick="closeClaim(${originalIndex},'approved')">${t("approve")}</button><button class="act-reject" onclick="closeClaim(${originalIndex},'rejected')">${t("reject")}</button></div>` : `<button class="act-view">${t("view")}</button>`}</td>
+  </tr>`}).join("");
 }
 
-function closeClaim(i, decision) {
-  const list = claimFilter === "all" ? claimsData : claimsData.filter(c => c.status === claimFilter);
-  const item = list[i];
-  const gi = claimsData.indexOf(item);
-  if (gi >= 0) claimsData[gi].status = decision;
-
-  updateAllDashboards();
-  renderClaims();
+async function closeClaim(gi, decision) {
+  if (gi >= 0) {
+    const result = await SendDataToBackend(`/claims/${gi}/status/`, 'PUT', { status: decision });
+    if (result) {
+        claimsData[gi].status = decision;
+        updateAllDashboards();
+        renderClaims();
+    }
+  }
 }
 
 function filterClaims(f, btn) {
@@ -237,23 +232,20 @@ function filterClaims(f, btn) {
 }
 
 async function renderApprovals() {
+  await window.dataLoaded;
   const tb = document.getElementById("approvals-tbody");
-  if (!isValid(approvalsData)) {
-    approvalsData = await GetDataFromBackend("/approvals/");
-  }
   if (!isValid(approvalsData)) {
     console.warn("approvalsData has not been fetched");
     return;
   }
-  approvalRows = approvalsData.map(a => ({ ...a, status: "pending" }));
+  approvalRows = approvalsData.map(a => ({ ...a })); // Clone data
 
-  const pending = approvalRows.filter(a => a.status === "pending");
+  const pending = approvalRows.filter(a => a.status === "pending" || a.status === "active"); // Adjust based on your status enums
   let ap_badge = document.getElementById("approvals-badge");
-  if (ap_badge === null) return;
-  ap_badge.textContent = pending.length || "0";
+  if (ap_badge) ap_badge.textContent = pending.length || "0";
 
   if (!pending.length) {
-    tb.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">✓ ${t("no")} ${t("pending")} ${t("approvals")}</td></tr>`;
+    if (tb) tb.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">✓ ${t("noPending")}</td></tr>`;
     return;
   }
 
@@ -269,43 +261,37 @@ async function renderApprovals() {
 }
 
 function decideApproval(i, decision) {
-  const pending = approvalRows.filter(a => a.status === "pending");
-  pending[i].status = decision;
+  // Logic to update approval status locally
+  const pending = approvalRows.filter(a => a.status === "pending" || a.status === "active");
+  if (pending[i]) pending[i].status = decision;
   renderApprovals();
 }
 
 function approveAll() {
-  approvalRows.forEach(a => { if (a.status === "pending") a.status = "approved"; });
+  approvalRows.forEach(a => { if (a.status === "pending" || a.status === "active") a.status = "approved"; });
   renderApprovals();
 }
 
 async function renderPatients() {
+  await window.dataLoaded;
   const tb = document.getElementById("pat-tbody");
-  if (!isValid(homePatients)) {
-    homePatients = await GetDataFromBackend("/homePatients/");
-  }
-  if (!isValid(phones)) {
-    phones = await GetDataFromBackend("/phones/");
-  }
   if (!isValid(homePatients)) {
     console.warn("homePatients has not been fetched");
     return;
   }
-  if (!isValid(phones)) {
-    console.warn("phones has not been fetched");
-    return;
-  }
   if (tb === null) return;
 
-  tb.innerHTML = homePatients.map((p, i) => `<tr onclick="viewPatient(${i})" class="clickable-row">
+  tb.innerHTML = homePatients.map((p) => {
+    const originalIndex = homePatients.indexOf(p);
+    return `<tr onclick="viewPatient(${originalIndex})" class="clickable-row">
     <td><div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div></td>
-    <td>${p.age}</td><td style="color:var(--muted)">${p.phone || (phones && phones[i]) || "010-0000-0000"}</td>
+    <td>${p.age}</td><td style="color:var(--muted)">${p.phone || (phones && phones[originalIndex]) || "010-0000-0000"}</td>
     <td style="color:var(--muted)">${p.ins}</td><td style="color:var(--muted)">${p.date}</td>
     <td><span class="chip chip-${p.status}">${chip(p.status)}</span></td>
-  </tr>`).join("");
+  </tr>`}).join("");
 }
 
-function savePatient() {
+async function savePatient() {
   const name = document.getElementById("inp-patname").value || "New Patient";
   const age = document.getElementById("inp-patage").value || "0";
   const phone = document.getElementById("inp-patphone").value || "";
@@ -316,9 +302,7 @@ function savePatient() {
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const dateStr = `${months[today.getMonth()]} ${today.getDate()}`;
 
-  if (!homePatients) homePatients = [];
-
-  homePatients.unshift({
+  const newPatient = {
     name: name,
     arName: name,
     init: initials(name),
@@ -329,19 +313,23 @@ function savePatient() {
     date: dateStr,
     status: "active",
     phone: phone
-  });
+  };
 
-  renderHome();
-  renderPatients();
-  updateAllDashboards();
+  const result = await SendDataToBackend("/homePatients/", "POST", newPatient);
+  if (result) {
+    homePatients.unshift(newPatient);
+    renderHome();
+    renderPatients();
+    updateAllDashboards();
 
-  document.getElementById("inp-patname").value = "";
-  document.getElementById("inp-patage").value = "";
-  document.getElementById("inp-patphone").value = "";
-  document.getElementById("inp-patwa").value = "";
-  document.getElementById("inp-patnid").value = "";
+    document.getElementById("inp-patname").value = "";
+    document.getElementById("inp-patage").value = "";
+    document.getElementById("inp-patphone").value = "";
+    document.getElementById("inp-patwa").value = "";
+    document.getElementById("inp-patnid").value = "";
 
-  closeModal('addPatient');
+    closeModal('addPatient');
+  }
 }
 
 let currentPatientIndex = -1;
@@ -377,15 +365,15 @@ function toggleEditPatient() {
   document.getElementById("m-eedit").style.display = "none";
 }
 
-function updatePatient() {
+async function updatePatient() {
   if (currentPatientIndex < 0) return;
-  const p = homePatients[currentPatientIndex];
+  const p = { ...homePatients[currentPatientIndex] };
 
   const newName = document.getElementById("edit-patname").value;
   p.name = newName;
   p.arName = newName;
   p.init = initials(newName);
-  p.age = document.getElementById("edit-patage").value;
+  p.age = parseInt(document.getElementById("edit-patage").value);
   p.phone = document.getElementById("edit-patphone").value;
   p.wa = document.getElementById("edit-patwa").value;
   p.nid = document.getElementById("edit-patnid").value;
@@ -393,16 +381,9 @@ function updatePatient() {
   if (p.ins === "None") p.ins = "-";
   p.doctor = document.getElementById("edit-patdoc").value;
 
-  renderHome();
-  renderPatients();
-  updateAllDashboards();
-  closeModal('editPatient');
-}
-
-function deletePatient() {
-  if (currentPatientIndex < 0) return;
-  if (confirm(lang === "ar" ? "هل أنت متأكد من حذف المريض؟" : "Are you sure you want to delete this patient?")) {
-    homePatients.splice(currentPatientIndex, 1);
+  const result = await SendDataToBackend(`/homePatients/${currentPatientIndex}/`, "PUT", p);
+  if (result) {
+    homePatients[currentPatientIndex] = p;
     renderHome();
     renderPatients();
     updateAllDashboards();
@@ -410,11 +391,23 @@ function deletePatient() {
   }
 }
 
-async function renderAppts() {
-  const tb = document.getElementById("appt-tbody");
-  if (!isValid(appts)) {
-    appts = await GetDataFromBackend("/appointments/");
+async function deletePatient() {
+  if (currentPatientIndex < 0) return;
+  if (confirm(lang === "ar" ? "هل أنت متأكد من حذف المريض؟" : "Are you sure you want to delete this patient?")) {
+    const result = await SendDataToBackend(`/homePatients/${currentPatientIndex}/`, "DELETE");
+    if (result) {
+      homePatients.splice(currentPatientIndex, 1);
+      renderHome();
+      renderPatients();
+      updateAllDashboards();
+      closeModal('editPatient');
+    }
   }
+}
+
+async function renderAppts() {
+  await window.dataLoaded;
+  const tb = document.getElementById("appt-tbody");
   if (!isValid(appts)) {
     console.warn("appts has not been fetched");
     return;
@@ -430,10 +423,8 @@ async function renderAppts() {
 }
 
 async function renderBilling() {
+  await window.dataLoaded;
   const tb = document.getElementById("bill-tbody");
-  if (!isValid(invoices)) {
-    invoices = await GetDataFromBackend("/invoices/");
-  }
   if (!isValid(invoices)) {
     console.warn("invoices has not been fetched");
     return;
@@ -447,12 +438,8 @@ async function renderBilling() {
     <td style="color:var(--muted)">${v.ins}</td>
     <td><span class="chip chip-${v.status}">${chip(v.status)}</span></td>
   </tr>`).join("");
-
-
 }
 
 function openModal(id) { document.getElementById("modal-" + id).classList.add("show"); }
 function closeModal(id) { document.getElementById("modal-" + id).classList.remove("show"); }
 document.querySelectorAll(".modal-bg").forEach(m => m.addEventListener("click", e => { if (e.target === m) m.classList.remove("show"); }));
-;
-;

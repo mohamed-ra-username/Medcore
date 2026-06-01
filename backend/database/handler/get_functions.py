@@ -6,17 +6,17 @@ from ..data_handler import *
 
 UNKNOWN = object()
 
-def _get_one_or_none(something: list, id: slice | int):
+def _get_one_or_none(something: list, id: int|None):
     try:
-        return something[id]
-    except KeyError, IndexError, TypeError:
+        return something[id] # type: ignore
+    except (KeyError, IndexError, TypeError):
         return None
 
 
-def _get_one_or_all(something: list, id: slice | int):
+def _get_one_or_all(something: list, id: slice | int|None):
     try:
         return something[id]
-    except KeyError, IndexError, TypeError:
+    except (KeyError, IndexError, TypeError):
         return something
 
 

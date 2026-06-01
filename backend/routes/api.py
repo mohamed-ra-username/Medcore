@@ -51,10 +51,39 @@ def get_companies(id: int | slice | None = None):
     return flask.jsonify(handler.get_companies(id))
 
 
-@api_bp.route("/homePatients/")
-@api_bp.route("/homePatients/<int:id>/")
-def get_homePatients(id: int | slice | None = None):
-    return flask.jsonify(handler.get_homePatients(id))
+@api_bp.route("/homePatients/", methods=["POST"])
+def add_homePatient():
+    data = flask.request.json
+    handler.homePatients.insert(0, data)
+    handler.save_data()
+    return flask.jsonify({"status": "success", "data": data})
+
+@api_bp.route("/homePatients/<int:id>/", methods=["PUT"])
+def update_homePatient(id: int):
+    data = flask.request.json
+    if 0 <= id < len(handler.homePatients):
+        handler.homePatients[id] = data
+        handler.save_data()
+        return flask.jsonify({"status": "success", "data": data})
+    return flask.jsonify({"status": "error", "message": "Index out of bounds"}), 400
+
+@api_bp.route("/homePatients/<int:id>/", methods=["DELETE"])
+def delete_homePatient(id: int):
+    if 0 <= id < len(handler.homePatients):
+        deleted = handler.homePatients.pop(id)
+        handler.save_data()
+        return flask.jsonify({"status": "success", "data": deleted})
+    return flask.jsonify({"status": "error", "message": "Index out of bounds"}), 400
+
+@api_bp.route("/claims/<int:id>/status/", methods=["PUT"])
+def update_claim_status(id: int):
+    status = flask.request.json.get("status")
+    if 0 <= id < len(handler.claimsData):
+        handler.claimsData[id]["status"] = status
+        handler.save_data()
+        return flask.jsonify({"status": "success"})
+    return flask.jsonify({"status": "error"}), 400
+
 
 
 @api_bp.route("/stats/")
