@@ -1,4 +1,4 @@
-const role = localStorage.getItem("role");
+let homePatients, companies, claimsData, approvalsData, phones, appts, invoices;
 
 const api = {
   protocol: "http://",
@@ -16,31 +16,6 @@ const api = {
   },
 };
 
-window.onload = () => {
-  applyLang();
-  updateAllDashboards();
-  renderHome();
-};
-
-
-
-let lang = localStorage.getItem("lang");
-if (lang === null) {
-  lang = "en";
-  localStorage.setItem("lang", "en");
-}
-
-var companies, claimsData, approvalsData, invoices, phones, homePatients, appts, approvalRows;
-
-function update_badge(elementId, value) {
-  let badge = document.getElementById(elementId);
-  if (!badge) {
-    console.error(`Couldn't get element: ${elementId}`);
-    return;
-  }
-  badge.innerHTML = value;
-}
-
 async function GetDataFromBackend(endpoint) {
   const api_link = api.URLlink_with_endpoint(endpoint);
   console.info("Fetching: ", api_link);
@@ -56,6 +31,56 @@ async function GetDataFromBackend(endpoint) {
     return undefined;
   }
 }
+
+async function auto_update_data() {
+  setTimeout(auto_update_data, 5 * 60 * 1000); // Refresh data every 5 minutes
+  try {
+    [homePatients,
+      companies,
+      claimsData,
+      approvalsData,
+      phones,
+      appts,
+      invoices,
+    ] = await Promise.all([GetDataFromBackend("/homePatients/"),
+    GetDataFromBackend("/companies/"),
+    GetDataFromBackend("/claims/"),
+    GetDataFromBackend("/approvals/"),
+    GetDataFromBackend("/phones/"),
+    GetDataFromBackend("/appointments/"),
+    GetDataFromBackend("/invoices/")]);
+  }
+  catch (error) {
+    console.error("Error fetching data from backend:", error);
+  }
+  console.info("Data updated from backend.");
+}
+console.log("Initial Data Fetch...");
+auto_update_data(); // Initial data fetch on page load
+
+const role = localStorage.getItem("role");
+
+window.onload = () => {
+  applyLang();
+  updateAllDashboards();
+  renderHome();
+};
+
+
+
+var lang = localStorage.getItem("lang") ?? "en";
+localStorage.setItem("lang", "en");
+
+
+function update_badge(elementId, value) {
+  let badge = document.getElementById(elementId);
+  if (!badge) {
+    console.error(`Couldn't get element: ${elementId}`);
+    return;
+  }
+  badge.innerHTML = value;
+}
+
 
 let claimFilter = "all", companyFilter = "all";
 
@@ -77,22 +102,64 @@ function isValid(variable) { return !(variable === null || variable === undefine
 
 async function renderHome() {
   const tb = document.getElementById("home-tbody");
-  homePatients = await GetDataFromBackend("/homePatients/");
+  if (!isValid(homePatients)) {
+    homePatients = await GetDataFromBackend("/homePatients/");
+  }
   if (!isValid(homePatients)) {
     console.warn("homePatients has not been fetched");
     return;
   }
   if (tb === null) return;
-  tb.innerHTML = homePatients.map((p, i) => `<tr onclick="viewPatient(${i})" class="clickable-row">
-    <td><div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div></td>
-    <td>${p.age}</td><td style="color:var(--muted)">${lang === "ar" ? p.arDoc : p.doctor}</td>
-    <td style="color:var(--muted)">${p.ins}</td><td style="color:var(--muted)">${p.date}</td>
-    <td><span class="chip chip-${p.status}">${chip(p.status)}</span></td>
-  </tr>`).join("");
+
+  tb.innerHTML = '';
+
+  homePatients.forEach((p, i) => {
+    const tr = document.createElement("tr");
+    tr.classList.add("clickable-row");
+    tr.onclick = () => viewPatient(i);
+
+    const tdName = document.createElement("td");
+    tdName.innerHTML = `<div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div>`;
+    tr.appendChild(tdName);
+
+    const tdAge = document.createElement("td");
+    tdAge.textContent = p.age;
+    tr.appendChild(tdAge);
+
+    const tdDoctor = document.createElement("td");
+    tdDoctor.style.color = "var(--muted)";
+    tdDoctor.textContent = lang === "ar" ? p.arDoc : p.doctor;
+    tr.appendChild(tdDoctor);
+
+    const tdInsurance = document.createElement("td");
+    tdInsurance.style.color = "var(--muted)";
+    tdInsurance.textContent = p.ins;
+    tr.appendChild(tdInsurance);
+
+    const tdDate = document.createElement("td");
+    tdDate.style.color = "var(--muted)";
+    tdDate.textContent = p.date;
+    tr.appendChild(tdDate);
+
+    const tdStatus = document.createElement("td");
+    tdStatus.innerHTML = `<span class="chip chip-${p.status}">${chip(p.status)}</span>`;
+    tr.appendChild(tdStatus);
+
+    tb.appendChild(tr);
+  });
+
+  // homePatients.map((p, i) => `<tr onclick="viewPatient(${i})" class="clickable-row">
+  //   <td><div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div></td>
+  //   <td>${p.age}</td><td style="color:var(--muted)">${lang === "ar" ? p.arDoc : p.doctor}</td>
+  //   <td style="color:var(--muted)">${p.ins}</td><td style="color:var(--muted)">${p.date}</td>
+  //   <td><span class="chip chip-${p.status}">${chip(p.status)}</span></td>
+  // </tr>`).join("");
 }
 
 async function renderCompanies() {
-  companies = await GetDataFromBackend("/companies/");
+  if (!isValid(companies)) {
+    companies = await GetDataFromBackend("/companies/");
+  }
   if (!isValid(companies)) {
     console.warn("companies has not been fetched");
     return;
@@ -118,11 +185,11 @@ async function renderCompanies() {
 function filterCompanies(f, btn) {
   companyFilter = f;
   document.querySelectorAll("#page-insurance .ftab").forEach(b => b.classList.remove("on"));
-  btn.classList.add("on"); 
+  btn.classList.add("on");
   renderCompanies();
 }
 
-function showTotal(list){
+function showTotal(list) {
   const total_elemnt = document.getElementById("claims-total-sum");
   const sum = list.map(c => c.amount).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   total_elemnt.textContent = sum.toLocaleString();
@@ -130,7 +197,9 @@ function showTotal(list){
 
 async function renderClaims() {
   const tb = document.getElementById("claims-tbody");
-  claimsData = await GetDataFromBackend("/claims/");
+  if (!isValid(claimsData)) {
+    claimsData = await GetDataFromBackend("/claims/");
+  }
   if (!isValid(claimsData)) {
     console.warn("claimsData has not been fetched");
     return;
@@ -138,7 +207,7 @@ async function renderClaims() {
   const list = claimFilter === "all" ? claimsData : claimsData.filter(c => c.status === claimFilter);
   showTotal(list);
   if (tb === null) return;
-      
+
   tb.innerHTML = list.map((c, i) => `<tr>
     <td style="font-weight:700;color:var(--blue)">${c.id}</td>
     <td><div class="td-name"><div class="mini-avatar">${initials(c.patient)}</div>${c.patient}</div></td>
@@ -152,10 +221,10 @@ async function renderClaims() {
 
 function closeClaim(i, decision) {
   const list = claimFilter === "all" ? claimsData : claimsData.filter(c => c.status === claimFilter);
-  const item = list[i]; 
+  const item = list[i];
   const gi = claimsData.indexOf(item);
   if (gi >= 0) claimsData[gi].status = decision;
-  
+
   updateAllDashboards();
   renderClaims();
 }
@@ -163,13 +232,15 @@ function closeClaim(i, decision) {
 function filterClaims(f, btn) {
   claimFilter = f;
   document.querySelectorAll("#claims-filter-tabs .ftab").forEach(b => b.classList.remove("on"));
-  btn.classList.add("on"); 
+  btn.classList.add("on");
   renderClaims();
 }
 
 async function renderApprovals() {
   const tb = document.getElementById("approvals-tbody");
-  approvalsData = await GetDataFromBackend("/approvals/");
+  if (!isValid(approvalsData)) {
+    approvalsData = await GetDataFromBackend("/approvals/");
+  }
   if (!isValid(approvalsData)) {
     console.warn("approvalsData has not been fetched");
     return;
@@ -180,12 +251,12 @@ async function renderApprovals() {
   let ap_badge = document.getElementById("approvals-badge");
   if (ap_badge === null) return;
   ap_badge.textContent = pending.length || "0";
-  
-  if (!pending.length) { 
-    tb.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">✓ ${t("no")} ${t("pending")} ${t("approvals")}</td></tr>`; 
-    return; 
+
+  if (!pending.length) {
+    tb.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">✓ ${t("no")} ${t("pending")} ${t("approvals")}</td></tr>`;
+    return;
   }
-  
+
   if (tb === null) return;
   tb.innerHTML = pending.map((a, i) => `<tr>
     <td style="font-weight:700;color:var(--blue)">${a.ref}</td>
@@ -199,26 +270,33 @@ async function renderApprovals() {
 
 function decideApproval(i, decision) {
   const pending = approvalRows.filter(a => a.status === "pending");
-  pending[i].status = decision; 
+  pending[i].status = decision;
   renderApprovals();
 }
 
-function approveAll() { 
-  approvalRows.forEach(a => { if (a.status === "pending") a.status = "approved"; }); 
-  renderApprovals(); 
+function approveAll() {
+  approvalRows.forEach(a => { if (a.status === "pending") a.status = "approved"; });
+  renderApprovals();
 }
 
 async function renderPatients() {
   const tb = document.getElementById("pat-tbody");
-  phones = await GetDataFromBackend("/phones/");
-  homePatients = await GetDataFromBackend("/homePatients/");
-  
+  if (!isValid(homePatients)) {
+    homePatients = await GetDataFromBackend("/homePatients/");
+  }
+  if (!isValid(phones)) {
+    phones = await GetDataFromBackend("/phones/");
+  }
   if (!isValid(homePatients)) {
     console.warn("homePatients has not been fetched");
     return;
   }
+  if (!isValid(phones)) {
+    console.warn("phones has not been fetched");
+    return;
+  }
   if (tb === null) return;
-  
+
   tb.innerHTML = homePatients.map((p, i) => `<tr onclick="viewPatient(${i})" class="clickable-row">
     <td><div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div></td>
     <td>${p.age}</td><td style="color:var(--muted)">${p.phone || (phones && phones[i]) || "010-0000-0000"}</td>
@@ -242,7 +320,7 @@ function savePatient() {
 
   homePatients.unshift({
     name: name,
-    arName: name, 
+    arName: name,
     init: initials(name),
     age: parseInt(age),
     doctor: doc,
@@ -305,7 +383,7 @@ function updatePatient() {
 
   const newName = document.getElementById("edit-patname").value;
   p.name = newName;
-  p.arName = newName; 
+  p.arName = newName;
   p.init = initials(newName);
   p.age = document.getElementById("edit-patage").value;
   p.phone = document.getElementById("edit-patphone").value;
@@ -334,13 +412,16 @@ function deletePatient() {
 
 async function renderAppts() {
   const tb = document.getElementById("appt-tbody");
-  appts = await GetDataFromBackend("/appointments/");
+  if (!isValid(appts)) {
+    appts = await GetDataFromBackend("/appointments/");
+  }
   if (!isValid(appts)) {
     console.warn("appts has not been fetched");
     return;
   }
   if (tb === null) return;
-  
+
+
   tb.innerHTML = appts.map(a => `<tr>
     <td style="font-weight:700">${a.time}</td><td>${a.patient}</td>
     <td style="color:var(--muted)">${a.doctor}</td><td>${a.type}</td>
@@ -350,24 +431,28 @@ async function renderAppts() {
 
 async function renderBilling() {
   const tb = document.getElementById("bill-tbody");
-
-  invoices = await GetDataFromBackend("/invoices/");
+  if (!isValid(invoices)) {
+    invoices = await GetDataFromBackend("/invoices/");
+  }
   if (!isValid(invoices)) {
     console.warn("invoices has not been fetched");
     return;
   }
   if (tb === null) return;
-  
+
+
   tb.innerHTML = invoices.map(v => `<tr>
     <td style="font-weight:700;color:var(--blue)">${v.id}</td><td>${v.patient}</td>
     <td style="color:var(--muted)">${v.date}</td><td style="font-weight:600">${v.amount.toLocaleString()}</td>
     <td style="color:var(--muted)">${v.ins}</td>
     <td><span class="chip chip-${v.status}">${chip(v.status)}</span></td>
   </tr>`).join("");
-  
+
+
 }
 
 function openModal(id) { document.getElementById("modal-" + id).classList.add("show"); }
 function closeModal(id) { document.getElementById("modal-" + id).classList.remove("show"); }
 document.querySelectorAll(".modal-bg").forEach(m => m.addEventListener("click", e => { if (e.target === m) m.classList.remove("show"); }));
- ;
+;
+;
