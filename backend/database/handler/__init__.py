@@ -1,1 +1,1 @@
-from .functions import get_approvals, get_claims, get_invoices, get_phones,get_stats, get_companies, get_appointments, get_homePatients, get_users, get_user
+from .get_functions import get_approvals, get_claims, get_invoices, get_phones,get_stats, get_companies, get_appointments, get_homePatients, get_users, get_user

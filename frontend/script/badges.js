@@ -1,70 +1,35 @@
+async function updateAllDashboards() {
+  const stats = await GetDataFromBackend("/stats/");
+  if (!stats) return;
 
-var counters = {
-    money: {
-        revenue: 84200,
-        total_cost: 128400,
-    },
-    patients: {
-        pending: 12,
-        approved: 1284,
-        rejected: 8,
-        pending:24,
-        get total() {
-            return this.pending + this.rejected + this.approved
-        }
-    },
-    appointments: {
-        today: 18,
-        pending: 12,
-        approved: 47,
-        rejected: 8,
-        get total() {
-            return + this.pending + this.rejected + this.approved
-        }
-    },
-    claims: {
-        pending: 12,
-        approved: 47,
-        rejected: 8,
-        get total() {
-            return this.pending + this.rejected + this.approved
-        }
-    },
-    approvals:{
-        active:0,
-        pending:5,
-        get total() {
-            return this.active + this.pending + this.rejected + this.approved
-        }
-    }
-}
-function display_dashboard_counters(){
-    let check_for = {
-        "stat-patients":function(){ return counters.patients.total},
-        "stat-appts":function(){ return counters.appointments.today},
-        "stat-claims":function(){ return counters.claims.pending},
-        "stat-revenue":function(){ return counters.money.revenue},
-    }
-    
-}
+  // Home Dashboard
+  if (document.getElementById("stat-patients")) document.getElementById("stat-patients").textContent = stats.home.patients.toLocaleString();
+  if (document.getElementById("stat-appts")) document.getElementById("stat-appts").textContent = stats.home.appts.toLocaleString();
+  if (document.getElementById("stat-claims")) document.getElementById("stat-claims").textContent = stats.home.claims.toLocaleString();
+  if (document.getElementById("stat-revenue")) document.getElementById("stat-revenue").textContent = stats.home.revenue.toLocaleString();
 
-function display_sidebar_badges(){
-    let check_for = {
-        "patients-badge": function(){return counters.patients.pending},
-        "appointments-badge": function(){return counters.appointments.pending},
-        "claims-badge": function(){return counters.claims.pending},
-        "approvals-badge": function(){return counters.approvals.pending},
-    } 
+  // Insurance Page
+  if (document.getElementById("sb-total-val")) document.getElementById("sb-total-val").textContent = stats.insurance.total;
+  if (document.getElementById("sb-active-val")) document.getElementById("sb-active-val").textContent = stats.insurance.active;
+  if (document.getElementById("sb-expiring-val")) document.getElementById("sb-expiring-val").textContent = stats.insurance.expiring;
+  if (document.getElementById("sb-claims-total-val")) document.getElementById("sb-claims-total-val").textContent = stats.insurance.claims;
 
-    badges = document.getElementsByClassName("badge");
-    for (let index = 0; index < badges.length; index++) {
-        const element = badges[index];
-        elementId = element["id"]
-        const get_amount = check_for[elementId]
-        if (!get_amount){
-            console.error(`Invalid badge id ${elementId}`)
-        }
-        element.innerHTML = get_amount()
-        
-    }
+  // Claims Page
+  if (document.getElementById("c-pending-val")) document.getElementById("c-pending-val").textContent = stats.claims.pending;
+  if (document.getElementById("c-approved-val")) document.getElementById("c-approved-val").textContent = stats.claims.approved;
+  if (document.getElementById("c-rejected-val")) document.getElementById("c-rejected-val").textContent = stats.claims.rejected;
+  if (document.getElementById("c-amount-val")) document.getElementById("c-amount-val").textContent = stats.claims.total_amount.toLocaleString();
+  if (document.getElementById("claims-total-sum")) document.getElementById("claims-total-sum").textContent = stats.claims.total_amount.toLocaleString();
+
+  // Billing Page
+  if (document.getElementById("bill-total-revenue")) document.getElementById("bill-total-revenue").textContent = stats.billing.total.toLocaleString();
+  if (document.getElementById("bill-collected")) document.getElementById("bill-collected").textContent = stats.billing.collected.toLocaleString();
+  if (document.getElementById("bill-ins-due")) document.getElementById("bill-ins-due").textContent = stats.billing.ins_due.toLocaleString();
+  if (document.getElementById("bill-overdue")) document.getElementById("bill-overdue").textContent = stats.billing.overdue.toLocaleString();
+
+  // Sidebar Badges
+  update_badge("patients-badge", stats.home.patients);
+  update_badge("appointments-badge", stats.home.appts);
+  update_badge("claims-badge", stats.claims.pending);
+  update_badge("approvals-badge", stats.insurance.pending); 
 }

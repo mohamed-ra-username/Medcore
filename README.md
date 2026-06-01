@@ -77,12 +77,18 @@ The system follows a [e.g., Microservices / Monolithic] architecture to ensure [
 - [ ] html
 - [ ] styles
 - [ ] javascript
+  - [ ] Data Persistence Gap<details> The savePatient and updatePatient functions in script.js only modify the local JavaScript variables. They do not send any data to the backend, so all additions are lost on page refresh. </details>
 
 2. backend :
 
-- [ ] database 
-  - [X] a python file is our current database... 🥲
-- [X] api
+- [ ] database
+  - [x] a python file is our current database... 🥲
+- [x] api
+  - [ ] Missing API Functionality:
+    - [x] GET (retrive)
+    - [ ] POST (create)
+    - [ ] PUT (edit)
+    - [ ] DELETE (remove)
 - [ ] interface
 
 ---
@@ -91,10 +97,11 @@ The system follows a [e.g., Microservices / Monolithic] architecture to ensure [
 
 Follow these instructions to set up the project locally.
 
--  frontend شغل [start_frontend.bat](start_frontend.bat)
--  backend شغل [start_backend.bat](start_backend.bat)
+- frontend شغل [start_frontend.bat](start_frontend.bat)
+- backend شغل [start_backend.bat](start_backend.bat)
 - افتح [view.bat](view.bat)
   - لو مشتغلش معاك شغل [init.bat](init.bat)
+
 ---
 
 ## 📄 Documentation & Reports
