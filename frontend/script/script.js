@@ -400,4 +400,4 @@ async function renderBilling() {
 function openModal(id) { document.getElementById("modal-" + id).classList.add("show"); }
 function closeModal(id) { document.getElementById("modal-" + id).classList.remove("show"); }
 document.querySelectorAll(".modal-bg").forEach(m => m.addEventListener("click", e => { if (e.target === m) m.classList.remove("show"); }));
-); }));
+ ;
