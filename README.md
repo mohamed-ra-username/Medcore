@@ -100,21 +100,34 @@ The backend has been refactored into a highly modular system for better maintain
 
 ## 📑 Milestones
 
-### 1. Frontend
-✅ Responsive HTML/CSS Layout  
-✅ Dynamic JavaScript Rendering  
-✅ Arabic (RTL) Support & Localization  
-✅ Asynchronous Data Sync (Promise Pattern)  
+### 🏁 1. Core Development (Finished)
+- [x] Responsive HTML/CSS Layout  
+- [x] Dynamic JavaScript Rendering  
+- [x] Arabic (RTL) Support & Localization  
+- [x] Asynchronous Data Sync (Promise Pattern)  
+- [x] Flask API Infrastructure  
+- [x] JSON Data Persistence Layer  
+- [x] Full CRUD API Endpoints (30+ routes)  
+- [x] Modular Backend Function Handlers  
+- [x] Real-time Search & Filtering (Patients/Claims)  
 
-### 2. Backend
-✅ Flask API Infrastructure  
-✅ JSON Data Persistence Layer  
-✅ Full CRUD API Endpoints (30+ routes)  
-✅ Modular Function Handlers  
+### 🔒 2. Security & Identity (Upcoming)
+- [ ] Secure User Registration & Signup  
+- [ ] Password Hashing (Werkzeug Security)  
+- [ ] JWT or Session-based Authentication  
+- [ ] Role-Based Access Control (RBAC)  
 
-### 3. Database
-✅ Persistent JSON Storage  
-⬜ SQLite/PostgreSQL Integration (Future Milestone)  
+### 📊 3. Data & Performance (Upcoming)
+- [ ] Migration to SQLite Relational Database  
+- [ ] SQLAlchemy ORM Integration  
+- [ ] Comprehensive Form Validation  
+- [ ] Database Backup & Restore System  
+
+### ✨ 4. Advanced Features (Upcoming)
+- [ ] Patient Deep-Dive Profile Page  
+- [ ] Financial Report Export (PDF/Excel)  
+- [ ] Appointment Reminders (WhatsApp/Email)  
+- [ ] Production-Ready Server Deployment  
 
 ---
 
@@ -152,7 +165,7 @@ Follow these instructions to set up the project locally.
 
 **Omar Hamdallah** - Team Leader/Frontend Dev
 
-**Mohamed Ragab Mubarak** - Fullstack Dev
+**Mohamed Ragab Mubarak** - Backend Dev
 
 **Adham Galal** - Frontend Dev
 
