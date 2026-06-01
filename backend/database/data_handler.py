@@ -3,7 +3,7 @@ import json
 import pathlib
 
 file_name = "data.json"
-file = pathlib.Path(__file__).parent/file_name
+file = pathlib.Path(__file__).parent.parent.parent / "data" / file_name
 
 # initizalize variables to avoid NameError when using partial before assignment
 users = appointments = companies = phones = invoices = claimsData = approvalsData = homePatients = []
