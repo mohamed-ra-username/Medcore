@@ -14,6 +14,7 @@ def _get_one_or_none(something: list, id: int|None):
 
 
 def _get_one_or_all(something: list, id: slice | int|None):
+def _get_one_or_all(something: list, id: slice | int | None):
     try:
         return something[id]
     except (KeyError, IndexError, TypeError):
