@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "editorconfig.editorconfig",
+    "mikestead.dotenv",
+    "humao.rest-client",
+    "aaron-bond.better-comments",
+    "vscode-icons-team.vscode-icons",
+    "mightbesimon.emoji-icons",
+    "formulahendry.auto-close-tag"
+  ]
+}
