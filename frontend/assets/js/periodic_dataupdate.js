@@ -23,7 +23,7 @@ const api = {
 
 async function GetDataFromBackend(endpoint) {
   const api_link = api.URLlink_with_endpoint(endpoint);
-  console.info("Fetching: ", api_link);
+  // console.info("Fetching: ", api_link);
   try {
     const response = await fetch(api_link);
     if (!response.ok) {
@@ -32,7 +32,7 @@ async function GetDataFromBackend(endpoint) {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.info(`Error fetching data from ${api_link}: ${error} for endpoint ${endpoint}`);
+    console.error(`Error fetching data from ${api_link}:`, error);
     return undefined;
   }
 }
@@ -73,13 +73,13 @@ async function update() {
     [homePatients, companies, claimsData, approvalsData, phones, appts, invoices, stats] = results;
 
     console.log("Data updated successfully.");
-    
+
     // Resolve the promise if it hasn't been resolved yet
     resolveData();
 
     // Trigger UI updates if components are ready
     if (typeof updateAllDashboards === "function") updateAllDashboards();
-    
+
     // Re-render the active page
     const activePage = document.querySelector(".page.active");
     if (activePage) {

@@ -1,26 +1,29 @@
 @echo off
 title Medcore Master Runner
 
+echo ==========================================
+echo        STARTING MEDCORE SYSTEMS
+echo ==========================================
+
 echo - [1/3] Installing/Updating Requirements...
-pip install -r requirements.txt --quiet
+pip install -r requirements.txt
 
-echo - [2/3] Starting Medcore Systems...
+echo - [2/3] Launching Server Windows...
+:: Changed /c to /k so the windows stay open if an error occurs
+start "Medcore Backend API" cmd /k "python backend/app.py"
+start "Medcore Frontend Server" cmd /k "python -m http.server 5000"
 
-:: Start Backend in a new window
-start "Medcore Backend API" cmd /c "python backend/app.py"
 
-:: Start Frontend in a new window
-start "Medcore Frontend Server" cmd /c "python -m http.server 5000"
-
-echo - [3/3] Opening Browser...
-timeout /t 3 /nobreak > nul
-start http://localhost:5000/frontend/views/home.html
+echo - [3/3] Opening Web Page...
+start frontend/pages/home.html
 
 echo.
-echo = Medcore is now running!
-echo ------------------------------------------
-echo Backend:  http://localhost:5001/api
-echo Frontend: http://localhost:5000
-echo ------------------------------------------
-echo Close the other windows to stop the servers.
-pause
+echo ==========================================
+echo   SUCCESS: Medcore is now running!
+echo ==========================================
+echo   Backend:  http://localhost:5001/api
+echo   Frontend: http://localhost:5000
+echo ==========================================
+echo.
+
+timeout /t 2 > nul

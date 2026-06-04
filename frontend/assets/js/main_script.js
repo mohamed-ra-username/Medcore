@@ -5,6 +5,10 @@ window.onload = () => {
   setupSearch();
 };
 
+function showLocaleNumber(num) {
+  return numberFormatter.format(num);
+}
+
 function setupSearch() {
   const patientSearch = document.getElementById("home-search");
   if (patientSearch) {
@@ -21,7 +25,9 @@ function setupSearch() {
   }
 }
 
-var lang = localStorage.getItem("lang") ?? "en";
+let lang = localStorage.getItem("lang") ?? "en";
+let locale = lang === "ar" ? "ar-EG" : "en-US";
+let numberFormatter = new Intl.NumberFormat(locale);
 localStorage.setItem("lang", lang);
 
 function update_badge(elementId, value) {
@@ -30,7 +36,8 @@ function update_badge(elementId, value) {
     console.error(`Couldn't get element: ${elementId}`);
     return;
   }
-  badge.innerHTML = value;
+  badge.dataset["value"] = value;
+  badge.textContent = showLocaleNumber(value);
 }
 
 async function updateAllDashboards() {
@@ -38,34 +45,37 @@ async function updateAllDashboards() {
   if (!stats) return;
 
   // Home Dashboard
-  if (document.getElementById("stat-patients")) document.getElementById("stat-patients").textContent = stats.home.patients.toLocaleString();
-  if (document.getElementById("stat-appts")) document.getElementById("stat-appts").textContent = stats.home.appts.toLocaleString();
-  if (document.getElementById("stat-claims")) document.getElementById("stat-claims").textContent = stats.home.claims.toLocaleString();
-  if (document.getElementById("stat-revenue")) document.getElementById("stat-revenue").textContent = stats.home.revenue.toLocaleString();
+  if (document.getElementById("stat-patients")) {
+    const el = document.getElementById("stat-patients");
+    el.textContent = showLocaleNumber(stats.home.patients);
+  }
+  if (document.getElementById("stat-appts")) document.getElementById("stat-appts").textContent = showLocaleNumber(stats.home.appts);
+  if (document.getElementById("stat-claims")) document.getElementById("stat-claims").textContent = showLocaleNumber(stats.home.claims);
+  if (document.getElementById("stat-revenue")) document.getElementById("stat-revenue").textContent = showLocaleNumber(stats.home.revenue);
 
   // Insurance Page
-  if (document.getElementById("sb-total-val")) document.getElementById("sb-total-val").textContent = stats.insurance.total;
-  if (document.getElementById("sb-active-val")) document.getElementById("sb-active-val").textContent = stats.insurance.active;
-  if (document.getElementById("sb-expiring-val")) document.getElementById("sb-expiring-val").textContent = stats.insurance.expiring;
-  if (document.getElementById("sb-claims-total-val")) document.getElementById("sb-claims-total-val").textContent = stats.insurance.claims;
+  if (document.getElementById("sb-total-val")) document.getElementById("sb-total-val").textContent = showLocaleNumber(stats.insurance.total);
+  if (document.getElementById("sb-active-val")) document.getElementById("sb-active-val").textContent = showLocaleNumber(stats.insurance.active);
+  if (document.getElementById("sb-expiring-val")) document.getElementById("sb-expiring-val").textContent = showLocaleNumber(stats.insurance.expiring);
+  if (document.getElementById("sb-claims-total-val")) document.getElementById("sb-claims-total-val").textContent = showLocaleNumber(stats.insurance.claims);
 
   // Claims Page
-  if (document.getElementById("c-pending-val")) document.getElementById("c-pending-val").textContent = stats.claims.pending;
-  if (document.getElementById("c-approved-val")) document.getElementById("c-approved-val").textContent = stats.claims.approved;
-  if (document.getElementById("c-rejected-val")) document.getElementById("c-rejected-val").textContent = stats.claims.rejected;
-  if (document.getElementById("c-amount-val")) document.getElementById("c-amount-val").textContent = stats.claims.total_amount.toLocaleString();
+  if (document.getElementById("c-pending-val")) document.getElementById("c-pending-val").textContent = showLocaleNumber(stats.claims.pending);
+  if (document.getElementById("c-approved-val")) document.getElementById("c-approved-val").textContent = showLocaleNumber(stats.claims.approved);
+  if (document.getElementById("c-rejected-val")) document.getElementById("c-rejected-val").textContent = showLocaleNumber(stats.claims.rejected);
+  if (document.getElementById("c-amount-val")) document.getElementById("c-amount-val").textContent = showLocaleNumber(stats.claims.total_amount);
 
   // Billing Page
-  if (document.getElementById("bill-total-revenue")) document.getElementById("bill-total-revenue").textContent = stats.billing.total.toLocaleString();
-  if (document.getElementById("bill-collected")) document.getElementById("bill-collected").textContent = stats.billing.collected.toLocaleString();
-  if (document.getElementById("bill-ins-due")) document.getElementById("bill-ins-due").textContent = stats.billing.ins_due.toLocaleString();
-  if (document.getElementById("bill-overdue")) document.getElementById("bill-overdue").textContent = stats.billing.overdue.toLocaleString();
+  if (document.getElementById("bill-total-revenue")) document.getElementById("bill-total-revenue").textContent = showLocaleNumber(stats.billing.total);
+  if (document.getElementById("bill-collected")) document.getElementById("bill-collected").textContent = showLocaleNumber(stats.billing.collected);
+  if (document.getElementById("bill-ins-due")) document.getElementById("bill-ins-due").textContent = showLocaleNumber(stats.billing.ins_due);
+  if (document.getElementById("bill-overdue")) document.getElementById("bill-overdue").textContent = showLocaleNumber(stats.billing.overdue);
 
   // Sidebar Badges
   update_badge("patients-badge", stats.home.patients);
   update_badge("appointments-badge", stats.home.appts);
   update_badge("claims-badge", stats.claims.pending);
-  update_badge("approvals-badge", stats.insurance.pending); 
+  update_badge("approvals-badge", stats.insurance.pending);
 }
 
 
@@ -177,7 +187,7 @@ function showTotal(list) {
   const total_elemnt = document.getElementById("claims-total-sum");
   if (!total_elemnt) return;
   const sum = list.map(c => c.amount).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  total_elemnt.textContent = sum.toLocaleString();
+  total_elemnt.textContent = showLocaleNumber(sum);
 }
 
 async function renderClaims(filter = "") {
@@ -206,7 +216,7 @@ async function renderClaims(filter = "") {
     <td style="font-weight:700;color:var(--blue)">${c.id}</td>
     <td><div class="td-name"><div class="mini-avatar">${initials(c.patient)}</div>${c.patient}</div></td>
     <td style="color:var(--muted)">${c.ins}</td>
-    <td style="font-weight:600">${c.amount.toLocaleString()}</td>
+    <td style="font-weight:600">${showLocaleNumber(c.amount)}</td>
     <td style="color:var(--muted)">${c.date}</td>
     <td><span class="chip chip-${c.status}">${chip(c.status)}</span></td>
     <td>${c.status === "pending" ? `<div class="act-btns"><button class="act-approve" onclick="closeClaim(${originalIndex},'approved')">${t("approve")}</button><button class="act-reject" onclick="closeClaim(${originalIndex},'rejected')">${t("reject")}</button></div>` : `<button class="act-view">${t("view")}</button>`}</td>
@@ -242,7 +252,7 @@ async function renderApprovals() {
 
   const pending = approvalRows.filter(a => a.status === "pending" || a.status === "active"); // Adjust based on your status enums
   let ap_badge = document.getElementById("approvals-badge");
-  if (ap_badge) ap_badge.textContent = pending.length || "0";
+  if (ap_badge) ap_badge.textContent = showLocaleNumber(pending.length || 0);
 
   if (!pending.length) {
     if (tb) tb.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">✓ ${t("noPending")}</td></tr>`;
@@ -255,7 +265,7 @@ async function renderApprovals() {
     <td><div class="td-name"><div class="mini-avatar">${initials(a.patient)}</div>${a.patient}</div></td>
     <td>${a.proc}</td><td style="color:var(--muted)">${a.ins}</td>
     <td style="color:var(--muted)">${a.date}</td>
-    <td style="font-weight:600">${a.amount.toLocaleString()}</td>
+    <td style="font-weight:600">${showLocaleNumber(a.amount)}</td>
     <td><div class="act-btns"><button class="act-approve" onclick="decideApproval(${i},'approved')">${t("approve")}</button><button class="act-reject" onclick="decideApproval(${i},'rejected')">${t("reject")}</button></div></td>
   </tr>`).join("");
 }
@@ -291,65 +301,25 @@ async function renderPatients() {
   </tr>`}).join("");
 }
 
-async function savePatient() {
-  const name = document.getElementById("inp-patname").value || "New Patient";
-  const age = document.getElementById("inp-patage").value || "0";
-  const phone = document.getElementById("inp-patphone").value || "";
-  const ins = document.getElementById("inp-patins").value;
-  const doc = document.getElementById("inp-patdoc").value;
-
-  const today = new Date();
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const dateStr = `${months[today.getMonth()]} ${today.getDate()}`;
-
-  const newPatient = {
-    name: name,
-    arName: name,
-    init: initials(name),
-    age: parseInt(age),
-    doctor: doc,
-    arDoc: doc,
-    ins: ins === "None" ? "-" : ins,
-    date: dateStr,
-    status: "active",
-    phone: phone
-  };
-
-  const result = await SendDataToBackend("/homePatients/", "POST", newPatient);
-  if (result) {
-    homePatients.unshift(newPatient);
-    renderHome();
-    renderPatients();
-    updateAllDashboards();
-
-    document.getElementById("inp-patname").value = "";
-    document.getElementById("inp-patage").value = "";
-    document.getElementById("inp-patphone").value = "";
-    document.getElementById("inp-patwa").value = "";
-    document.getElementById("inp-patnid").value = "";
-
-    closeModal('addPatient');
-  }
-}
-
 let currentPatientIndex = -1;
 
 function viewPatient(index) {
   currentPatientIndex = index;
   const p = homePatients[index];
+  const modal = document.getElementById("modal-editPatient");
+  
+  // Populate all inputs that have a name attribute
+  const inputs = modal.querySelectorAll("input, select, textarea");
+  inputs.forEach(input => {
+    if (input.name && p[input.name] !== undefined) {
+        input.value = p[input.name];
+    }
+  });
+
+  // Special cases
   document.getElementById("edit-patname").value = lang === "ar" ? (p.arName || p.name) : p.name;
-  document.getElementById("edit-patage").value = p.age;
-  document.getElementById("edit-patphone").value = p.phone || (phones && phones[index]) || "";
-  document.getElementById("edit-patwa").value = p.wa || "";
-  document.getElementById("edit-patnid").value = p.nid || "";
 
-  const insSelect = document.getElementById("edit-patins");
-  if (Array.from(insSelect.options).some(o => o.value === p.ins)) insSelect.value = p.ins; else insSelect.value = "None";
-
-  const docSelect = document.getElementById("edit-patdoc");
-  if (Array.from(docSelect.options).some(o => o.value === p.doctor)) docSelect.value = p.doctor; else docSelect.selectedIndex = 0;
-
-  const inputs = document.querySelectorAll("#modal-editPatient input, #modal-editPatient select");
+  // Disable all fields by default (View Mode)
   inputs.forEach(i => i.disabled = true);
 
   document.getElementById("m-esave").style.display = "none";
@@ -363,46 +333,6 @@ function toggleEditPatient() {
   inputs.forEach(i => i.disabled = false);
   document.getElementById("m-esave").style.display = "inline-block";
   document.getElementById("m-eedit").style.display = "none";
-}
-
-async function updatePatient() {
-  if (currentPatientIndex < 0) return;
-  const p = { ...homePatients[currentPatientIndex] };
-
-  const newName = document.getElementById("edit-patname").value;
-  p.name = newName;
-  p.arName = newName;
-  p.init = initials(newName);
-  p.age = parseInt(document.getElementById("edit-patage").value);
-  p.phone = document.getElementById("edit-patphone").value;
-  p.wa = document.getElementById("edit-patwa").value;
-  p.nid = document.getElementById("edit-patnid").value;
-  p.ins = document.getElementById("edit-patins").value;
-  if (p.ins === "None") p.ins = "-";
-  p.doctor = document.getElementById("edit-patdoc").value;
-
-  const result = await SendDataToBackend(`/homePatients/${currentPatientIndex}/`, "PUT", p);
-  if (result) {
-    homePatients[currentPatientIndex] = p;
-    renderHome();
-    renderPatients();
-    updateAllDashboards();
-    closeModal('editPatient');
-  }
-}
-
-async function deletePatient() {
-  if (currentPatientIndex < 0) return;
-  if (confirm(lang === "ar" ? "هل أنت متأكد من حذف المريض؟" : "Are you sure you want to delete this patient?")) {
-    const result = await SendDataToBackend(`/homePatients/${currentPatientIndex}/`, "DELETE");
-    if (result) {
-      homePatients.splice(currentPatientIndex, 1);
-      renderHome();
-      renderPatients();
-      updateAllDashboards();
-      closeModal('editPatient');
-    }
-  }
 }
 
 async function renderAppts() {
@@ -434,12 +364,8 @@ async function renderBilling() {
 
   tb.innerHTML = invoices.map(v => `<tr>
     <td style="font-weight:700;color:var(--blue)">${v.id}</td><td>${v.patient}</td>
-    <td style="color:var(--muted)">${v.date}</td><td style="font-weight:600">${v.amount.toLocaleString()}</td>
+    <td style="color:var(--muted)">${v.date}</td><td style="font-weight:600">${showLocaleNumber(v.amount)}</td>
     <td style="color:var(--muted)">${v.ins}</td>
     <td><span class="chip chip-${v.status}">${chip(v.status)}</span></td>
   </tr>`).join("");
 }
-
-function openModal(id) { document.getElementById("modal-" + id).classList.add("show"); }
-function closeModal(id) { document.getElementById("modal-" + id).classList.remove("show"); }
-document.querySelectorAll(".modal-bg").forEach(m => m.addEventListener("click", e => { if (e.target === m) m.classList.remove("show"); }));
