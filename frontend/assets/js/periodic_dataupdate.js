@@ -1,3 +1,10 @@
+/**
+ * ==========================================
+ * 📢 THE RADIO STATION (Data Fetcher)
+ * ==========================================
+ * Fetches data and broadcasts "Shouts" (Events) to the app.
+ */
+
 var homePatients, companies, claimsData, approvalsData, phones, appts, invoices, stats;
 
 let resolveData;
@@ -7,7 +14,8 @@ window.dataLoaded = new Promise((resolve) => {
 
 async function update() {
   try {
-    console.log("Fetching data from backend...");
+    console.info("📡 Broadcaster: Fetching fresh data...");
+    
     const results = await Promise.all([
       GETRequest("/homePatients/"),
       GETRequest("/companies/"),
@@ -19,34 +27,46 @@ async function update() {
       GETRequest("/stats/")
     ]);
 
-    // Map the results (checking for success)
-    [homePatients, companies, claimsData, approvalsData, phones, appts, invoices, stats] = results.map(res => (res && res.success) ? res.data : undefined);
+    // Extract data from standard envelopes
+    const [p, c, cl, a, ph, ap, inv, st] = results.map(res => (res && res.success) ? res.data : undefined);
 
-    console.log("Data updated successfully.");
+    // Update global state (for now)
+    homePatients = p;
+    companies = c;
+    claimsData = cl;
+    approvalsData = a;
+    phones = ph;
+    appts = ap;
+    invoices = inv;
+    stats = st;
 
-    // Resolve the promise if it hasn't been resolved yet
+    // 📢 BROADCAST EVENTS
+    broadcast("medcore:patients_updated", homePatients);
+    broadcast("medcore:companies_updated", companies);
+    broadcast("medcore:claims_updated", claimsData);
+    broadcast("medcore:approvals_updated", approvalsData);
+    broadcast("medcore:appts_updated", appts);
+    broadcast("medcore:billing_updated", invoices);
+    broadcast("medcore:stats_updated", stats);
+
+    console.info("✅ Broadcaster: All signals sent.");
+
+    // Resolve the startup promise
     resolveData();
 
-    // Trigger UI updates if components are ready
-    if (typeof updateAllDashboards === "function") updateAllDashboards();
-
-    // Re-render the active page
-    const activePage = document.querySelector(".page.active");
-    if (activePage) {
-      const pageId = activePage.id;
-      if (pageId === "page-home") renderHome();
-      else if (pageId === "page-insurance") renderCompanies();
-      else if (pageId === "page-claims") renderClaims();
-      else if (pageId === "page-approvals") renderApprovals();
-      else if (pageId === "page-patients") renderPatients();
-      else if (pageId === "page-appointments") renderAppts();
-      else if (pageId === "page-billing") renderBilling();
-    }
-
   } catch (error) {
-    console.error("Error fetching data from backend:", error);
+    console.error("❌ Broadcaster Error:", error);
   }
-  setTimeout(update, 5 * 60 * 1000); // Refresh data every 5 minutes
+  
+  // Refresh every 5 minutes
+  setTimeout(update, 5 * 60 * 1000); 
 }
 
-update(); // Initial Data Fetch
+function broadcast(eventName, data) {
+    if (!data) return;
+    const event = new CustomEvent(eventName, { detail: data });
+    document.dispatchEvent(event);
+}
+
+// Start the broadcast loop
+update();

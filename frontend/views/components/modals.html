@@ -1,0 +1,236 @@
+  <!-- MODALS -->
+  <div class="modal-bg" id="modal-addCompany">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="m-addco-title" data-langId="m-addco-title">Add Insurance Company</h3><button class="modal-close"
+          onclick="closeModal('addCompany')">×</button>
+      </div>
+      <div class="modal-body">
+          <div class="form-grid-2">
+          <div class="form-row"><label id="m-coname" data-langId="m-coname">Company Name</label><input type="text"
+              name="name" placeholder="e.g. Misr Insurance"></div>
+          <div class="form-row"><label data-langId="lbl-type">Type</label><select name="type">
+              <option>National</option>
+              <option>Private</option>
+              <option>International</option>
+            </select></div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row"><label id="m-costart" data-langId="m-costart">Contract Start</label><input type="date" name="start"></div>
+          <div class="form-row"><label id="m-coend" data-langId="m-coend">Contract End</label><input type="date" name="end"></div>
+        </div>
+        <div class="form-row"><label id="m-colimit" data-langId="m-colimit">Coverage Limit (EGP)</label><input type="number" name="limit"
+            placeholder="500000"></div>
+        <div class="form-row"><label id="m-cocontact" data-langId="m-cocontact">Contact Person</label><input type="text" name="contact"
+            placeholder="Name &amp; phone"></div>
+      </div>
+      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addCompany')"
+          id="m-cancel" data-langId="m-cancel">Cancel</button><button class="btn-primary btn-sm" id="m-save" data-langId="m-save" onclick="saveModalData('addCompany')">Save Company</button></div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="modal-addClaim">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="m-addcl-title" data-langId="m-addcl-title">New Claim</h3><button class="modal-close" onclick="closeModal('addClaim')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-row"><label id="m-clpat" data-langId="m-clpat">Patient</label><input type="text" name="patient" placeholder="Patient name"></div>
+          <div class="form-row"><label id="m-clins" data-langId="m-clins">Insurance Company</label><select name="ins">
+              <option>Misr Insurance</option>
+              <option>AXA Egypt</option>
+              <option>MetLife Egypt</option>
+              <option>Allianz Egypt</option>
+            </select></div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row"><label id="m-clamt" data-langId="m-clamt">Amount (EGP)</label><input type="number" name="amount" placeholder="0"></div>
+          <div class="form-row"><label id="m-cldate" data-langId="m-cldate">Service Date</label><input type="date" name="date"></div>
+        </div>
+        <div class="form-row"><label id="m-clnotes" data-langId="m-clnotes">Notes</label><input type="text" name="notes"
+            placeholder="Diagnosis / procedure..."></div>
+      </div>
+      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addClaim')"
+          id="m-cancel2" data-langId="m-cancel2">Cancel</button><button class="btn-primary btn-sm" id="m-save2" data-langId="m-save2" onclick="saveModalData('addClaim')">Submit Claim</button></div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="modal-addPatient">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="m-addpat-title" data-langId="m-addpat-title">New Patient</h3><button class="modal-close"
+          onclick="closeModal('addPatient')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-row"><label id="m-patname" data-langId="m-patname">Name</label><input type="text" id="inp-patname" name="name"
+              placeholder="Patient Name"></div>
+          <div class="form-row"><label id="m-patage" data-langId="m-patage">Age</label><input type="number" id="inp-patage" name="age" placeholder="Age">
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row"><label id="m-patphone" data-langId="m-patphone">Phone Number</label><input type="tel" id="inp-patphone" name="phone"
+              placeholder="01X-XXXX-XXXX"></div>
+          <div class="form-row"><label id="m-patwa" data-langId="m-patwa">Whatsapp Number</label><input type="tel" id="inp-patwa" name="wa"
+              placeholder="01X-XXXX-XXXX"></div>
+        </div>
+        <div class="form-row"><label id="m-patnid" data-langId="m-patnid">National ID</label><input type="text" id="inp-patnid" name="nid"
+            placeholder="14-digit National ID"></div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label id="m-patins" data-langId="m-patins">Insurance Company</label>
+            <select id="inp-patins" name="ins">
+              <option>None</option>
+              <option>Misr Insurance</option>
+              <option>AXA Egypt</option>
+              <option>MetLife Egypt</option>
+              <option>Allianz Egypt</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label id="m-patins2" data-langId="m-patins2">Secondary Insurance</label>
+            <select id="inp-patins2" name="ins2">
+              <option>None</option>
+              <option>Misr Insurance</option>
+              <option>AXA Egypt</option>
+              <option>MetLife Egypt</option>
+              <option>Allianz Egypt</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label id="m-patdoc" data-langId="m-patdoc">Doctor</label>
+          <select id="inp-patdoc" name="doctor">
+            <option>Dr. Nour</option>
+            <option>Dr. Mostafa</option>
+            <option>Dr. Sara</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addPatient')"
+          id="m-cancel3" data-langId="m-cancel3">Cancel</button><button class="btn-primary btn-sm" id="m-save3" data-langId="m-save3" onclick="saveModalData('addPatient')">Save
+          Patient</button></div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="modal-addAppointment">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="m-addappt-title" data-langId="appt-addbtn">New Appointment</h3><button class="modal-close"
+          onclick="closeModal('addAppointment')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-row"><label data-langId="lbl-patient">Patient</label><input type="text" name="patient"
+              placeholder="Name"></div>
+          <div class="form-row"><label data-langId="lbl-doctor">Doctor</label><select name="doctor">
+              <option>Dr. Nour</option>
+              <option>Dr. Mostafa</option>
+              <option>Dr. Sara</option>
+            </select></div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row"><label data-langId="lbl-time">Time</label><input type="time" name="time"></div>
+          <div class="form-row"><label data-langId="lbl-type">Type</label><select name="type">
+              <option>Consultation</option>
+              <option>Follow-up</option>
+              <option>Surgery</option>
+            </select></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addAppointment')"
+          data-langId="m-cancel">Cancel</button><button class="btn-primary btn-sm"
+          onclick="saveModalData('addAppointment')">Save Appointment</button></div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="modal-addInvoice">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 data-langId="bill-addbtn">New Invoice</h3><button class="modal-close"
+          onclick="closeModal('addInvoice')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row"><label data-langId="lbl-patient">Patient</label><input type="text" name="patient"
+            placeholder="Name"></div>
+        <div class="form-grid-2">
+          <div class="form-row"><label data-langId="lbl-amount">Amount (EGP)</label><input type="number" name="amount">
+          </div>
+          <div class="form-row"><label data-langId="lbl-insurance">Insurance</label><select name="ins">
+              <option>None</option>
+              <option>Misr Insurance</option>
+              <option>AXA Egypt</option>
+              <option>MetLife Egypt</option>
+              <option>Allianz Egypt</option>
+            </select></div>
+        </div>
+        <div class="form-row"><label data-langId="lbl-date">Date</label><input type="date" name="date"></div>
+      </div>
+      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addInvoice')"
+          data-langId="m-cancel">Cancel</button><button class="btn-primary btn-sm"
+          onclick="saveModalData('addInvoice')">Create Invoice</button></div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="modal-editPatient">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="m-editpat-title" data-langId="m-editpat-title">Patient Details</h3>
+        <button class="modal-close" onclick="closeModal('editPatient')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-row"><label id="m-epatname" data-langId="m-epatname">Name</label><input type="text" id="edit-patname" name="name" disabled></div>
+          <div class="form-row"><label id="m-epatage" data-langId="m-epatage">Age</label><input type="number" id="edit-patage" name="age" disabled></div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row"><label id="m-epatphone" data-langId="m-epatphone">Phone Number</label><input type="tel" id="edit-patphone" name="phone"
+              disabled></div>
+          <div class="form-row"><label id="m-epatwa" data-langId="m-epatwa">Whatsapp Number</label><input type="tel" id="edit-patwa" name="wa" disabled>
+          </div>
+        </div>
+        <div class="form-row"><label id="m-epatnid" data-langId="m-epatnid">National ID</label><input type="text" id="edit-patnid" name="nid" disabled>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label id="m-epatins" data-langId="m-epatins">Insurance Company</label>
+            <select id="edit-patins" name="ins" disabled>
+              <option>None</option>
+              <option>Misr Insurance</option>
+              <option>AXA Egypt</option>
+              <option>MetLife Egypt</option>
+              <option>Allianz Egypt</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label id="m-epatins2" data-langId="m-epatins2">Secondary Insurance</label>
+            <select id="edit-patins2" name="ins2" disabled>
+              <option>None</option>
+              <option>Misr Insurance</option>
+              <option>AXA Egypt</option>
+              <option>MetLife Egypt</option>
+              <option>Allianz Egypt</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label id="m-epatdoc" data-langId="m-epatdoc">Doctor</label>
+          <select id="edit-patdoc" name="doctor" disabled>
+            <option>Dr. Nour</option>
+            <option>Dr. Mostafa</option>
+            <option>Dr. Sara</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button class="btn-outline" style="color:#C62828;border-color:#C62828" onclick="deletePatient()"
+          id="m-edel" data-langId="m-edel">Delete Patient</button>
+        <div style="display:flex;gap:10px">
+          <button class="btn-outline" onclick="toggleEditPatient()" id="m-eedit" data-langId="m-eedit">Edit</button>
+          <button class="btn-primary btn-sm" id="m-esave" data-langId="m-esave" onclick="updatePatient()" style="display:none">Save
+            Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>

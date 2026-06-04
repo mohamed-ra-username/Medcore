@@ -9,35 +9,40 @@
             "patient": "Ahmed Hassan",
             "doctor": "Dr. Nour",
             "type": "Consultation",
-            "status": "done"
+            "status": "done",
+            "id": "05a783b6-dce4-4d81-8785-77ce7ce3e05d"
         },
         {
             "time": "09:00",
             "patient": "Sara Khalil",
             "doctor": "Dr. Mostafa",
             "type": "Follow-up",
-            "status": "done"
+            "status": "done",
+            "id": "5da310c5-cb13-4989-b1e7-02ee129b0f92"
         },
         {
             "time": "10:15",
             "patient": "Mohamed Ali",
             "doctor": "Dr. Nour",
             "type": "Surgery Prep",
-            "status": "active"
+            "status": "active",
+            "id": "7fe4a71e-0b7b-4058-a1ae-6d100f66a39f"
         },
         {
             "time": "11:00",
             "patient": "Laila Omar",
             "doctor": "Dr. Sara",
             "type": "Radiology",
-            "status": "active"
+            "status": "active",
+            "id": "8b5f2da0-e84b-473f-9bd4-f840f385f042"
         },
         {
             "time": "12:30",
             "patient": "Youssef Adel",
             "doctor": "Dr. Mostafa",
             "type": "Consultation",
-            "status": "pending"
+            "status": "pending",
+            "id": "55580943-6396-4d2c-a1c8-14651530eb48"
         }
     ],
     "companies": [
@@ -49,7 +54,8 @@
             "claims": 87,
             "limit": "500,000",
             "end": "Dec 2026",
-            "status": "active"
+            "status": "active",
+            "id": "f8267c47-39a5-4eca-aa67-100592939fd6"
         },
         {
             "name": "AXA Egypt",
@@ -59,7 +65,8 @@
             "claims": 64,
             "limit": "750,000",
             "end": "Aug 2026",
-            "status": "expiring"
+            "status": "expiring",
+            "id": "57481445-322a-494d-ad13-2204e5c25786"
         },
         {
             "name": "MetLife Egypt",
@@ -69,7 +76,8 @@
             "claims": 41,
             "limit": "400,000",
             "end": "May 2027",
-            "status": "active"
+            "status": "active",
+            "id": "59ce0b23-724f-42c5-b977-2359a50888e8"
         },
         {
             "name": "Allianz Egypt",
@@ -79,7 +87,8 @@
             "claims": 53,
             "limit": "600,000",
             "end": "Jan 2027",
-            "status": "active"
+            "status": "active",
+            "id": "ce865380-e7cb-4d53-8cfe-9593ac1c49ff"
         },
         {
             "name": "GlobeMed",
@@ -89,7 +98,8 @@
             "claims": 38,
             "limit": "350,000",
             "end": "Jul 2026",
-            "status": "expiring"
+            "status": "expiring",
+            "id": "574d054f-b5b4-41f3-aff9-f1be40df4fdb"
         },
         {
             "name": "Egypt Insurance",
@@ -99,7 +109,8 @@
             "claims": 29,
             "limit": "300,000",
             "end": "Apr 2027",
-            "status": "active"
+            "status": "active",
+            "id": "58d1a10e-276b-43a6-ae05-83c247e831b1"
         },
         {
             "name": "Solidarity Egypt",
@@ -109,7 +120,8 @@
             "claims": 18,
             "limit": "250,000",
             "end": "Sep 2026",
-            "status": "active"
+            "status": "active",
+            "id": "a9446a17-95f6-49d7-b6df-89bc51d10c06"
         },
         {
             "name": "Wataniya Insurance",
@@ -119,7 +131,8 @@
             "claims": 12,
             "limit": "200,000",
             "end": "Nov 2027",
-            "status": "active"
+            "status": "active",
+            "id": "aa619058-01b7-4ddf-8833-dcc9bbc09042"
         }
     ],
     "phones": [
@@ -294,7 +307,8 @@
             "arDoc": "د. نور",
             "ins": "Misr Insurance",
             "date": "May 4",
-            "status": "active"
+            "status": "active",
+            "id": "fa420881-2885-4a7d-b8ff-7ab3c49ca3ff"
         },
         {
             "name": "Sara Khalil",
@@ -305,7 +319,8 @@
             "arDoc": "د. مصطفى",
             "ins": "AXA Egypt",
             "date": "May 4",
-            "status": "done"
+            "status": "done",
+            "id": "169e1f9a-19d0-404f-aea4-574c212f2cfa"
         },
         {
             "name": "Mohamed Ali",
@@ -316,7 +331,8 @@
             "arDoc": "د. نور",
             "ins": "MetLife Egypt",
             "date": "May 3",
-            "status": "pending"
+            "status": "pending",
+            "id": "a8638a38-5a8a-43f8-8f24-0631abb59c4a"
         },
         {
             "name": "Laila Omar",
@@ -327,7 +343,8 @@
             "arDoc": "د. سارة",
             "ins": "Allianz Egypt",
             "date": "May 3",
-            "status": "active"
+            "status": "active",
+            "id": "3d3d4dca-fa54-4f5e-9c0a-4ed1344978db"
         },
         {
             "name": "Youssef Adel",
@@ -338,7 +355,8 @@
             "arDoc": "د. مصطفى",
             "ins": "GlobeMed",
             "date": "May 2",
-            "status": "done"
+            "status": "done",
+            "id": "63c130fc-c941-4084-8cfa-2c92b21a2a53"
         }
     ]
 }
