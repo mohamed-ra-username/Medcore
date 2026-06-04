@@ -1,72 +1,74 @@
-# 📝 Medcore: The "Whole System" Roadmap
-
-This document serves as the master blueprint for the Medcore Clinic Management System. It merges performance, security, and clean architecture into a professional development path.
-
----
-
-## 🏁 Phase 0: Project Foundation (Completed)
-*   ✅ **Repository Reorganization:** Concerns separated into `data/`, `docs/`, `backend/`, and `frontend/`.
-*   ✅ **Startup Automation:** Master `RUN_APP.bat` created.
-*   ✅ **JWT & Permission Engine:** Secure auth and granular PBAC implemented.
-*   ✅ **Base CRUD API:** 30+ endpoints handling core clinic operations.
-*   ✅ **Locale-Aware Formatting:** Professional number and currency display implemented.
-
----
-
-## 🏗️ Pillar 1: Clean Architecture (The Refactor)
-*Goal: Remove complexity and make the code "airy" and maintainable.*
-
-### 🛠️ Backend: Route Splitting
-- [ ] **Auth Module:** Move login/register to `routes/auth_routes.py`.
-- [ ] **Patient Module:** Move patient CRUD to `routes/patient_routes.py`.
-- [ ] **Finance Module:** Move billing/invoices to `routes/finance_routes.py`.
-- [ ] **Clinic Module:** Move stats/appointments to `routes/clinic_routes.py`.
-
-### 🖥️ Frontend: Componentization
-- [ ] **HTML Fragments:** Extract Sidebar, Modals, and Tables into `frontend/views/components/`.
-- [ ] **Component Loader:** Create `component_loader.js` to dynamically inject HTML snippets.
-
----
-
-## ⚡ Pillar 2: Performance & Data Integrity
-*Goal: Make the app feel fast and "smart" even with thousands of records.*
-
-### 🚀 The "Smart Sync" Engine
-- [ ] **Smart DOM Reconciliation:** Refactor tables to only update rows that changed instead of clearing the whole list.
-- [ ] **Pagination Logic:** Implement a 20-items-per-page limit with "Next/Prev" controls.
-
-### 🛡️ Backend Resilience & Specific Fixes
-- [ ] **Standardized Response Envelopes:** Finalize `{ success, data, error }` pattern across all endpoints.
-- [ ] **Self-Healing Storage:** Implement startup health-checks and automated daily JSON backups.
-- [ ] **National ID Validation:** Add strict 14-digit check for Egyptian IDs.
-- [ ] **Filtered Index Fix:** Ensure deleting/updating works correctly when multiple filters are active (Switch to UUIDs).
-
----
-
-## 🧠 Pillar 3: The Reactive UI
-*Goal: Decouple the "Network" from the "Display" for a crash-proof experience.*
-
-### 📢 Event-Driven State
-- [ ] **The "Radio Station" Fetcher:** Refactor `periodic_dataupdate.js` to `dispatchEvent` when data arrives.
-- [ ] **Reactive Store:** Move all global variables into a centralized `Medcore` object.
-- [ ] **Utility Library:** Move common logic (currency, dates) to `utils.js`.
-
-### 🔔 User Feedback Loops
-- [ ] **Toast Notification System:** Professional popups for "Success" and "Error" alerts.
-- [ ] **Loading States:** Add button spinners and table skeletons.
-
----
-
-## 🏥 Pillar 4: Clinic Core Features
-*Goal: Build the actual medical tools that clinics need.*
-
-- [ ] **Patient Deep-Dive Page (`patient.html`):** Build the full medical profile view.
-- [ ] **Medical History Tracker:** Implement a log of all previous visits and diagnoses.
-- [ ] **Financial Reports:** PDF/Excel export for revenue and debt tracking.
-
----
-
-## 🚀 Pillar 5: Production Readiness
-- [ ] **Environment Variables:** Move ports and secret keys to `.env`.
-- [ ] **SQLite Migration:** Transition from JSON to relational SQL.
-- [ ] **Broad CORS Fix:** Restrict `flask-cors` to only allow the frontend URL.
+       1 - # 📝 Medcore Project Roadmap
+       2 -
+       3 - This document outlines the tasks required to transform the Medcore
+         prototype into a production-ready Fullstack Clinic Management System.
+       4 -
+       5 - ---
+       6 -
+       7 - ## 🏁 Phase 0: Project Foundation (Completed)
+       8 - *   ✅ **Repository Reorganization:** Concerns separated into
+         `data/`, `docs/`, and standard directories.
+       9 - *   ✅ **Startup Automation:** Created `RUN_APP.bat` master runner.
+      10 - *   ✅ **Data Sync Architecture:** Implemented "Data Promise"
+         pattern.
+      11 - *   ✅ **Full CRUD API:** 30+ endpoints handling data mutation.
+      12 - *   ✅ **JSON Persistence:** Reliable state saving into
+         `data.json`.
+      13 - *   ✅ **Modal Integration:** UI modals linked to backend API.
+      14 -
+      15 - ---
+      16 -
+      17 - ## 🔐 Phase 1: Security & Identity (Completed)
+      18 - *   ✅ **Isolated User Storage:** Credentials kept in
+         `data/users.json`.
+      19 - *   ✅ **Password Security:** Hashing implemented using
+         `werkzeug.security`.
+      20 - *   ✅ **JWT Core:** Tokens generated with 24h expiration.
+      21 - *   ✅ **PBAC (Permissions):** Master Permissions Map and
+         `@permission_required` implemented.
+      22 - *   ✅ **Auth UI:** Real login/signup connected to API.
+      23 -
+      24 - ---
+      25 -
+      26 - ## 🏗️ Phase 2: Modular Monolith Refactor (Current Focus)
+      27 - "Un-cramping" the codebase by splitting giant files into
+         specialized modules.
+      28 -
+      29 - ### 🛠️ Backend Modularization
+      30 - *   **[ ] Split API Routes:** Divide `api.py` into `auth.py`,
+         `patients.py`, `finance.py`, and `clinic.py`.
+      31 - *   **[ ] Security Isolation:** Move JWT and Permission logic to
+         `backend/core/security.py`.
+      32 - *   **[ ] Self-Healing Handler:** Implement auto-backups and
+         corrupt-file recovery in `data_handler.py`.
+      33 -
+      34 - ### 🖥️ Frontend Architecture
+      35 - *   **[ ] HTML Componentization:** Split `home.html` into reusable
+         snippets (Sidebar, Modals, Tables) in `views/components/`.
+      36 - *   **[ ] Controller-Based JS:** Move page-specific logic from
+         `main_script.js` to individual controllers (e.g.,
+         `home_controller.js`, `billing_controller.js`).
+      37 - *   **[ ] Reactive Store:** Refactor `Medcore` store to use an
+         Event-Driven pattern (dispatching events when data changes).
+      38 - *   **[ ] Shared Utility Library:** Move `numberFormatter` and
+         `initials` to `assets/js/utils.js`.
+      39 -
+      40 - ---
+      41 -
+      42 - ## 📊 Phase 3: Data Integrity & UX
+      43 - *   **[ ] Standardized API Envelopes:** Finalize 100% consistent `{
+         success, data, error }` across all sub-routes.
+      44 - *   **[ ] UI Feedback Loops (Toasts):** Global notification system
+         for success/error alerts.
+      45 - *   **[ ] Strict Validation:** Backend constraints for all input
+         fields.
+      46 - *   **[ ] Patient Deep-Dive Page:** Build the medical history
+         "Individual Profile" view.
+      47 -
+      48 - ---
+      49 -
+      50 - ## 🚀 Phase 4: Production & Future
+      51 - *   **[ ] SQLite Migration:** Transition from JSON to SQL.
+      52 - *   **[ ] WhatsApp Integration:** Automated reminders.
+      53 - *   **[ ] Production Config:** Remove hardcoded ports, use `.env`
+         for secrets.

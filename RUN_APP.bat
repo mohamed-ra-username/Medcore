@@ -6,16 +6,15 @@ echo        STARTING MEDCORE SYSTEMS
 echo ==========================================
 
 echo - [1/3] Installing/Updating Requirements...
-pip install -r requirements.txt
+call commands/install_requirements.bat
 
 echo - [2/3] Launching Server Windows...
-:: Changed /c to /k so the windows stay open if an error occurs
-start "Medcore Backend API" cmd /k "python backend/app.py"
-start "Medcore Frontend Server" cmd /k "python -m http.server 5000"
+call commands\start_backend.bat
+call commands\start_frontend.bat
 
 
 echo - [3/3] Opening Web Page...
-start frontend/pages/home.html
+call commands\open_frontend.bat
 
 echo.
 echo ==========================================
