@@ -1,72 +1,72 @@
-# 📝 Medcore Project Roadmap
+# 📝 Medcore: The "Whole System" Roadmap
 
-This document outlines the remaining tasks required to transform the Medcore prototype into a production-ready Fullstack Clinic Management System.
-
----
-
-## 🔐 Phase 1: Authentication & User Management (Current Focus)
-The goal is to move from a visual placeholder to a secure, functional user system.
-
-### 🛠️ Backend (Python/Flask)
-*   **[ ] Password Security:**
-    *   Implement hashing using `werkzeug.security` (scrypt/pbkdf2).
-    *   *Never* store plain-text passwords.
-*   **[ ] User Data Structure:**
-    *   Update `data.json` to store full user objects: `{email, password_hash, role, fname, lname, clinic_name}`.
-*   **[ ] Authentication Logic:**
-    *   `register_user`: Check if email exists, hash password, save to database.
-    *   `login_user`: Verify email exists, compare hashes, generate session token.
-*   **[ ] API Endpoints:**
-    *   `POST /api/register`: Receive signup data.
-    *   `POST /api/login`: Verify credentials.
-    *   `GET /api/me`: Verify session token and return current user info.
-*   **[ ] Route Protection (Middleware):**
-    *   Create a decorator (e.g., `@login_required`) to prevent unauthenticated access to the main data APIs (Patients, Billing, etc.).
-
-### 🖥️ Frontend (JavaScript/HTML)
-*   **[ ] Registration Implementation:**
-    *   Connect the "Create Account" form to the `/api/register` endpoint.
-    *   Add validation (ensure passwords match, email is valid format).
-*   **[ ] Login Implementation:**
-    *   Connect the "Sign In" form to the `/api/login` endpoint.
-    *   Store the authentication status in `localStorage` or a Secure Cookie.
-*   **[ ] Session Management:**
-    *   On every page load, check if a valid session exists.
-    *   Redirect to `login.html` if the user is not logged in.
-*   **[ ] Role-Based UI:**
-    *   Hide/Show menu items based on user role (e.g., hide "Finance" for Nurses).
+This document serves as the master blueprint for the Medcore Clinic Management System. It merges performance, security, and clean architecture into a professional development path.
 
 ---
 
-## 📊 Phase 2: Data Integrity & Performance
-Transitioning from a flat JSON file to a robust database.
-
-### 🛠️ Database Migration
-*   **[ ] SQLite Setup:**
-    *   Integrate `Flask-SQLAlchemy`.
-    *   Define SQL Models for all entities (Users, Patients, Claims, etc.).
-*   **[ ] Data Migration:**
-    *   Create a script to move existing data from `data.json` into the new SQL tables.
-
-### 🛠️ Validation & Error Handling
-*   **[ ] Input Sanitization:** Prevent SQL injection and XSS.
-*   **[ ] Backend Constraints:** Ensure National IDs are unique and Ages are non-negative.
+## 🏁 Phase 0: Project Foundation (Completed)
+*   ✅ **Repository Reorganization:** Concerns separated into `data/`, `docs/`, `backend/`, and `frontend/`.
+*   ✅ **Startup Automation:** Master `RUN_APP.bat` created.
+*   ✅ **JWT & Permission Engine:** Secure auth and granular PBAC implemented.
+*   ✅ **Base CRUD API:** 30+ endpoints handling core clinic operations.
+*   ✅ **Locale-Aware Formatting:** Professional number and currency display implemented.
 
 ---
 
-## 🖥️ Phase 3: UI/UX & Feature Expansion
-Building the actual medical tools.
+## 🏗️ Pillar 1: Clean Architecture (The Refactor)
+*Goal: Remove complexity and make the code "airy" and maintainable.*
 
-### ✨ New Features
-*   **[ ] Patient Deep-Dive (`patient.html`):** Create the profile view showing medical history and financial balance.
-*   **[ ] Complete CRUD UI:** Write the JavaScript logic for "Add Appointment," "Add Company," and "Add Invoice" modals.
-*   **[ ] User Feedback:** Add "Toast" popups for successful saves and helpful error messages for failures.
-*   **[ ] Advanced Filtering:** Sort tables by date, status, or amount.
+### 🛠️ Backend: Route Splitting
+- [ ] **Auth Module:** Move login/register to `routes/auth_routes.py`.
+- [ ] **Patient Module:** Move patient CRUD to `routes/patient_routes.py`.
+- [ ] **Finance Module:** Move billing/invoices to `routes/finance_routes.py`.
+- [ ] **Clinic Module:** Move stats/appointments to `routes/clinic_routes.py`.
+
+### 🖥️ Frontend: Componentization
+- [ ] **HTML Fragments:** Extract Sidebar, Modals, and Tables into `frontend/views/components/`.
+- [ ] **Component Loader:** Create `component_loader.js` to dynamically inject HTML snippets.
 
 ---
 
-## 🛠️ Phase 4: Production Readiness
-*   **[ ] HTTPS Setup:** Ensure all data transfers are encrypted.
-*   **[ ] CORS Policy:** Lock down the API to only allow requests from the official frontend.
-*   **[ ] Automated Backups:** Periodic snapshots of the SQLite database.
-*   **[ ] Environment Config:** Use `.env` files for ports and secret keys.
+## ⚡ Pillar 2: Performance & Data Integrity
+*Goal: Make the app feel fast and "smart" even with thousands of records.*
+
+### 🚀 The "Smart Sync" Engine
+- [ ] **Smart DOM Reconciliation:** Refactor tables to only update rows that changed instead of clearing the whole list.
+- [ ] **Pagination Logic:** Implement a 20-items-per-page limit with "Next/Prev" controls.
+
+### 🛡️ Backend Resilience & Specific Fixes
+- [ ] **Standardized Response Envelopes:** Finalize `{ success, data, error }` pattern across all endpoints.
+- [ ] **Self-Healing Storage:** Implement startup health-checks and automated daily JSON backups.
+- [ ] **National ID Validation:** Add strict 14-digit check for Egyptian IDs.
+- [ ] **Filtered Index Fix:** Ensure deleting/updating works correctly when multiple filters are active (Switch to UUIDs).
+
+---
+
+## 🧠 Pillar 3: The Reactive UI
+*Goal: Decouple the "Network" from the "Display" for a crash-proof experience.*
+
+### 📢 Event-Driven State
+- [ ] **The "Radio Station" Fetcher:** Refactor `periodic_dataupdate.js` to `dispatchEvent` when data arrives.
+- [ ] **Reactive Store:** Move all global variables into a centralized `Medcore` object.
+- [ ] **Utility Library:** Move common logic (currency, dates) to `utils.js`.
+
+### 🔔 User Feedback Loops
+- [ ] **Toast Notification System:** Professional popups for "Success" and "Error" alerts.
+- [ ] **Loading States:** Add button spinners and table skeletons.
+
+---
+
+## 🏥 Pillar 4: Clinic Core Features
+*Goal: Build the actual medical tools that clinics need.*
+
+- [ ] **Patient Deep-Dive Page (`patient.html`):** Build the full medical profile view.
+- [ ] **Medical History Tracker:** Implement a log of all previous visits and diagnoses.
+- [ ] **Financial Reports:** PDF/Excel export for revenue and debt tracking.
+
+---
+
+## 🚀 Pillar 5: Production Readiness
+- [ ] **Environment Variables:** Move ports and secret keys to `.env`.
+- [ ] **SQLite Migration:** Transition from JSON to relational SQL.
+- [ ] **Broad CORS Fix:** Restrict `flask-cors` to only allow the frontend URL.

@@ -10,3 +10,11 @@ class status(StrEnum):
     EXPIRING = "expiring"
     REJECTED = "rejected"
     APPROVED = "approved"
+
+
+class role(StrEnum):
+    USER = "user"
+    ADMIN = "admin"
+    DOCTOR = "doctor"
+    NURSE = "nurse"
+    RECEPTIONIST = "receptionist"

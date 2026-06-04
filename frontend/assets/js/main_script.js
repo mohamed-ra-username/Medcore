@@ -1,13 +1,34 @@
-const role = localStorage.getItem("role");
-
-window.onload = () => {
-  applyLang();
-  setupSearch();
+/**
+ * ==========================================
+ * 🔴 CORE LOGIC - MEDCORE STATE STORE
+ * ==========================================
+ */
+const Medcore = {
+  user: null,
+  permissions: JSON.parse(localStorage.getItem("permissions") || "[]"),
+  
+  // Helper to check permissions
+  can: (perm) => Medcore.permissions.includes(perm) || Medcore.permissions.includes("*"),
+  
+  // Initialize user session
+  init: async () => {
+    if (localStorage.getItem("token")) {
+      const res = await GETRequest("/me/");
+      if (res && res.success) {
+        Medcore.user = res.data.user;
+        Medcore.permissions = res.data.permissions;
+        localStorage.setItem("permissions", JSON.stringify(Medcore.permissions));
+      }
+    }
+  }
 };
 
-function showLocaleNumber(num) {
-  return numberFormatter.format(num);
-}
+window.onload = async () => {
+  await Medcore.init();
+  applyLang();
+  setupSearch();
+  updatePermissionsUI();
+};
 
 function setupSearch() {
   const patientSearch = document.getElementById("home-search");
@@ -25,17 +46,34 @@ function setupSearch() {
   }
 }
 
+function updatePermissionsUI() {
+  if (!Medcore.can("view_revenue")) {
+    const revElements = document.querySelectorAll(".stat-card:nth-child(4), button[onclick=\"goPage('billing',this)\"]");
+    revElements.forEach(el => el.style.display = "none");
+  }
+  if (!Medcore.can("*")) {
+    const delBtn = document.getElementById("m-edel");
+    if (delBtn) delBtn.style.display = "none";
+  }
+}
+
+/**
+ * ==========================================
+ * 🟢 UI SETTINGS & HELPERS
+ * ==========================================
+ */
 let lang = localStorage.getItem("lang") ?? "en";
 let locale = lang === "ar" ? "ar-EG" : "en-US";
 let numberFormatter = new Intl.NumberFormat(locale);
 localStorage.setItem("lang", lang);
 
+function showLocaleNumber(num) {
+  return numberFormatter.format(num);
+}
+
 function update_badge(elementId, value) {
   let badge = document.getElementById(elementId);
-  if (!badge) {
-    console.error(`Couldn't get element: ${elementId}`);
-    return;
-  }
+  if (!badge) return;
   badge.dataset["value"] = value;
   badge.textContent = showLocaleNumber(value);
 }
@@ -44,40 +82,31 @@ async function updateAllDashboards() {
   await window.dataLoaded;
   if (!stats) return;
 
-  // Home Dashboard
-  if (document.getElementById("stat-patients")) {
-    const el = document.getElementById("stat-patients");
-    el.textContent = showLocaleNumber(stats.home.patients);
-  }
+  if (document.getElementById("stat-patients")) document.getElementById("stat-patients").textContent = showLocaleNumber(stats.home.patients);
   if (document.getElementById("stat-appts")) document.getElementById("stat-appts").textContent = showLocaleNumber(stats.home.appts);
   if (document.getElementById("stat-claims")) document.getElementById("stat-claims").textContent = showLocaleNumber(stats.home.claims);
   if (document.getElementById("stat-revenue")) document.getElementById("stat-revenue").textContent = showLocaleNumber(stats.home.revenue);
 
-  // Insurance Page
   if (document.getElementById("sb-total-val")) document.getElementById("sb-total-val").textContent = showLocaleNumber(stats.insurance.total);
   if (document.getElementById("sb-active-val")) document.getElementById("sb-active-val").textContent = showLocaleNumber(stats.insurance.active);
   if (document.getElementById("sb-expiring-val")) document.getElementById("sb-expiring-val").textContent = showLocaleNumber(stats.insurance.expiring);
   if (document.getElementById("sb-claims-total-val")) document.getElementById("sb-claims-total-val").textContent = showLocaleNumber(stats.insurance.claims);
 
-  // Claims Page
   if (document.getElementById("c-pending-val")) document.getElementById("c-pending-val").textContent = showLocaleNumber(stats.claims.pending);
   if (document.getElementById("c-approved-val")) document.getElementById("c-approved-val").textContent = showLocaleNumber(stats.claims.approved);
   if (document.getElementById("c-rejected-val")) document.getElementById("c-rejected-val").textContent = showLocaleNumber(stats.claims.rejected);
   if (document.getElementById("c-amount-val")) document.getElementById("c-amount-val").textContent = showLocaleNumber(stats.claims.total_amount);
 
-  // Billing Page
   if (document.getElementById("bill-total-revenue")) document.getElementById("bill-total-revenue").textContent = showLocaleNumber(stats.billing.total);
   if (document.getElementById("bill-collected")) document.getElementById("bill-collected").textContent = showLocaleNumber(stats.billing.collected);
   if (document.getElementById("bill-ins-due")) document.getElementById("bill-ins-due").textContent = showLocaleNumber(stats.billing.ins_due);
   if (document.getElementById("bill-overdue")) document.getElementById("bill-overdue").textContent = showLocaleNumber(stats.billing.overdue);
 
-  // Sidebar Badges
   update_badge("patients-badge", stats.home.patients);
   update_badge("appointments-badge", stats.home.appts);
   update_badge("claims-badge", stats.claims.pending);
   update_badge("approvals-badge", stats.insurance.pending);
 }
-
 
 let claimFilter = "all", companyFilter = "all";
 
@@ -100,19 +129,12 @@ function isValid(variable) { return !(variable === null || variable === undefine
 async function renderHome(filter = "") {
   await window.dataLoaded;
   const tb = document.getElementById("home-tbody");
-  if (!isValid(homePatients)) {
-    console.warn("homePatients has not been fetched");
-    return;
-  }
+  if (!isValid(homePatients)) return;
   if (tb === null) return;
-
   tb.innerHTML = '';
 
   const list = filter 
-    ? homePatients.filter(p => 
-        p.name.toLowerCase().includes(filter) || 
-        (p.arName && p.arName.toLowerCase().includes(filter))
-      )
+    ? homePatients.filter(p => p.name.toLowerCase().includes(filter) || (p.arName && p.arName.toLowerCase().includes(filter)))
     : homePatients;
 
   list.forEach((p) => {
@@ -120,47 +142,24 @@ async function renderHome(filter = "") {
     const tr = document.createElement("tr");
     tr.classList.add("clickable-row");
     tr.onclick = () => viewPatient(originalIndex);
-
-    const tdName = document.createElement("td");
-    tdName.innerHTML = `<div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div>`;
-    tr.appendChild(tdName);
-
-    const tdAge = document.createElement("td");
-    tdAge.textContent = p.age;
-    tr.appendChild(tdAge);
-
-    const tdDoctor = document.createElement("td");
-    tdDoctor.style.color = "var(--muted)";
-    tdDoctor.textContent = lang === "ar" ? p.arDoc : p.doctor;
-    tr.appendChild(tdDoctor);
-
-    const tdInsurance = document.createElement("td");
-    tdInsurance.style.color = "var(--muted)";
-    tdInsurance.textContent = p.ins;
-    tr.appendChild(tdInsurance);
-
-    const tdDate = document.createElement("td");
-    tdDate.style.color = "var(--muted)";
-    tdDate.textContent = p.date;
-    tr.appendChild(tdDate);
-
-    const tdStatus = document.createElement("td");
-    tdStatus.innerHTML = `<span class="chip chip-${p.status}">${chip(p.status)}</span>`;
-    tr.appendChild(tdStatus);
-
+    tr.innerHTML = `
+      <td><div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div></td>
+      <td>${p.age}</td>
+      <td style="color:var(--muted)">${lang === "ar" ? p.arDoc : p.doctor}</td>
+      <td style="color:var(--muted)">${p.ins}</td>
+      <td style="color:var(--muted)">${p.date}</td>
+      <td><span class="chip chip-${p.status}">${chip(p.status)}</span></td>
+    `;
     tb.appendChild(tr);
   });
 }
 
 async function renderCompanies() {
   await window.dataLoaded;
-  if (!isValid(companies)) {
-    console.warn("companies has not been fetched");
-    return;
-  }
+  if (!isValid(companies)) return;
   const grid = document.getElementById("company-grid");
-  const list = companyFilter === "all" ? companies : companies.filter(c => c.status === companyFilter);
   if (grid === null) return;
+  const list = companyFilter === "all" ? companies : companies.filter(c => c.status === companyFilter);
   grid.innerHTML = list.map(c => `
     <div class="company-card">
       <div class="cc-header">
@@ -186,30 +185,18 @@ function filterCompanies(f, btn) {
 function showTotal(list) {
   const total_elemnt = document.getElementById("claims-total-sum");
   if (!total_elemnt) return;
-  const sum = list.map(c => c.amount).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  const sum = list.map(c => c.amount).reduce((acc, val) => acc + val, 0);
   total_elemnt.textContent = showLocaleNumber(sum);
 }
 
 async function renderClaims(filter = "") {
   await window.dataLoaded;
   const tb = document.getElementById("claims-tbody");
-  if (!isValid(claimsData)) {
-    console.warn("claimsData has not been fetched");
-    return;
-  }
+  if (!isValid(claimsData)) return;
   let list = claimFilter === "all" ? claimsData : claimsData.filter(c => c.status === claimFilter);
-  
-  if (filter) {
-    list = list.filter(c => 
-      c.id.toLowerCase().includes(filter) || 
-      c.patient.toLowerCase().includes(filter) ||
-      c.ins.toLowerCase().includes(filter)
-    );
-  }
-
+  if (filter) list = list.filter(c => c.id.toLowerCase().includes(filter) || c.patient.toLowerCase().includes(filter) || c.ins.toLowerCase().includes(filter));
   showTotal(list);
   if (tb === null) return;
-
   tb.innerHTML = list.map((c) => {
     const originalIndex = claimsData.indexOf(c);
     return `<tr>
@@ -225,8 +212,8 @@ async function renderClaims(filter = "") {
 
 async function closeClaim(gi, decision) {
   if (gi >= 0) {
-    const result = await SendDataToBackend(`/claims/${gi}/status/`, 'PUT', { status: decision });
-    if (result) {
+    const result = await PUTRequest(`/claims/${gi}/status/`, { status: decision });
+    if (result && result.success) {
         claimsData[gi].status = decision;
         updateAllDashboards();
         renderClaims();
@@ -244,22 +231,13 @@ function filterClaims(f, btn) {
 async function renderApprovals() {
   await window.dataLoaded;
   const tb = document.getElementById("approvals-tbody");
-  if (!isValid(approvalsData)) {
-    console.warn("approvalsData has not been fetched");
-    return;
-  }
-  approvalRows = approvalsData.map(a => ({ ...a })); // Clone data
-
-  const pending = approvalRows.filter(a => a.status === "pending" || a.status === "active"); // Adjust based on your status enums
-  let ap_badge = document.getElementById("approvals-badge");
-  if (ap_badge) ap_badge.textContent = showLocaleNumber(pending.length || 0);
-
-  if (!pending.length) {
-    if (tb) tb.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">✓ ${t("noPending")}</td></tr>`;
-    return;
-  }
-
+  if (!isValid(approvalsData)) return;
+  const pending = approvalsData.filter(a => a.status === "pending" || a.status === "active");
   if (tb === null) return;
+  if (!pending.length) {
+    tb.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">✓ ${t("noPending")}</td></tr>`;
+    return;
+  }
   tb.innerHTML = pending.map((a, i) => `<tr>
     <td style="font-weight:700;color:var(--blue)">${a.ref}</td>
     <td><div class="td-name"><div class="mini-avatar">${initials(a.patient)}</div>${a.patient}</div></td>
@@ -270,61 +248,32 @@ async function renderApprovals() {
   </tr>`).join("");
 }
 
-function decideApproval(i, decision) {
-  // Logic to update approval status locally
-  const pending = approvalRows.filter(a => a.status === "pending" || a.status === "active");
-  if (pending[i]) pending[i].status = decision;
-  renderApprovals();
-}
-
-function approveAll() {
-  approvalRows.forEach(a => { if (a.status === "pending" || a.status === "active") a.status = "approved"; });
-  renderApprovals();
-}
-
 async function renderPatients() {
   await window.dataLoaded;
   const tb = document.getElementById("pat-tbody");
-  if (!isValid(homePatients)) {
-    console.warn("homePatients has not been fetched");
-    return;
-  }
+  if (!isValid(homePatients)) return;
   if (tb === null) return;
-
   tb.innerHTML = homePatients.map((p) => {
     const originalIndex = homePatients.indexOf(p);
     return `<tr onclick="viewPatient(${originalIndex})" class="clickable-row">
     <td><div class="td-name"><div class="mini-avatar">${p.init}</div>${lang === "ar" ? p.arName : p.name}</div></td>
-    <td>${p.age}</td><td style="color:var(--muted)">${p.phone || (phones && phones[originalIndex]) || "010-0000-0000"}</td>
+    <td>${p.age}</td><td style="color:var(--muted)">${p.phone || "010-0000-0000"}</td>
     <td style="color:var(--muted)">${p.ins}</td><td style="color:var(--muted)">${p.date}</td>
     <td><span class="chip chip-${p.status}">${chip(p.status)}</span></td>
   </tr>`}).join("");
 }
 
 let currentPatientIndex = -1;
-
 function viewPatient(index) {
   currentPatientIndex = index;
   const p = homePatients[index];
   const modal = document.getElementById("modal-editPatient");
-  
-  // Populate all inputs that have a name attribute
   const inputs = modal.querySelectorAll("input, select, textarea");
-  inputs.forEach(input => {
-    if (input.name && p[input.name] !== undefined) {
-        input.value = p[input.name];
-    }
-  });
-
-  // Special cases
+  inputs.forEach(input => { if (input.name && p[input.name] !== undefined) input.value = p[input.name]; });
   document.getElementById("edit-patname").value = lang === "ar" ? (p.arName || p.name) : p.name;
-
-  // Disable all fields by default (View Mode)
   inputs.forEach(i => i.disabled = true);
-
   document.getElementById("m-esave").style.display = "none";
   document.getElementById("m-eedit").style.display = "inline-block";
-
   openModal("editPatient");
 }
 
@@ -338,13 +287,8 @@ function toggleEditPatient() {
 async function renderAppts() {
   await window.dataLoaded;
   const tb = document.getElementById("appt-tbody");
-  if (!isValid(appts)) {
-    console.warn("appts has not been fetched");
-    return;
-  }
+  if (!isValid(appts)) return;
   if (tb === null) return;
-
-
   tb.innerHTML = appts.map(a => `<tr>
     <td style="font-weight:700">${a.time}</td><td>${a.patient}</td>
     <td style="color:var(--muted)">${a.doctor}</td><td>${a.type}</td>
@@ -355,13 +299,8 @@ async function renderAppts() {
 async function renderBilling() {
   await window.dataLoaded;
   const tb = document.getElementById("bill-tbody");
-  if (!isValid(invoices)) {
-    console.warn("invoices has not been fetched");
-    return;
-  }
+  if (!isValid(invoices)) return;
   if (tb === null) return;
-
-
   tb.innerHTML = invoices.map(v => `<tr>
     <td style="font-weight:700;color:var(--blue)">${v.id}</td><td>${v.patient}</td>
     <td style="color:var(--muted)">${v.date}</td><td style="font-weight:600">${showLocaleNumber(v.amount)}</td>

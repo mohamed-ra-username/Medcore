@@ -5,72 +5,22 @@ window.dataLoaded = new Promise((resolve) => {
   resolveData = resolve;
 });
 
-const api = {
-  protocol: "http://",
-  subdomain: "",
-  domainName: "localhost",
-  port: ":5001",
-  page: "/api",
-
-  URLlink_with_endpoint: function (endpoint) {
-    return this.URLlink + endpoint;
-  },
-
-  get URLlink() {
-    return `${this.protocol}${this.subdomain}${this.domainName}${this.port}${this.page}`;
-  },
-};
-
-async function GetDataFromBackend(endpoint) {
-  const api_link = api.URLlink_with_endpoint(endpoint);
-  // console.info("Fetching: ", api_link);
-  try {
-    const response = await fetch(api_link);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(`Error fetching data from ${api_link}:`, error);
-    return undefined;
-  }
-}
-
-async function SendDataToBackend(endpoint, method, data) {
-  const api_link = api.URLlink_with_endpoint(endpoint);
-  console.info(`Sending (${method}): `, api_link);
-  try {
-    const response = await fetch(api_link, {
-      method: method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error(`Error sending data to ${api_link}:`, error);
-    return undefined;
-  }
-}
-
 async function update() {
   try {
     console.log("Fetching data from backend...");
     const results = await Promise.all([
-      GetDataFromBackend("/homePatients/"),
-      GetDataFromBackend("/companies/"),
-      GetDataFromBackend("/claims/"),
-      GetDataFromBackend("/approvals/"),
-      GetDataFromBackend("/phones/"),
-      GetDataFromBackend("/appointments/"),
-      GetDataFromBackend("/invoices/"),
-      GetDataFromBackend("/stats/")
+      GETRequest("/homePatients/"),
+      GETRequest("/companies/"),
+      GETRequest("/claims/"),
+      GETRequest("/approvals/"),
+      GETRequest("/phones/"),
+      GETRequest("/appointments/"),
+      GETRequest("/invoices/"),
+      GETRequest("/stats/")
     ]);
 
-    [homePatients, companies, claimsData, approvalsData, phones, appts, invoices, stats] = results;
+    // Map the results (checking for success)
+    [homePatients, companies, claimsData, approvalsData, phones, appts, invoices, stats] = results.map(res => (res && res.success) ? res.data : undefined);
 
     console.log("Data updated successfully.");
 
