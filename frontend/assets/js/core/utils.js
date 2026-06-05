@@ -20,18 +20,26 @@ const Utils = {
         return new Intl.NumberFormat(this.locale);
     },
 
-    formatNumber: (num) => Utils.numberFormatter.format(num),
+    formatNumber: (num) => {
+        if (num === undefined || num === null || num === "N/A") return "N/A";
+        // If it's a string with commas (like "500,000"), return it directly
+        if (typeof num === 'string' && num.includes(',')) return num;
+        const n = parseFloat(num);
+        return isNaN(n) ? num : Utils.numberFormatter.format(n);
+    },
 
     initials: (name) => {
-        if (!name) return "??";
+        if (!name || name === "N/A") return "??";
         return name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
     },
 
     // Standard date fixer for the UI
     formatDate: (dateStr) => {
-        if (!dateStr) return "-";
+        if (!dateStr || dateStr === "N/A") return "N/A";
         const d = new Date(dateStr);
-        if (isNaN(d)) return dateStr;
+        // If it's a simple string like "May 4", native Date might fail.
+        // If it fails, just return the string as is.
+        if (isNaN(d.getTime())) return dateStr;
         return d.toLocaleDateString(Utils.locale, { month: 'short', day: 'numeric' });
     }
 };

@@ -45,7 +45,8 @@ def dashboard():
         "claims": len(data_handler.claimsData),
         "invoices": len(data_handler.invoices),
         "companies": len(data_handler.companies),
-        "users": len(auth_users)
+        "users": len(auth_users),
+        "approvals": len(data_handler.approvalsData)
     }
     return flask.render_template("admin/dashboard.html", stats=stats)
 
@@ -60,7 +61,8 @@ def list_category(category):
         "claims": data_handler.claimsData,
         "invoices": data_handler.invoices,
         "companies": data_handler.companies,
-        "users": auth_users
+        "users": auth_users,
+        "approvals": data_handler.approvalsData
     }
     
     target_data = data_map.get(category)
@@ -80,7 +82,8 @@ def delete_item(category, index):
         "claims": data_handler.claimsData,
         "invoices": data_handler.invoices,
         "companies": data_handler.companies,
-        "users": auth_users
+        "users": auth_users,
+        "approvals": data_handler.approvalsData
     }
     
     target_list = data_map.get(category)
@@ -106,8 +109,6 @@ def raw_editor():
     from persistence.json_repository import file as data_file
     from persistence.user_repository import file as user_file
     
-    # We'll allow choosing between files or just show both?
-    # Let's add a parameter for the file.
     file_type = flask.request.args.get("file", "data")
     target_file = user_file if file_type == "users" else data_file
     
@@ -118,7 +119,6 @@ def raw_editor():
             with open(target_file, "w", encoding="utf-8") as f:
                 f.write(new_json)
             
-            # Reload correctly
             if file_type == "users":
                 user_repository.load_users()
             else:
@@ -146,7 +146,6 @@ def manual_backup():
     
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     
-    # Backup both
     shutil.copy(data_file, backup_dir / f"data_backup_{timestamp}.json")
     shutil.copy(user_file, backup_dir / f"users_backup_{timestamp}.json")
     
