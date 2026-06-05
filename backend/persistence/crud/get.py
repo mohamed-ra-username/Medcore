@@ -2,7 +2,7 @@ from functools import partial
 from typing import Any
 
 from persistence.enums import status
-from persistence.json_repository import *
+from persistence.json_repository import users, appointments, companies, phones, invoices, claimsData, approvalsData, homePatients
 
 UNKNOWN = object()
 
@@ -12,13 +12,11 @@ def _get_one_or_none(something: list, id: int|None):
     except (KeyError, IndexError, TypeError):
         return None
 
-
 def _get_one_or_all(something: list, id: slice | int | None):
     try:
         return something[id] # type: ignore
     except (KeyError, IndexError, TypeError):
         return something
-
 
 get_user = partial(_get_one_or_none, users)
 get_users = partial(_get_one_or_all, users)
@@ -29,14 +27,13 @@ get_companies = partial(_get_one_or_all, companies)
 get_claims = partial(_get_one_or_all, claimsData)
 get_approvals = partial(_get_one_or_all, approvalsData)
 
-
 def get_homePatients(id: int | slice | Any = UNKNOWN):
     return _get_one_or_all(homePatients, id)
 
-
 def get_stats():
-
-    stats = {
+    # Use internal logic to calculate stats from lists
+    # (Rest of get_stats logic stays the same)
+    st = {
         "home": {
             "patients": len([p for p in homePatients if p["status"] == status.ACTIVE]),
             "appts": len([a for a in appointments if a["status"] == status.ACTIVE]),
@@ -63,4 +60,4 @@ def get_stats():
             "overdue": sum((v["amount"]) for v in invoices if v["status"] == status.REJECTED)
         }
     }
-    return stats
+    return st

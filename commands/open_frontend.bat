@@ -1,1 +1,1 @@
-start frontend/views/home.html
+start frontend/views/pages/home.html
