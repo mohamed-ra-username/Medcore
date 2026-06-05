@@ -20,12 +20,11 @@ const Utils = {
         return new Intl.NumberFormat(this.locale);
     },
 
-    formatNumber: (num) => {
-        if (num === undefined || num === null || num === "N/A") return "N/A";
-        // If it's a string with commas (like "500,000"), return it directly
-        if (typeof num === 'string' && num.includes(',')) return num;
-        const n = parseFloat(num);
-        return isNaN(n) ? num : Utils.numberFormatter.format(n);
+    // Standard Formatter for numbers
+    formatNumber: (val) => {
+        if (val === undefined || val === null || val === "N/A" || val === "." || val === "") return "N/A";
+        let num = parseFloat(val);
+        return isNaN(num) ? "N/A" : Utils.numberFormatter.format(num);
     },
 
     initials: (name) => {
@@ -37,8 +36,7 @@ const Utils = {
     formatDate: (dateStr) => {
         if (!dateStr || dateStr === "N/A") return "N/A";
         const d = new Date(dateStr);
-        // If it's a simple string like "May 4", native Date might fail.
-        // If it fails, just return the string as is.
+        // If it's a simple string like "May 4", just return it
         if (isNaN(d.getTime())) return dateStr;
         return d.toLocaleDateString(Utils.locale, { month: 'short', day: 'numeric' });
     }

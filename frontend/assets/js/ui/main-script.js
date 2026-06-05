@@ -112,7 +112,7 @@ function createPatientRow(p, index) {
       <td class="dyn-num" data-value="${age}">${age}</td>
       <td style="color:var(--muted)" class="dyn-text" data-en="${enDoc}" data-ar="${arDoc}">${Utils.lang === "ar" ? arDoc : enDoc}</td>
       <td style="color:var(--muted)">${ins}</td>
-      <td style="color:var(--muted)" class="dyn-date" data-value="${p.date || 'N/A'}">${Utils.formatDate(p.date || 'N/A')}</td>
+      <td style="color:var(--muted)" class="dyn-date" data-value="${p.date || 'N/A'}">${p.date ? Utils.formatDate(p.date) : 'N/A'}</td>
       <td class="status-cell"><span class="chip chip-${p.status || 'unknown'}">${chip(p.status || 'unknown')}</span></td>
     `;
     return tr;
@@ -196,8 +196,8 @@ async function renderCompanies(list) {
   grid.innerHTML = list.map(c => {
     const name = c.name || 'N/A';
     const type = c.type || 'N/A';
-    const claims = c.claims ?? 0;
-    const limit = c.limit || 'N/A';
+    const claims = c.claims || 0;
+    const limit = c.limit || 0;
     
     return `
     <div class="company-card">
@@ -209,7 +209,7 @@ async function renderCompanies(list) {
       <div class="cc-row">
         <div class="cc-kpi"><div class="cc-kpi-val dyn-num" data-value="${claims}">${Utils.formatNumber(claims)}</div><div class="cc-kpi-lbl">${t("claims")}</div></div>
         <div class="cc-kpi"><div class="cc-kpi-val dyn-num" data-value="${limit}">${Utils.formatNumber(limit)}</div><div class="cc-kpi-lbl">${t("limit")}</div></div>
-        <div class="cc-kpi"><div class="cc-kpi-val dyn-date" data-value="${c.end || 'N/A'}" style="color:${c.status === "expiring" ? "#E65100" : "var(--teal)"}">${Utils.formatDate(c.end || 'N/A')}</div><div class="cc-kpi-lbl">${t("expires")}</div></div>
+        <div class="cc-kpi"><div class="cc-kpi-val dyn-date" data-value="${c.end || 'N/A'}" style="color:${c.status === "expiring" ? "#E65100" : "var(--teal)"}">${c.end ? Utils.formatDate(c.end) : 'N/A'}</div><div class="cc-kpi-lbl">${t("expires")}</div></div>
       </div>
     </div>`
   }).join("");
@@ -220,7 +220,7 @@ async function renderClaims(filter, list) {
   if (!tb || !list) return;
   tb.innerHTML = list.map((c, i) => {
     const patName = c.patient || 'N/A';
-    const amount = c.amount ?? 0;
+    const amount = c.amount || 0;
     return `<tr>
       <td style="font-weight:700;color:var(--blue)">${c.id || 'N/A'}</td>
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
@@ -237,8 +237,7 @@ async function renderPatients(list) {
   tb.innerHTML = list.map((p, i) => {
     const enName = p.name || 'N/A';
     const arName = p.arName || enName;
-    // Fallback phone from index if not in object, or N/A
-    const phone = p.phone || (window.phones && window.phones[i]) || 'N/A';
+    const phone = p.phone || 'N/A';
     const age = p.age || 'N/A';
     return `<tr class="clickable-row" onclick="viewPatient(${i})">
       <td><div class="td-name"><div class="mini-avatar">${p.init || '??'}</div><span class="dyn-text" data-en="${enName}" data-ar="${arName}">${Utils.lang === "ar" ? arName : enName}</span></div></td>
@@ -254,9 +253,11 @@ async function renderApprovals(list) {
   if (!tb || !list) return;
   tb.innerHTML = list.map((a, i) => {
     const patName = a.patient || 'N/A';
-    const proc = a.proc || 'N/A';
+    const proc = a.procedure || 'N/A';
+    const ref = a.ref || 'N/A';
+    
     return `<tr>
-      <td style="font-weight:700;color:var(--blue)">${a.ref || 'N/A'}</td>
+      <td style="font-weight:700;color:var(--blue)">${ref}</td>
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
       <td class="dyn-text" data-en="${proc}" data-ar="${a.arProc || proc}">${Utils.lang === "ar" ? (a.arProc || proc) : proc}</td>
       <td><span class="chip chip-${a.status || 'pending'}">${chip(a.status || 'pending')}</span></td>
@@ -272,8 +273,10 @@ async function renderAppts(list) {
     const patName = a.patient || 'N/A';
     const enDoc = a.doctor || 'N/A';
     const arDoc = a.arDoc || enDoc;
+    const time = a.time || 'N/A';
+    
     return `<tr>
-      <td class="dyn-date" data-value="${a.time || 'N/A'}">${a.time || 'N/A'}</td>
+      <td>${time}</td>
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
       <td style="color:var(--muted)" class="dyn-text" data-en="${enDoc}" data-ar="${arDoc}">${Utils.lang === "ar" ? arDoc : enDoc}</td>
       <td><span class="chip chip-${a.status || 'unknown'}">${chip(a.status || 'unknown')}</span></td>
@@ -286,7 +289,7 @@ async function renderBilling(list) {
   if (!tb || !list) return;
   tb.innerHTML = list.map((v, i) => {
     const patName = v.patient || 'N/A';
-    const amount = v.amount ?? 0;
+    const amount = v.amount || 0;
     return `<tr>
       <td style="font-weight:700;color:var(--blue)">${v.id || 'N/A'}</td>
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>

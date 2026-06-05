@@ -48,7 +48,7 @@
       "color": "#1B4F8A",
       "init": "MI",
       "claims": 87,
-      "limit": "500,000",
+      "limit": 500000,
       "end": "Dec 2026",
       "status": "active",
       "id": "f8267c47-39a5-4eca-aa67-100592939fd6"
@@ -59,7 +59,7 @@
       "color": "#1AAB8A",
       "init": "AX",
       "claims": 64,
-      "limit": "750,000",
+      "limit": 750000,
       "end": "Aug 2026",
       "status": "expiring",
       "id": "57481445-322a-494d-ad13-2204e5c25786"
@@ -70,7 +70,7 @@
       "color": "#7B1FA2",
       "init": "ML",
       "claims": 41,
-      "limit": "400,000",
+      "limit": 400000,
       "end": "May 2027",
       "status": "active",
       "id": "59ce0b23-724f-42c5-b977-2359a50888e8"
@@ -81,7 +81,7 @@
       "color": "#E65100",
       "init": "AL",
       "claims": 53,
-      "limit": "600,000",
+      "limit": 600000,
       "end": "Jan 2027",
       "status": "active",
       "id": "ce865380-e7cb-4d53-8cfe-9593ac1c49ff"
@@ -92,7 +92,7 @@
       "color": "#0277BD",
       "init": "GM",
       "claims": 38,
-      "limit": "350,000",
+      "limit": 350000,
       "end": "Jul 2026",
       "status": "expiring",
       "id": "574d054f-b5b4-41f3-aff9-f1be40df4fdb"
@@ -103,7 +103,7 @@
       "color": "#2E7D32",
       "init": "EI",
       "claims": 29,
-      "limit": "300,000",
+      "limit": 300000,
       "end": "Apr 2027",
       "status": "active",
       "id": "58d1a10e-276b-43a6-ae05-83c247e831b1"
@@ -114,7 +114,7 @@
       "color": "#AD1457",
       "init": "SO",
       "claims": 18,
-      "limit": "250,000",
+      "limit": 250000,
       "end": "Sep 2026",
       "status": "active",
       "id": "a9446a17-95f6-49d7-b6df-89bc51d10c06"
@@ -125,7 +125,7 @@
       "color": "#4527A0",
       "init": "WI",
       "claims": 12,
-      "limit": "200,000",
+      "limit": 200000,
       "end": "Nov 2027",
       "status": "active",
       "id": "aa619058-01b7-4ddf-8833-dcc9bbc09042"
