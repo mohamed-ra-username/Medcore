@@ -9,7 +9,7 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         h1, h2 { color: var(--blue); }
-        .nav { margin-bottom: 30px; display: flex; gap: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .nav { margin-bottom: 30px; display: flex; gap: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; align-items: center; }
         .nav a { text-decoration: none; color: var(--text); font-weight: 600; padding: 5px 10px; border-radius: 5px; }
         .nav a:hover { background: #eee; }
         .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
@@ -20,15 +20,18 @@
         th { background: #fafafa; font-size: 12px; text-transform: uppercase; color: #666; }
         .btn-del { color: #C62828; cursor: pointer; border: none; background: none; font-weight: bold; }
         .btn-del:hover { text-decoration: underline; }
-        .editor { width: 100%; height: 500px; font-family: monospace; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .editor { width: 100%; height: 500px; font-family: monospace; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #2b2b2b; color: #a9b7c6; }
         .btn-save { background: var(--blue); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .tab-btn { padding: 8px 16px; border: 1px solid #ddd; background: #fff; cursor: pointer; border-radius: 4px; text-decoration: none; color: #333; }
+        .tab-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="nav">
             <a href="/interface/">Dashboard</a>
-            <a href="/interface/raw">Raw JSON Editor</a>
+            <a href="/interface/raw?file=data">Edit Data</a>
+            <a href="/interface/raw?file=users">Edit Users</a>
             <a href="/api/" target="_blank">API Root</a>
             <a href="/interface/logout" style="margin-left:auto; color: #C62828;">Logout</a>
         </div>

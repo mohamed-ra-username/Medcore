@@ -1,11 +1,16 @@
 {% extends "admin/layout.html" %}
 
 {% block content %}
-    <h1>Raw JSON Editor</h1>
+    <h1>Raw JSON Editor: <span style="color:var(--teal)">{{ file_type }}.json</span></h1>
     <p style="color: #C62828;">⚠️ <b>Warning:</b> Manual editing can corrupt the database if the JSON format is invalid.</p>
+
+    <div style="margin-bottom: 20px;">
+        <a href="/interface/raw?file=data" class="tab-btn {% if file_type == 'data' %}active{% endif %}">Clinical Data (data.json)</a>
+        <a href="/interface/raw?file=users" class="tab-btn {% if file_type == 'users' %}active{% endif %}">Users Database (users.json)</a>
+    </div>
 
     <form method="POST">
         <textarea name="json_data" class="editor">{{ json_content }}</textarea>
-        <button type="submit" class="btn-save">Overwrite data.json</button>
+        <button type="submit" class="btn-save">Overwrite {{ file_type }}.json</button>
     </form>
 {% endblock %}

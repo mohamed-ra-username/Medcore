@@ -1,1 +1,14 @@
-[]
+[
+    {
+        "email": "d@",
+        "password_hash": "scrypt:32768:8:1$YGx7XExzbcgLUrm5$4d25917544acb68866cdaefd9720bbc190f08e1040c05f10d6c03cc0aaf302fc65989ce5874a181f951ffa002ed01429834f9a2a2ac0610fb3f7dcf3484b7e01",
+        "name": " ",
+        "role": "doctor"
+    },
+    {
+        "email": "d@c.m",
+        "password_hash": "scrypt:32768:8:1$N9Q6IVpijiYbRYd1$9b3965ffb663509489f2e56ab76ee06a419586913d60d9ac516feb267ba68fe227895ff928aca1bb6911a7339404b88a6175b4cd45750fa75f1b29c31f71d8c0",
+        "name": "Ahmed admin",
+        "role": "admin"
+    }
+]

@@ -102,7 +102,7 @@ async function updatePatient() {
 
 async function deletePatient() {
   if (typeof currentPatientIndex === 'undefined' || currentPatientIndex < 0) return;
-  const confirmMsg = lang === "ar" ? "هل أنت متأكد من حذف المريض؟" : "Are you sure you want to delete this patient?";
+  const confirmMsg = Utils.lang === "ar" ? "هل أنت متأكد من حذف المريض؟" : "Are you sure you want to delete this patient?";
   if (confirm(confirmMsg)) {
     const result = await DELETERequest(`/homePatients/${currentPatientIndex}/`);
     if (result && result.success) {

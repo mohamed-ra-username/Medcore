@@ -6,10 +6,14 @@
  */
 
 const Utils = {
-    lang: localStorage.getItem("lang") ?? "en",
-    
+    // Single Source of Truth
     get locale() {
-        return this.lang === "ar" ? "ar-EG" : "en-US";
+        return localStorage.getItem("locale") ?? "en-US";
+    },
+
+    // Derived from locale (e.g. "ar" or "en")
+    get lang() {
+        return this.locale.split('-')[0];
     },
 
     get numberFormatter() {
@@ -26,9 +30,8 @@ const Utils = {
     // Standard date fixer for the UI
     formatDate: (dateStr) => {
         if (!dateStr) return "-";
-        // If it's a date object or ISO string, format it nicely
         const d = new Date(dateStr);
-        if (isNaN(d)) return dateStr; // Return raw if not a valid date
+        if (isNaN(d)) return dateStr;
         return d.toLocaleDateString(Utils.locale, { month: 'short', day: 'numeric' });
     }
 };
@@ -39,7 +42,6 @@ const Utils = {
  * ==========================================
  */
 function showToast(message, type = "success") {
-    // Create toast container if it doesn't exist
     let container = document.getElementById("toast-container");
     if (!container) {
         container = document.createElement("div");
@@ -69,7 +71,6 @@ function showToast(message, type = "success") {
     `;
     toast.textContent = message;
 
-    // Auto-remove after 4 seconds
     const remove = () => {
         toast.style.opacity = "0";
         setTimeout(() => toast.remove(), 300);
@@ -80,7 +81,6 @@ function showToast(message, type = "success") {
     setTimeout(remove, 4000);
 }
 
-// Add animation to the head
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideIn {

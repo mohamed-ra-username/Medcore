@@ -7,8 +7,8 @@ from . import api_bp
 @api_bp.route("/auth/register/", methods=["POST"])
 def register():
     data = flask.request.json
-    from persistence import user_handler
-    res, status_code = user_handler.register_user(data)
+    from persistence import user_repository
+    res, status_code = user_repository.register_user(data)
     if status_code >= 400:
         return make_response(error=res.get("error", "Registration failed"), status_code=status_code)
     return make_response(data=res, status_code=status_code)
@@ -18,8 +18,8 @@ def login():
     data = flask.request.json
     email = data.get("email")
     password = data.get("password")
-    from persistence import user_handler
-    res, status_code = user_handler.login_user(email, password)
+    from persistence import user_repository
+    res, status_code = user_repository.login_user(email, password)
     if status_code >= 400:
         return make_response(error=res.get("error", "Login failed"), status_code=status_code)
     return make_response(data=res, status_code=status_code)

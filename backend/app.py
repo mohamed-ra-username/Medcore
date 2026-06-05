@@ -7,7 +7,7 @@ PORT = 5001
 
 website_url = 'localhost:'+str(PORT)
 app = Flask(__name__)
-app.secret_key = "medcore-admin-session-key-change-me"
+app.secret_key = "admin123"  # ! In production, use a secure random key and store it safely
 app.config["SERVER_NAME"] = website_url
 
 # Register Blueprints

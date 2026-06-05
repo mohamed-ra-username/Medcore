@@ -11,14 +11,8 @@ users = appointments = companies = phones = invoices = claimsData = approvalsDat
 
 def load_data():
     global users, appointments, companies, phones, invoices, claimsData, approvalsData, homePatients
-    template = {
-        "users": [], "appointments": [], "companies": [], "phones": [],
-        "invoices": [], "claimsData": [], "approvalsData": [], "homePatients": []
-    }
+
     try:
-        if not file.exists():
-            with open(file, "w", encoding="utf-8") as f:
-                json.dump(template, f, indent=4)
         with open(file, "r", encoding="utf-8") as f:
             data = json.load(f)
             users = data.get("users", [])

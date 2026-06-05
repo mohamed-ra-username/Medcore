@@ -1,0 +1,154 @@
+/**
+ * ==========================================
+ * 🔐 AUTH CONTROLLER
+ * ==========================================
+ * Handles Login, Registration, and UI View Toggling.
+ */
+
+async function handleLogin() {
+  const email = document.getElementById("login-email").value;
+  const pass = document.getElementById("login-pass").value;
+  let ok = true;
+
+  if (!email || !email.includes("@")) { showErr("err-login-email", "login-email"); ok = false; }
+  else clearErr("err-login-email", "login-email");
+
+  if (!pass) { showErr("err-login-pass", "login-pass"); ok = false; }
+  else clearErr("err-login-pass", "login-pass");
+
+  if (!ok) return;
+
+  const btn = document.getElementById("btn-login");
+  btn.classList.add("loading");
+
+  const response = await POSTRequest("/auth/login/", { email, password: pass });
+
+  btn.classList.remove("loading");
+
+  if (response && response.success) {
+    data = response.data || {};
+    console.log("Login successful:", data);
+    console.log("Token:", data.token);
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.role);
+    localStorage.setItem("permissions", JSON.stringify(data.permissions));
+
+    showSuccess();
+    setTimeout(() => {
+      window.location.href = "home.html";
+    }, 1500);
+  } else {
+    alert(response?.error || "Login Failed");
+  }
+}
+
+async function handleRegister() {
+  const email = document.getElementById("reg-email").value;
+  const pass = document.getElementById("reg-pass").value;
+  const terms = document.getElementById("terms-check").checked;
+  let ok = true;
+
+  if (!email || !email.includes("@")) { showErr("err-reg-email", "reg-email"); ok = false; }
+  else clearErr("err-reg-email", "reg-email");
+
+  if (!pass || pass.length < 8) { showErr("err-reg-pass", "reg-pass"); ok = false; }
+  else clearErr("err-reg-pass", "reg-pass");
+
+  if (!terms) {
+    alert(Utils.lang === "ar" ? "يجب الموافقة على الشروط أولاً" : "Please accept the terms first");
+    ok = false;
+  }
+
+  if (!ok) return;
+
+  const btn = document.getElementById("btn-register");
+  btn.classList.add("loading");
+
+  const response = await POSTRequest("/auth/register/", {
+    email,
+    password: pass,
+    role: document.querySelector('input[name="role"]:checked')?.value || "user",
+    name: document.getElementById("reg-fname").value + " " + document.getElementById("reg-lname").value
+  });
+
+  btn.classList.remove("loading");
+
+  if (response && response.success) {
+    showSuccess();
+    setTimeout(() => {
+      toggleView('login');
+      document.getElementById("success-screen").classList.remove("show");
+      document.getElementById("view-login").style.display = "block";
+    }, 3000);
+  } else {
+    alert(response?.error || "Registration Failed");
+  }
+}
+
+/* ── UI HELPERS ── */
+
+function toggleView(view) {
+  const isLogin = view === "login";
+  document.getElementById("view-login").style.display = isLogin ? "block" : "none";
+  document.getElementById("view-register").style.display = isLogin ? "none" : "block";
+
+  // Update tabs if they exist
+  const tabLogin = document.getElementById("tab-login");
+  const tabRegister = document.getElementById("tab-register");
+  if (tabLogin && tabRegister) {
+    tabLogin.classList.toggle("active", isLogin);
+    tabRegister.classList.toggle("active", !isLogin);
+  }
+}
+
+function switchTab(tab, btn) {
+  toggleView(tab);
+}
+
+function switchTabByName(tab) {
+  toggleView(tab);
+}
+
+function showErr(errId, inputId) {
+  document.getElementById(errId).classList.add("show");
+  document.getElementById(inputId).classList.add("error");
+}
+
+function clearErr(errId, inputId) {
+  document.getElementById(errId).classList.remove("show");
+  document.getElementById(inputId).classList.remove("error");
+}
+
+function showSuccess() {
+  document.getElementById("view-login").style.display = "none";
+  document.getElementById("view-register").style.display = "none";
+  const sc = document.getElementById("success-screen");
+  if (sc) {
+    sc.classList.add("show");
+    const pb = document.getElementById("progress-bar");
+    if (pb) setTimeout(() => { pb.style.width = "100%"; }, 50);
+  }
+}
+
+function selectRole(card) {
+  document.querySelectorAll(".role-card").forEach(c => c.classList.remove("selected"));
+  card.classList.add("selected");
+  const radio = card.querySelector("input");
+  if (radio) radio.checked = true;
+}
+
+function togglePass(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (inp) inp.type = inp.type === "password" ? "text" : "password";
+}
+
+function checkStrength(val) {
+  let score = -1;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const colors = ["#e53935", "#E65100", "#F9A825", "#1AAB8A"];
+  const segs = document.querySelectorAll(".strength-seg");
+  segs.forEach((s, i) => s.style.background = i < score ? colors[score] : "var(--border)");
+}

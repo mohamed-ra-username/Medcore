@@ -1,6 +1,6 @@
 // --- OPTIMIZED TRANSLATION ENGINE ---
 
-function d() { return T[lang]; }
+function d() { return T[Utils.lang]; }
 
 function chip(k) {
   const chipsObj = d().chips;
@@ -14,7 +14,7 @@ function t(k) {
 function applyLang() {
   const dictionary = d();
   document.documentElement.dir = dictionary.dir;
-  document.documentElement.lang = lang;
+  document.documentElement.lang = Utils.lang;
 
   // Use lowercase 'data-langid' because HTML dataset attributes cast to lowercase
   document.querySelectorAll('[data-langid]').forEach(el => {
@@ -46,16 +46,15 @@ function applyLang() {
     const rawNumber = parseInt(el.getAttribute('data-value'), 10);
 
     // Format and update the UI
-    el.textContent = numberFormatter.format(rawNumber);
+    el.textContent = Utils.formatNumber(rawNumber);
   });
 }
 
 function toggleLang() {
   // 1. Flip Language & Save
-  lang = lang === "en" ? "ar" : "en";
-  locale = lang === "ar" ? "ar-EG" : "en-US";
-  numberFormatter = new Intl.NumberFormat(locale);
-  localStorage.setItem("lang", lang);
+  const newLocale = Utils.lang === "en" ? "ar-EG" : "en-US";
+  localStorage.setItem("locale", newLocale);
+  
   // 2. Translate Static HTML
   applyLang();
 
@@ -71,8 +70,5 @@ function toggleLang() {
     else if (pageId === "page-appointments") renderAppts();
     else if (pageId === "page-billing") renderBilling();
   }
-
-
 }
-
 // ------------------------------------
