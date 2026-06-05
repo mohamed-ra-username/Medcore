@@ -1,10 +1,10 @@
-- Implemented advanced Permission-Based Access Control (PBAC) with a centralized permissions map.
-- Refactored backend into a tiered architecture: api, private, core, and persistence.
-- Converted backend API into a proper Python package for improved modularity.
-- Solved circular import issues using Diamond Architecture in the persistence layer.
-- Standardized 100% of API endpoints to use the { success, data, error } response envelope.
-- Implemented fully functional server-side Admin Panel on port 5001 using Jinja2.
-- Organized frontend JavaScript into functional modules (core, services, ui) and converted to kebab-case.
-- Enhanced frontend performance with Smart DOM Reconciliation and Event-Driven data syncing.
-- Added self-healing logic to automatically repair or recreate corrupted JSON data files.
-- Centralized all project documentation (HANDOVER, TODO, GEMINI) with collaborative engineering mandates.
+- Converted frontend from Dynamic Component Pattern to Monolith HTML Pattern to eliminate async race conditions.
+- Implemented a custom high-performance Dev Server (dev_server.py) with Anti-Cache and CORS headers.
+- Standardized the 4-layer backend hierarchy (api, private, core, persistence) with Diamond Architecture.
+- Integrated the Users Database into the Private Admin Portal for direct credential management.
+- Implemented "UI Ready" signaling (medcore:ui_ready) to synchronize data fetching with DOM initialization.
+- Added visual "Loading..." placeholders to all dashboard cards to prevent NaN display during initial fetch.
+- Fixed the "Redirection Loop" in the Auth Guard caused by nested path mismatches.
+- Standardized 100% of API endpoints to use the consistent { success, data, error } envelope.
+- Implemented professional Email Warning HTML templates in the core integration layer.
+- Moved all standalone batch scripts to the commands/ directory for a cleaner project root.

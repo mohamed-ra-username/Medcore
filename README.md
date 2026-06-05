@@ -5,94 +5,76 @@
 # Medcore: Fully Automated System For Clinics
 
 ![Last commit](https://img.shields.io/github/last-commit/mohamed-ra-username/Medcore?logo=github)
-
 ![GitHub language count](https://img.shields.io/github/languages/count/mohamed-ra-username/Medcore)
 ![GitHub top language](https://img.shields.io/github/languages/top/mohamed-ra-username/Medcore?color=yellow)
 
 _مشروع تخرج [فريق الاحلام](#team) <sub><small>(حلمهم يتخرجوا)</small>_</sub>
 
-A final-year graduation project focused on **reducing unnecessary manual work in clinics**. This project was developed as part of the requirements for the degree of `Computer Science` at **Akhbar-El-Youm**[^College].
-[^College]:[_اخبار اليوم_](https://www.facebook.com/AkhbarelyomAcademy/) هى اكادمية فى 6 اكتوبر
+A professional clinic management system focused on **eliminating manual overhead**. Built with a tiered Python/Flask backend and a responsive Vanilla JS frontend.
 
 ---
 
-## 🚀 Quick Start (For Beginners)
+## 🚀 Quick Start
 
-**Open**: **`RUN_APP.bat`**.
+1.  **Open**: **`RUN_APP.bat`** at the project root.
+2.  The script will handle dependencies and launch the **Backend (5001)** and the **Dev Server (5000)**.
+3.  Access the admin panel directly at `http://localhost:5001/interface/`.
 
 ---
 
 ## ⚡ Project Overview
 
-The **Medcore** aims to solve the problem of excessive manual labor and time consumption by implementing a fully automated system that calculates costs and handles patient management for clinics.
-
-**Proposed Solution:** A centralized web-based management system with a robust API that automates data persistence, real-time analytics, and insurance claim tracking.
+The **Medcore** system automates core clinical workflows:
+- **Patient Management:** Secure storage and retrieval of medical records.
+- **Financial Tracking:** Real-time billing, invoices, and insurance claim processing.
+- **Analytics:** Dynamic dashboards showing clinic health and revenue.
 
 ---
 
 ## 📂 Project Structure
 
-Medcore is organized into a clean, easy-to-use structure:
-
-- **`backend/`**: The "Engine" of the app (Python logic & API).
-- **`frontend/`**: The "Face" of the app (HTML, CSS, JavaScript).
-- **`data/`**: Where your patient records and files are stored.
-- **`docs/`**: Technical guides, roadmap, and handover documents.
-- **`RUN_APP.bat`**: The only file you need to start the whole app.
+- **`backend/`**: Modular logic following a 4-layer architecture (`api`, `private`, `core`, `persistence`).
+- **`frontend/`**: High-performance Vanilla JS interface using a Monolith HTML pattern.
+- **`data/`**: Central storage for JSON databases (`data.json`, `users.json`).
+- **`commands/`**: Specialized dev scripts and server handlers.
 
 ---
 
 ## ✨ Key Features
 
-**Real-time Analytics Dashboard:** Visual overview of patient counts, appointments, and revenue.
+**🔒 Tiered Security:** Granular Permission-Based Access Control (PBAC) using JWT tokens.
 
-**Full CRUD Management:** Create, Read, Update, and Delete patients and claims.
+**🚀 Zero-Cache Dev Server:** Custom server ensures instant UI updates during development.
 
-**Multi-language Support:** Full support for English and Arabic (RTL).
+**🌍 Full Localization:** LTR/RTL support for English and Arabic with locale-aware number formatting.
 
-**Automated Data Sync:** Background data synchronization for a fast UI.
-
----
-
-## 📑 Milestones (Finished)
-
-- [x] Responsive HTML/CSS Layout
-- [x] Dynamic JavaScript Rendering
-- [x] Arabic (RTL) Support & Localization
-- [x] Asynchronous Data Sync (Promise Pattern)
-- [x] Flask API Infrastructure
-- [x] JSON Data Persistence Layer
-- [x] Full CRUD API Endpoints (30+ routes)
-- [x] Modular Backend Function Handlers
-- [x] Real-time Search & Filtering
+**🛠️ Integrated Admin Portal:** Direct server-side tool for managing raw JSON data and user accounts.
 
 ---
 
-## 🛠️ Tech Stack
+## 📑 Completed Milestones
 
-**Frontend:** HTML5, CSS3, JavaScript (Vanilla ES6+)
-
-**Backend:** Python 3.10+ (Flask Framework)
-
-**Database:** JSON Persistence (Scalable to SQLite)
+- ✅ **4-Layer Backend Refactor:** Strict separation of API, Admin, Logic, and Data.
+- ✅ **Diamond Persistence Architecture:** Resolved all circular import and stability issues.
+- ✅ **Standardized API Envelope:** 100% of endpoints return consistent JSON wrappers.
+- ✅ **Monolith HTML UI:** Eliminated async race conditions for sidebar/modal loading.
+- ✅ **PBAC Engine:** Advanced permission maps for Doctors, Nurses, and Staff.
+- ✅ **Custom Dev Server:** Built-in CORS and Anti-Cache support.
 
 ---
 
-## 📖 Further Documentation
+## 📖 Technical Documentation
 
-For developers looking to dive deeper into the code:
-- [HANDOVER.md](docs/HANDOVER.md): Technical Architecture & Workflow.
-- [TODO.md](docs/TODO.md): Roadmap & Planned Features.
-- [changes.txt](docs/changes.txt): History of recent updates.
+- [HANDOVER.md](docs/HANDOVER.md): Comprehensive Architectural Deep-Dive.
+- [TODO.md](docs/TODO.md): Master Roadmap & Current Sprints.
+- [changes.txt](docs/changes.txt): Chronological history of technical updates.
 
 ---
 
 ## 👥 Team
 
 **Omar Hamdallah** - Team Leader/Frontend Dev
-
 **Mohamed Ragab Mubarak** - Fullstack Dev
-
 **Adham Galal** - Frontend Dev
 
 **Supervisor:** د.انجى
