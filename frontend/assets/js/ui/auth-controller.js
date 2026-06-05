@@ -26,12 +26,13 @@ async function handleLogin() {
   btn.classList.remove("loading");
 
   if (response && response.success) {
-    data = response.data || {};
-    console.log("Login successful:", data);
-    console.log("Token:", data.token);
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("role", data.role);
-    localStorage.setItem("permissions", JSON.stringify(data.permissions));
+    // Correctly unwrap the data from the standard envelope
+    const authData = response.data; 
+    
+    console.log("Login successful. Storing session...");
+    localStorage.setItem("token", authData.token);
+    localStorage.setItem("role", authData.role);
+    localStorage.setItem("permissions", JSON.stringify(authData.permissions));
 
     showSuccess();
     setTimeout(() => {
@@ -77,8 +78,10 @@ async function handleRegister() {
     showSuccess();
     setTimeout(() => {
       toggleView('login');
-      document.getElementById("success-screen").classList.remove("show");
-      document.getElementById("view-login").style.display = "block";
+      const successSc = document.getElementById("success-screen");
+      if (successSc) successSc.classList.remove("show");
+      const loginView = document.getElementById("view-login");
+      if (loginView) loginView.style.display = "block";
     }, 3000);
   } else {
     alert(response?.error || "Registration Failed");
@@ -89,8 +92,11 @@ async function handleRegister() {
 
 function toggleView(view) {
   const isLogin = view === "login";
-  document.getElementById("view-login").style.display = isLogin ? "block" : "none";
-  document.getElementById("view-register").style.display = isLogin ? "none" : "block";
+  const viewLogin = document.getElementById("view-login");
+  const viewRegister = document.getElementById("view-register");
+  
+  if (viewLogin) viewLogin.style.display = isLogin ? "block" : "none";
+  if (viewRegister) viewRegister.style.display = isLogin ? "none" : "block";
 
   // Update tabs if they exist
   const tabLogin = document.getElementById("tab-login");
@@ -110,18 +116,25 @@ function switchTabByName(tab) {
 }
 
 function showErr(errId, inputId) {
-  document.getElementById(errId).classList.add("show");
-  document.getElementById(inputId).classList.add("error");
+  const errEl = document.getElementById(errId);
+  const inputEl = document.getElementById(inputId);
+  if (errEl) errEl.classList.add("show");
+  if (inputEl) inputEl.classList.add("error");
 }
 
 function clearErr(errId, inputId) {
-  document.getElementById(errId).classList.remove("show");
-  document.getElementById(inputId).classList.remove("error");
+  const errEl = document.getElementById(errId);
+  const inputEl = document.getElementById(inputId);
+  if (errEl) errEl.classList.remove("show");
+  if (inputEl) inputEl.classList.remove("error");
 }
 
 function showSuccess() {
-  document.getElementById("view-login").style.display = "none";
-  document.getElementById("view-register").style.display = "none";
+  const viewLogin = document.getElementById("view-login");
+  const viewRegister = document.getElementById("view-register");
+  if (viewLogin) viewLogin.style.display = "none";
+  if (viewRegister) viewRegister.style.display = "none";
+  
   const sc = document.getElementById("success-screen");
   if (sc) {
     sc.classList.add("show");
@@ -150,5 +163,5 @@ function checkStrength(val) {
   if (/[^A-Za-z0-9]/.test(val)) score++;
   const colors = ["#e53935", "#E65100", "#F9A825", "#1AAB8A"];
   const segs = document.querySelectorAll(".strength-seg");
-  segs.forEach((s, i) => s.style.background = i < score ? colors[score] : "var(--border)");
+  segs.forEach((s, i) => s.style.background = (i <= score) ? colors[score] : "var(--border)");
 }

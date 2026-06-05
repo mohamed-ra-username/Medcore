@@ -59,7 +59,7 @@ def register_user(data: dict):
 
     users.append(new_user)
     save_users()
-    return {"success": True}, 201
+    return new_user, 201
 
 def login_user(email, password):
     user = next((u for u in users if u.get("email") == email), None)
@@ -69,12 +69,11 @@ def login_user(email, password):
         token = generate_token(user['email'], user_role)
 
         return {
-            "success": True,
             "token": token,
             "role": user_role,
             "permissions": ACCESS_CONTROL.get(user_role, [])
         }, 200
 
-    return {"success": False, "error": "Invalid credentials"}, 401
+    return {"error": "Invalid credentials"}, 401
 
 load_users()

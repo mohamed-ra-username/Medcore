@@ -1,1 +1,1 @@
-start frontend/views/pages/home.html
+start http://localhost:5000/views/pages/login.html
