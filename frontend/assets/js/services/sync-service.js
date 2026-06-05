@@ -4,8 +4,9 @@
  * ==========================================
  * Fetches data and broadcasts "Shouts" (Events) to the app.
  */
-// const update_time = 1 * 60 * 1000; // 5 minutes in milliseconds
-const update_time = 5 * 1000; // 5 minutes in milliseconds
+const update_time = 2 * 60 * 1000; // 5 minutes
+// const update_time = 5 * 1000; // 5 seconds
+
 var homePatients, companies, claimsData, approvalsData, phones, appts, invoices, stats;
 
 async function update() {

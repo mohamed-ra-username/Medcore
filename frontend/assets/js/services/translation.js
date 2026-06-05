@@ -34,19 +34,36 @@ function applyLang() {
       el.textContent = translation;
     }
 
-    // Safely translate tooltips/titles if they exist
     if (el.hasAttribute('title')) {
       el.setAttribute('title', translation);
     }
   });
 
-  // This formatter will automatically use Eastern Arabic numerals for "ar-EG"
-  document.querySelectorAll('[class$="val"]').forEach(el => {
-    // Always grab the raw number from the data attribute (default to 0)
-    const rawNumber = parseInt(el.getAttribute('data-value'), 10);
+  // --- DOM-BASED DYNAMIC TRANSLATION ---
+  
+  // 1. Numbers (Cards, Badges, Table Cells)
+  document.querySelectorAll('.stat-val, .sb-val, .badge, .dyn-num').forEach(el => {
+    const rawData = el.getAttribute('data-value');
+    if (!rawData || rawData === "." || rawData === "-" || rawData === "N/A") return; 
+    
+    const rawNumber = parseInt(rawData, 10);
+    if (!isNaN(rawNumber)) {
+        el.textContent = Utils.formatNumber(rawNumber);
+    }
+  });
 
-    // Format and update the UI
-    el.textContent = Utils.formatNumber(rawNumber);
+  // 2. Dates (Table Cells)
+  document.querySelectorAll('.dyn-date').forEach(el => {
+      const rawDate = el.getAttribute('data-value');
+      if (rawDate && rawDate !== "." && rawDate !== "-" && rawDate !== "N/A") {
+          el.textContent = Utils.formatDate(rawDate);
+      }
+  });
+
+  // 3. Bilingual Text (Names, Roles)
+  document.querySelectorAll('.dyn-text').forEach(el => {
+      const text = el.getAttribute(`data-${Utils.lang}`);
+      if (text) el.textContent = text;
   });
 }
 
@@ -55,20 +72,7 @@ function toggleLang() {
   const newLocale = Utils.lang === "en" ? "ar-EG" : "en-US";
   localStorage.setItem("locale", newLocale);
   
-  // 2. Translate Static HTML
+  // 2. DOM-Based Translation (No Re-renders needed!)
   applyLang();
-
-  // 3. Translate Dynamic JS Injections (Force Re-render of Active Page)
-  const activePage = document.querySelector(".page.active");
-  if (activePage) {
-    const pageId = activePage.id;
-    if (pageId === "page-home") renderHome();
-    else if (pageId === "page-insurance") renderCompanies();
-    else if (pageId === "page-claims") renderClaims();
-    else if (pageId === "page-approvals") renderApprovals();
-    else if (pageId === "page-patients") renderPatients();
-    else if (pageId === "page-appointments") renderAppts();
-    else if (pageId === "page-billing") renderBilling();
-  }
 }
 // ------------------------------------
