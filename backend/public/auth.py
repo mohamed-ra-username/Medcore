@@ -1,13 +1,11 @@
 import flask
-from database import handler
-from .api import api_bp
+from persistence import handler
+from . import api_bp
 
 @api_bp.route("/auth/register/", methods=["POST"])
 def register():
     data = flask.request.json
     res, status_code = handler.register_user(data)
-    # register_user still returns old style, let's keep it or fix it there.
-    # For now, let's just use make_response here.
     if status_code >= 400:
         return handler.make_response(error=res.get("error", "Registration failed"), status_code=status_code)
     return handler.make_response(data=res, status_code=status_code)

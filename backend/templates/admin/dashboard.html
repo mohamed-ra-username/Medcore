@@ -1,0 +1,24 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+    <h1>Clinic Data Dashboard</h1>
+    <p>Overview of records stored in data.json</p>
+
+    <div class="card-grid">
+        {% for category, count in stats.items() %}
+            <div class="card">
+                <div class="card-count">{{ count }}</div>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">{{ category }}</div>
+                <a href="/interface/list/{{ category }}" style="display:block; margin-top: 10px; font-size: 12px; color: var(--blue);">View Details →</a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top: 40px; padding: 20px; border: 1px dashed #ccc; border-radius: 8px;">
+        <h3>Database Health</h3>
+        <p>Current File: <code>data/data.json</code></p>
+        <form action="/interface/backup" method="POST" style="display:inline;">
+            <button class="btn-save" style="background: var(--teal);">Generate Manual Backup</button>
+        </form>
+    </div>
+{% endblock %}

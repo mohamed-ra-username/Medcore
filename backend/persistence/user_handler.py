@@ -2,8 +2,7 @@ import json
 import pathlib
 from werkzeug.security import generate_password_hash, check_password_hash
 from .enums import role
-from core.security import generate_token, ACCESS_CONTROL
-
+from core.security.logic import generate_token, ACCESS_CONTROL
 
 file_name = "users.json"
 file = pathlib.Path(__file__).parent.parent.parent / "data" / file_name
@@ -13,6 +12,9 @@ users = []
 def load_users():
     global users
     try:
+        if not file.exists():
+            with open(file, "w", encoding="utf-8") as f:
+                json.dump([], f)
         with open(file, "r", encoding="utf-8") as f:
             users = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
@@ -23,13 +25,21 @@ def save_users():
         json.dump(users, f, indent=4, ensure_ascii=False)
 
 def register_user(data: dict):
-    email = data.get("email")
+    try:
+        email = data["email"]
+
+    except KeyError:
+        return {"success": False, "error": "Email is required"}, 400
+
     try:
         password = data["password"]
     except KeyError:
         return {"success": False, "error": "Password is required"}, 400
 
-    user_role = data.get("role", role.USER)
+    try:
+        user_role = data["role"]
+    except KeyError:
+        user_role = role.USER
 
     if any(u.get("email") == email for u in users):
         return {"success": False, "error": "User already exists"}, 400

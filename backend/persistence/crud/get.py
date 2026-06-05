@@ -1,8 +1,8 @@
 from functools import partial
 from typing import Any
 
-from ..enums import status
-from ..data_handler import *
+from persistence.enums import status
+from persistence.json_repository import *
 
 UNKNOWN = object()
 

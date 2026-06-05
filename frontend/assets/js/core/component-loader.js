@@ -19,11 +19,11 @@ async function loadComponent(elementId, componentPath) {
 
 // Create a promise that resolves when all core components are injected
 window.componentsLoaded = (async () => {
-    // Load components in parallel
+    // Relative to the page being viewed (e.g., frontend/views/pages/home.html)
     await Promise.all([
-        loadComponent('topbar-placeholder', 'components/topbar.html'),
-        loadComponent('sidebar-placeholder', 'components/sidebar.html'),
-        loadComponent('modals-placeholder', 'components/modals.html')
+        loadComponent('topbar-placeholder', '../components/topbar.html'),
+        loadComponent('sidebar-placeholder', '../components/sidebar.html'),
+        loadComponent('modals-placeholder', '../components/modals.html')
     ]);
     console.info("🏛️ All UI components initialized.");
 })();

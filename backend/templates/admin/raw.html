@@ -1,0 +1,11 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+    <h1>Raw JSON Editor</h1>
+    <p style="color: #C62828;">⚠️ <b>Warning:</b> Manual editing can corrupt the database if the JSON format is invalid.</p>
+
+    <form method="POST">
+        <textarea name="json_data" class="editor">{{ json_content }}</textarea>
+        <button type="submit" class="btn-save">Overwrite data.json</button>
+    </form>
+{% endblock %}

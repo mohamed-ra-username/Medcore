@@ -1,14 +1,19 @@
 from flask import Flask
-from routes import api_bp, interface_bp
 from flask_cors import CORS
+from public import api_bp
+from private.admin import interface_bp
 
 PORT = 5001
 
 website_url = 'localhost:'+str(PORT)
 app = Flask(__name__)
+app.secret_key = "medcore-admin-session-key-change-me"
 app.config["SERVER_NAME"] = website_url
+
+# Register Blueprints
 app.register_blueprint(api_bp)
 app.register_blueprint(interface_bp)
+
 CORS(app)
 
 
@@ -18,11 +23,7 @@ def main_page():
     <br>
     This is the main page of the Medcore API. You can access the API endpoints at <a href="/api/">/api/</a>.
     <br>
-    <a href="/interface/">Go to interface</a>""",200
-
-# print("Registered Endpoints:")
-# for rule in app.url_map.iter_rules():
-#     print(f'Path: "http://127.0.0.1:5000{rule.rule}" -> Endpoint Target: {rule.endpoint}')
+    <a href="/interface/">Go to admin interface</a>""",200
 
 
 if __name__ == '__main__':

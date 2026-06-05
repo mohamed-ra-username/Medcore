@@ -1,6 +1,6 @@
 import flask
-from database import handler
-from .api import api_bp
+from persistence import handler
+from . import api_bp
 
 @api_bp.route("/homePatients/")
 @api_bp.route("/homePatients/<int:id>/")

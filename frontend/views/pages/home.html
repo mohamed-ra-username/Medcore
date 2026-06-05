@@ -5,20 +5,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Medcore - Clinic Management</title>
-  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
 
   <!-- Core Security & Communication -->
-  <script src="../assets/js/auth_guard.js"></script>
-  <script src="../assets/js/api_client.js"></script>
-  <script src="../assets/js/utils.js"></script>
+  <script src="../../assets/js/core/auth-guard.js"></script>
+  <script src="../../assets/js/core/api-client.js"></script>
+  <script src="../../assets/js/core/utils.js"></script>
   
   <!-- UI Logic -->
-  <script src="../assets/js/component_loader.js"></script>
-  <script src="../assets/js/periodic_dataupdate.js"></script>
-  <script src="../assets/js/translations_table.js"></script>
-  <script src="../assets/js/translation.js"></script>
-  <script src="../assets/js/main_script.js"></script>
-  <script src="../assets/js/modal_handling.js"></script>
+  <script src="../../assets/js/core/component-loader.js"></script>
+  <script src="../../assets/js/services/sync-service.js"></script>
+  <script src="../../assets/js/services/translations-table.js"></script>
+  <script src="../../assets/js/services/translation.js"></script>
+  <script src="../../assets/js/ui/main-script.js"></script>
+  <script src="../../assets/js/ui/modal-handling.js"></script>
 </head>
 
 <body>
@@ -92,9 +92,6 @@
           </div>
         </div>
 
-        <!-- OTHER PAGES (PATIENTS, INSURANCE, ETC.) -->
-        <!-- These could also be externalized into views/pages/ folder later -->
-        
         <div class="page" id="page-insurance">
            <div class="ph">
             <div><div class="ph-title" data-langId="ins">Insurance Companies</div><div class="ph-sub" data-langId="ins-sub">Manage contracts</div></div>

@@ -1,4 +1,4 @@
-from ..data_handler import homePatients, claimsData, invoices, companies, appointments, users, phones, approvalsData, save_data
+from persistence.json_repository import homePatients, claimsData, invoices, companies, appointments, users, phones, approvalsData, save_data
 
 def delete_homePatient(id: int):
     if 0 <= id < len(homePatients):

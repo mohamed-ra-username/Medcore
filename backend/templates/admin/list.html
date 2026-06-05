@@ -1,0 +1,31 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+    <div style="display:flex; justify-content: space-between; align-items: center;">
+        <h2>Category: {{ category }}</h2>
+        <a href="/interface/">&larr; Back to Dashboard</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Data Summary</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+                <td>{{ loop.index0 }}</td>
+                <td><pre style="font-size: 11px; margin:0;">{{ item | tojson }}</pre></td>
+                <td>
+                    <form action="/interface/delete/{{ category }}/{{ loop.index0 }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                        <button class="btn-del">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
