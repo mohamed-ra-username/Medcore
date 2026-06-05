@@ -2,7 +2,9 @@ import json
 import pathlib
 
 file_name = "data.json"
-file = pathlib.Path(__file__).parent.parent.parent / "data" / file_name
+data_base_folder_name = "data"
+project_root = pathlib.Path(__file__).parent.parent.parent
+file = project_root / data_base_folder_name / file_name
 
 # initialize variables
 users = appointments = companies = phones = invoices = claimsData = approvalsData = homePatients = []

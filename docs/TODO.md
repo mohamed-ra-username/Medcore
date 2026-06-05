@@ -13,7 +13,7 @@ This document serves as the master blueprint for the Medcore Clinic Management S
 
 ---
 
-## 🏗️ Pillar 1: Professional Architecture & Naming (Current Focus)
+## 🏗️ Pillar 1: Professional Architecture & Naming (Completed)
 *Goal: Rename and reorganize to match industry-standard "Clean Code" patterns.*
 
 ### 🛠️ Backend: The "Three-Layer" Refactor
@@ -27,6 +27,9 @@ This document serves as the master blueprint for the Medcore Clinic Management S
 - [x] **Layer 3: Persistence (`backend/database/`)**
     - Modularized CRUD operations into `database/crud/` (get, post, put, delete).
     - `data_handler.py` and `user_handler.py` organized for clean separation.
+- [x] **Email Integration Template:**
+    - Created `backend/core/integration/email_service.py` with functional placeholders.
+    - Designed professional `backend/templates/emails/warning_template.html`.
 
 ### 🖥️ Frontend: Grouping & Kebab-Case
 - [x] **Organized JavaScript (`assets/js/`)**
@@ -43,6 +46,7 @@ This document serves as the master blueprint for the Medcore Clinic Management S
 
 ### 🚀 The "Smart Sync" Engine
 - [ ] **Smart DOM Reconciliation:** Refactor tables to only update rows that changed (using unique IDs).
+- [ ] **Document Fragments:** Build large lists "off-screen" before injecting for maximum speed.
 - [ ] **Pagination Logic:** Implement a 20-items-per-page limit with "Next/Prev" controls.
 
 ### 🛡️ Backend Resilience & Specific Fixes

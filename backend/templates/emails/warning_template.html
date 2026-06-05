@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .email-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .header {
+            background-color: #1B4F8A; /* Medcore Blue */
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .warning-banner {
+            background-color: #FFF3E0;
+            color: #E65100;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            border-bottom: 1px solid #FFE0B2;
+        }
+        .content {
+            padding: 30px;
+            line-height: 1.6;
+            color: #333333;
+        }
+        .details-box {
+            background-color: #f9f9f9;
+            border-left: 4px solid #1B4F8A;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .footer {
+            background-color: #f4f4f4;
+            color: #888888;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1AAB8A; /* Medcore Teal */
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>MEDCORE</h1>
+            <p>Clinic Management System</p>
+        </div>
+        
+        <div class="warning-banner">
+            ⚠️ SYSTEM SECURITY ALERT
+        </div>
+
+        <div class="content">
+            <h3>Hello Admin,</h3>
+            <p>A critical action has been detected that requires your attention. Below are the details of the event:</p>
+            
+            <div class="details-box">
+                <strong>Event Type:</strong> {{ warning_type }}<br>
+                <strong>Triggered By:</strong> {{ user_email }}<br>
+                <strong>Timestamp:</strong> {{ timestamp }}<br>
+                <strong>Details:</strong> {{ details }}
+            </div>
+
+            <p>If this action was unexpected, please log in to the private admin portal immediately to review system logs.</p>
+            
+            <a href="http://localhost:5001/interface/" class="btn">Open Admin Portal</a>
+        </div>
+
+        <div class="footer">
+            &copy; 2026 Medcore Automated Systems. This is an automated message, please do not reply.
+        </div>
+    </div>
+</body>
+</html>

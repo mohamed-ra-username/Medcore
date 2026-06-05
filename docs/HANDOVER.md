@@ -6,61 +6,53 @@ This document provides a high-level technical overview of the **Medcore** system
 
 ## 🏗️ System Architecture
 
-Medcore is built as a **Modular Monolith** with a clear separation between the presentation layer (Frontend) and the data access layer (Backend).
+Medcore is built as a **Tiered Modular Monolith** with a strictly enforced separation of concerns across four backend layers and a component-based frontend.
 
-### 1. Frontend (Presentation)
-- **Vanilla Stack:** Built with standard HTML5, CSS3, and ES6 JavaScript.
-- **Asynchronous State:** Uses a centralized `window.dataLoaded` Promise (found in `update_data.js`). This ensures that no UI rendering occurs before the core data variables are populated.
-- **Translation Engine:** A custom-built localization system (`translations.js`) that supports dynamic LTR (English) and RTL (Arabic) switching without page reloads.
+### 1. Backend (The Engine)
+Organized into specialized top-level directories:
+- **`api/`**: The Public REST Layer. Modular routes (`auth.py`, `patients.py`, etc.) register with a central blueprint.
+- **`private/`**: The Admin Control Layer. A server-side Jinja2 portal for direct JSON data management.
+- **`core/`**: The Logic Layer.
+  - `security/`: Handles encryption, password hashing, and JWT logic.
+  - `middleware/`: Gatekeepers for request authentication and PBAC permissions.
+- **`persistence/`**: The Data Layer.
+  - Uses **Diamond Architecture** to prevent circular imports.
+  - `json_repository.py` is the base file-handler.
+  - `data_handler.py` acts as an aggregator interface for the entire backend.
 
-### 2. Backend (Logic & API)
-- **Flask Framework:** A Python-based RESTful API.
-- **Modular Handlers:** The business logic is separated into specific functional modules:
-  - `get_functions.py`: Data retrieval and statistics calculation.
-  - `post_functions.py`: Logic for creating new records.
-  - `put_functions.py`: Logic for updating existing records.
-  - `delete_functions.py`: Logic for removing records.
-- **Persistence:** Currently uses `data.json` for storage, managed by `data_handler.py`.
+### 2. Frontend (The Face)
+- **Component Pattern**: HTML is split into reusable snippets in `views/components/` and injected via `component-loader.js`.
+- **Event-Driven State**: Uses a "Radio Station" pattern where the fetcher broadcasts `CustomEvents` for UI listeners.
+- **Reactive Store**: Centralized state management via the `Medcore` object in `main-script.js`.
+- **Localization**: Robust LTR/RTL engine with locale-aware number formatting.
 
 ---
 
 ## 🚦 Getting Started for Developers
 
 ### 🛠️ Environment Setup
-1.  **Python Version:** Requires Python 3.10+ (due to modern type-hinting).
-2.  **Dependencies:** Run `pip install -r requirements.txt`.
-3.  **Local URLs:**
-    - Frontend: `http://localhost:5000`
-    - Backend API: `http://localhost:5001/api`
+1.  **Python Version**: Requires Python 3.10+.
+2.  **Dependencies**: Run `pip install -r requirements.txt`.
+3.  **Local Launch**: Run **`RUN_APP.bat`** at the root to start all systems automatically.
 
 ### 💻 Development Workflow
-- **Adding a Route:** Define the route in `backend/routes/api.py`, then implement the logic in the corresponding `handler/*.py` file.
-- **UI Updates:** Modify `script.js`. Ensure any new rendering function starts with `await window.dataLoaded;` to prevent race conditions.
+- **Security First**: All sensitive routes MUST be protected by `@token_required` and `@permission_required("perm")`.
+- **API Standards**: All new endpoints MUST return the standardized `{ success, data, error }` envelope.
+- **UI Updates**: Always `await window.dataLoaded` before rendering data to avoid race conditions.
 
 ---
 
-## 🛠️ Professional Engineering Tips for this Repo
+## 🛠️ Professional Engineering Tips
 
-To keep this repository high-quality, we recommend following these industry standards:
-
-### 1. Version Control (Git)
-- **Conventional Commits:** Use prefixes like `feat:`, `fix:`, `docs:`, or `refactor:`. 
-  - *Example:* `feat: add patient history endpoint`
-- **Branch Protection:** Avoid pushing directly to `main`. Use Pull Requests (PRs) for code reviews.
-
-### 2. Code Quality
-- **Linter/Formatter:** Use `flake8` for Python and `ESLint` for JavaScript.
-- **EditorConfig:** Use the included `.editorconfig` to ensure everyone on your team has the same indentation and line-ending settings.
-
-### 3. Security (Critical)
-- **Environment Variables:** Never commit secrets (API keys, DB passwords). Use a `.env` file (see `.env.example`).
-- **Input Sanitization:** Always validate and sanitize data on the **Backend** before saving it.
+- **Conventional Commits**: Use `feat:`, `fix:`, or `refactor:` prefixes for clear project history.
+- **PBAC**: Use the granular Permission-Based Access Control map in `core/security/logic.py` instead of hardcoded roles.
+- **Naming**: `snake_case` for Python; `kebab-case` for frontend files/HTML.
 
 ---
 
 ## 📈 Current Project State
-The core CRUD (Create, Read, Update, Delete) engine is fully implemented. The next major phase is **Authentication** and **Database Migration (SQLite)**. Detailed tasks are listed in the [TODO.md](TODO.md) file.
+The core architecture is finalized. Secure authentication (JWT/PBAC) is implemented, and the CRUD engine is fully operational. Future milestones (SQLite migration, Patient Deep-Dive) are tracked in `docs/TODO.md`.
 
 ---
 **Handover Completed by Gemini CLI Agent**  
-*Date: June 1, 2026*
+*Date: June 5, 2026*

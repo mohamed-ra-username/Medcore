@@ -5,7 +5,9 @@ from .enums import role
 from core.security.logic import generate_token, ACCESS_CONTROL
 
 file_name = "users.json"
-file = pathlib.Path(__file__).parent.parent.parent / "data" / file_name
+data_base_folder_name = "data"
+project_root = pathlib.Path(__file__).parent.parent.parent
+file = project_root / data_base_folder_name / file_name
 
 users = []
 
