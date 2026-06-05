@@ -1,1 +1,1 @@
-start http://localhost:5000/views/pages/login.html
+start http://localhost:5000/pages/login.html

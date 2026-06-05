@@ -7,11 +7,6 @@
 
 var homePatients, companies, claimsData, approvalsData, phones, appts, invoices, stats;
 
-let resolveData;
-window.dataLoaded = new Promise((resolve) => {
-  resolveData = resolve;
-});
-
 async function update() {
   try {
     console.info("📡 Broadcaster: Fetching fresh data...");
@@ -30,7 +25,7 @@ async function update() {
     // Extract data from standard envelopes
     const [p, c, cl, a, ph, ap, inv, st] = results.map(res => (res && res.success) ? res.data : undefined);
 
-    // Update global state (for now)
+    // Update global state
     homePatients = p;
     companies = c;
     claimsData = cl;
@@ -40,19 +35,24 @@ async function update() {
     invoices = inv;
     stats = st;
 
+    // 🛑 WAIT FOR UI TO BE READY
+    if (!window.isUIReady) {
+        console.warn("⌛ Broadcaster: UI not ready. Waiting for signal...");
+        await new Promise(resolve => {
+            document.addEventListener("medcore:ui_ready", resolve, { once: true });
+        });
+    }
+
     // 📢 BROADCAST EVENTS
     broadcast("medcore:patients_updated", homePatients);
-    broadcast("medcore:companies_updated", companies);
+    broadcast("medcore:stats_updated", stats);
     broadcast("medcore:claims_updated", claimsData);
+    broadcast("medcore:companies_updated", companies);
     broadcast("medcore:approvals_updated", approvalsData);
     broadcast("medcore:appts_updated", appts);
     broadcast("medcore:billing_updated", invoices);
-    broadcast("medcore:stats_updated", stats);
 
     console.info("✅ Broadcaster: All signals sent.");
-
-    // Resolve the startup promise
-    resolveData();
 
   } catch (error) {
     console.error("❌ Broadcaster Error:", error);

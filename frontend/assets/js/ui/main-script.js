@@ -10,10 +10,10 @@ const Medcore = {
     patients: [],
     stats: {}
   },
-  
+
   // Helper to check permissions
   can: (perm) => Medcore.state.permissions.includes(perm) || Medcore.state.permissions.includes("*"),
-  
+
   // Initialize user session
   init: async () => {
     if (localStorage.getItem("token")) {
@@ -28,12 +28,20 @@ const Medcore = {
 };
 
 window.onload = async () => {
-  await window.componentsLoaded;
+  // 1. Initialize session and permissions immediately
   await Medcore.init();
+
+  // 2. Setup UI
   applyLang();
   setupSearch();
   updatePermissionsUI();
   setupEventListeners();
+
+  // 3. Mark the UI as ready for the sync-service
+  window.isUIReady = true;
+  document.dispatchEvent(new CustomEvent("medcore:ui_ready"));
+
+  console.info("🏛️ Monolith UI Initialized. Waiting for data...");
 };
 
 /**
@@ -42,10 +50,10 @@ window.onload = async () => {
  * ==========================================
  */
 function setupEventListeners() {
-    document.addEventListener("medcore:patients_updated", (e) => syncPatientTable(e.detail));
-    document.addEventListener("medcore:stats_updated", (e) => updateDashboardStats(e.detail));
-    document.addEventListener("medcore:claims_updated", (e) => renderClaims(null, e.detail));
-    document.addEventListener("medcore:companies_updated", (e) => renderCompanies(e.detail));
+  document.addEventListener("medcore:patients_updated", (e) => syncPatientTable(e.detail));
+  document.addEventListener("medcore:stats_updated", (e) => updateDashboardStats(e.detail));
+  document.addEventListener("medcore:claims_updated", (e) => renderClaims(null, e.detail));
+  document.addEventListener("medcore:companies_updated", (e) => renderCompanies(e.detail));
 }
 
 /**
@@ -54,54 +62,59 @@ function setupEventListeners() {
  * ==========================================
  */
 function syncPatientTable(freshData) {
-    const tbody = document.getElementById("home-tbody");
-    if (!tbody) return;
+  if (!freshData) return;
 
-    // 1. Identify rows to remove
-    const existingRows = Array.from(tbody.querySelectorAll("tr[data-id]"));
-    const freshIds = freshData.map(p => p.id);
-    
-    existingRows.forEach(row => {
-        if (!freshIds.includes(row.dataset.id)) row.remove();
-    });
+  const tbody = document.getElementById("home-tbody");
+  if (!tbody) return;
 
-    // 2. Add or Update rows
-    const fragment = document.createDocumentFragment();
-    
-    freshData.forEach((p, index) => {
-        let row = tbody.querySelector(`tr[data-id="${p.id}"]`);
-        
-        if (row) {
-            if (row.dataset.status !== p.status) {
-                row.dataset.status = p.status;
-                row.querySelector(".status-cell").innerHTML = `<span class="chip chip-${p.status}">${chip(p.status)}</span>`;
-            }
-        } else {
-            const newRow = createPatientRow(p, index);
-            fragment.appendChild(newRow);
-        }
-    });
+  // 1. Identify rows to remove
+  const existingRows = Array.from(tbody.querySelectorAll("tr[data-id]"));
+  const freshIds = freshData.map(p => p.id);
 
-    tbody.appendChild(fragment);
-    Medcore.state.patients = freshData; // Update local store
+  existingRows.forEach(row => {
+    if (!freshIds.includes(row.dataset.id)) row.remove();
+  });
+
+  // 2. Add or Update rows
+  const fragment = document.createDocumentFragment();
+
+  freshData.forEach((p, index) => {
+    let row = tbody.querySelector(`tr[data-id="${p.id}"]`);
+
+    if (row) {
+      if (row.dataset.status !== p.status) {
+        row.dataset.status = p.status;
+        row.querySelector(".status-cell").innerHTML = `<span class="chip chip-${p.status}">${chip(p.status)}</span>`;
+      }
+    } else {
+      const newRow = createPatientRow(p, index);
+      fragment.appendChild(newRow);
+    }
+  });
+
+  // Clear loading placeholder if it's the first data load
+  if (tbody.innerText.includes("Loading")) tbody.innerHTML = "";
+
+  tbody.appendChild(fragment);
+  Medcore.state.patients = freshData;
 }
 
 function createPatientRow(p, index) {
-    const tr = document.createElement("tr");
-    tr.classList.add("clickable-row");
-    tr.dataset.id = p.id;
-    tr.dataset.status = p.status;
-    tr.onclick = () => viewPatient(index);
-    
-    tr.innerHTML = `
-      <td><div class="td-name"><div class="mini-avatar">${p.init}</div>${Utils.lang === "ar" ? p.arName : p.name}</div></td>
-      <td>${p.age}</td>
-      <td style="color:var(--muted)">${Utils.lang === "ar" ? p.arDoc : p.doctor}</td>
-      <td style="color:var(--muted)">${p.ins}</td>
+  const tr = document.createElement("tr");
+  tr.classList.add("clickable-row");
+  tr.dataset.id = p.id;
+  tr.dataset.status = p.status;
+  tr.onclick = () => viewPatient(index);
+
+  tr.innerHTML = `
+      <td><div class="td-name"><div class="mini-avatar">${p.init || '??'}</div>${Utils.lang === "ar" ? (p.arName || p.name) : p.name}</div></td>
+      <td>${p.age || '-'}</td>
+      <td style="color:var(--muted)">${Utils.lang === "ar" ? (p.arDoc || p.doctor) : p.doctor}</td>
+      <td style="color:var(--muted)">${p.ins || '-'}</td>
       <td style="color:var(--muted)">${Utils.formatDate(p.date)}</td>
-      <td class="status-cell"><span class="chip chip-${p.status}">${chip(p.status)}</span></td>
+      <td class="status-cell"><span class="chip chip-${p.status || 'unknown'}">${chip(p.status || 'unknown')}</span></td>
     `;
-    return tr;
+  return tr;
 }
 
 /**
@@ -113,18 +126,17 @@ async function updateDashboardStats(st) {
   if (!st) return;
 
   const mapping = {
-    "stat-patients": st.home.patients,
-    "stat-appts": st.home.appts,
-    "stat-claims": st.home.claims,
-    "stat-revenue": st.home.revenue,
-    "sb-total-val": st.insurance.total,
-    "sb-active-val": st.insurance.active,
-    "sb-expiring-val": st.insurance.expiring,
-    "sb-claims-total-val": st.insurance.claims,
-    "c-pending-val": st.claims.pending,
-    "c-approved-val": st.claims.approved,
-    "c-rejected-val": st.claims.rejected,
-    "c-amount-val": st.claims.total_amount
+    "stat-patients": st.home?.patients ?? 0,
+    "stat-appts": st.home?.appts ?? 0,
+    "stat-claims": st.home?.claims ?? 0,
+    "stat-revenue": st.home?.revenue ?? 0,
+    "sb-total-val": st.insurance?.total ?? 0,
+    "sb-active-val": st.insurance?.active ?? 0,
+    "sb-expiring-val": st.insurance?.expiring ?? 0,
+    "c-pending-val": st.claims?.pending ?? 0,
+    "c-approved-val": st.claims?.approved ?? 0,
+    "c-rejected-val": st.claims?.rejected ?? 0,
+    "c-amount-val": st.claims?.total_amount ?? 0
   };
 
   for (const [id, val] of Object.entries(mapping)) {
@@ -132,10 +144,10 @@ async function updateDashboardStats(st) {
     if (el) el.textContent = Utils.formatNumber(val);
   }
 
-  update_badge("patients-badge", st.home.patients);
-  update_badge("appointments-badge", st.home.appts);
-  update_badge("claims-badge", st.claims.pending);
-  update_badge("approvals-badge", st.insurance.pending);
+  update_badge("patients-badge", st.home?.patients ?? 0);
+  update_badge("appointments-badge", st.home?.appts ?? 0);
+  update_badge("claims-badge", st.claims?.pending ?? 0);
+  update_badge("approvals-badge", st.insurance?.pending ?? 0);
 }
 
 function update_badge(elementId, value) {
@@ -146,10 +158,10 @@ function update_badge(elementId, value) {
 
 function setupSearch() {
   document.getElementById("home-search")?.addEventListener("input", (e) => {
-      renderHome(e.target.value.toLowerCase());
+    renderHome(e.target.value.toLowerCase());
   });
   document.getElementById("claims-search")?.addEventListener("input", (e) => {
-      renderClaims(e.target.value.toLowerCase());
+    renderClaims(e.target.value.toLowerCase());
   });
 }
 
@@ -163,11 +175,12 @@ function updatePermissionsUI() {
 function goPage(id, btn) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
-  document.getElementById("page-" + id).classList.add("active");
-  btn.classList.add("active");
+  const target = document.getElementById("page-" + id);
+  if (target) target.classList.add("active");
+  if (btn) btn.classList.add("active");
 }
 
-async function renderHome() { /* Handled by syncPatientTable now */ }
+async function renderHome() { /* syncPatientTable handles this */ }
 
 async function renderCompanies(list) {
   if (!list) return;
@@ -176,14 +189,14 @@ async function renderCompanies(list) {
   grid.innerHTML = list.map(c => `
     <div class="company-card">
       <div class="cc-header">
-        <div class="cc-logo" style="background:${c.color}">${c.init}</div>
-        <div style="flex:1"><div class="cc-name">${c.name}</div><div class="cc-type">${c.type}</div></div>
-        <span class="chip ${c.status === "expiring" ? "chip-expiring" : "chip-active"}">${chip(c.status)}</span>
+        <div class="cc-logo" style="background:${c.color || '#eee'}">${c.init || 'CO'}</div>
+        <div style="flex:1"><div class="cc-name">${c.name || 'Unknown'}</div><div class="cc-type">${c.type || '-'}</div></div>
+        <span class="chip ${c.status === "expiring" ? "chip-expiring" : "chip-active"}">${chip(c.status || 'active')}</span>
       </div>
       <div class="cc-row">
-        <div class="cc-kpi"><div class="cc-kpi-val">${c.claims}</div><div class="cc-kpi-lbl">${t("claims")}</div></div>
-        <div class="cc-kpi"><div class="cc-kpi-val">${c.limit}</div><div class="cc-kpi-lbl">${t("limit")}</div></div>
-        <div class="cc-kpi"><div class="cc-kpi-val" style="color:${c.status === "expiring" ? "#E65100" : "var(--teal)"}">${c.end}</div><div class="cc-kpi-lbl">${t("expires")}</div></div>
+        <div class="cc-kpi"><div class="cc-kpi-val">${Utils.formatNumber(c.claims || 0)}</div><div class="cc-kpi-lbl">${t("claims")}</div></div>
+        <div class="cc-kpi"><div class="cc-kpi-val">${Utils.formatNumber(c.limit || 0)}</div><div class="cc-kpi-lbl">${t("limit")}</div></div>
+        <div class="cc-kpi"><div class="cc-kpi-val" style="color:${c.status === "expiring" ? "#E65100" : "var(--teal)"}">${Utils.formatDate(c.end)}</div><div class="cc-kpi-lbl">${t("expires")}</div></div>
       </div>
     </div>`).join("");
 }
@@ -192,10 +205,10 @@ async function renderClaims(filter, list) {
   const tb = document.getElementById("claims-tbody");
   if (!tb || !list) return;
   tb.innerHTML = list.map((c, i) => `<tr>
-    <td style="font-weight:700;color:var(--blue)">${c.id}</td>
-    <td><div class="td-name"><div class="mini-avatar">${Utils.initials(c.patient)}</div>${c.patient}</div></td>
-    <td style="font-weight:600">${Utils.formatNumber(c.amount)}</td>
-    <td><span class="chip chip-${c.status}">${chip(c.status)}</span></td>
+    <td style="font-weight:700;color:var(--blue)">${c.id || '-'}</td>
+    <td><div class="td-name"><div class="mini-avatar">${Utils.initials(c.patient)}</div>${c.patient || 'Unknown'}</div></td>
+    <td style="font-weight:600">${Utils.formatNumber(c.amount || 0)}</td>
+    <td><span class="chip chip-${c.status || 'pending'}">${chip(c.status || 'pending')}</span></td>
     <td>${c.status === "pending" ? `<button onclick="closeClaim(${i},'approved')">Approve</button>` : ''}</td>
   </tr>`).join("");
 }

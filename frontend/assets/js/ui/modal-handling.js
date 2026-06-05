@@ -85,8 +85,10 @@ async function updatePatient() {
   const p = { ...homePatients[currentPatientIndex] };
   inputs.forEach(input => {
     if (input.name) {
-      if (input.type === "number") p[input.name] = parseInt(input.value) || 0;
-      else p[input.name] = input.value;
+      if (input.type === "number")
+        p[input.name] = parseInt(input.value) || 0;
+      else
+        p[input.name] = input.value;
     }
   });
   p.init = initials(p.name);
