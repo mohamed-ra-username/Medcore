@@ -4,13 +4,14 @@
  * ==========================================
  * Fetches data and broadcasts "Shouts" (Events) to the app.
  */
-
+// const update_time = 1 * 60 * 1000; // 5 minutes in milliseconds
+const update_time = 5 * 1000; // 5 minutes in milliseconds
 var homePatients, companies, claimsData, approvalsData, phones, appts, invoices, stats;
 
 async function update() {
   try {
     console.info("📡 Broadcaster: Fetching fresh data...");
-    
+
     const results = await Promise.all([
       GETRequest("/homePatients/"),
       GETRequest("/companies/"),
@@ -21,6 +22,8 @@ async function update() {
       GETRequest("/invoices/"),
       GETRequest("/stats/")
     ]);
+
+    console.log("📊 Broadcaster: Data fetched successfully.");
 
     // Extract data from standard envelopes
     const [p, c, cl, a, ph, ap, inv, st] = results.map(res => (res && res.success) ? res.data : undefined);
@@ -37,10 +40,10 @@ async function update() {
 
     // 🛑 WAIT FOR UI TO BE READY
     if (!window.isUIReady) {
-        console.warn("⌛ Broadcaster: UI not ready. Waiting for signal...");
-        await new Promise(resolve => {
-            document.addEventListener("medcore:ui_ready", resolve, { once: true });
-        });
+      console.warn("⌛ Broadcaster: UI not ready. Waiting for signal...");
+      await new Promise(resolve => {
+        document.addEventListener("medcore:ui_ready", resolve, { once: true });
+      });
     }
 
     // 📢 BROADCAST EVENTS
@@ -57,15 +60,15 @@ async function update() {
   } catch (error) {
     console.error("❌ Broadcaster Error:", error);
   }
-  
-  // Refresh every 5 minutes
-  setTimeout(update, 5 * 60 * 1000); 
+
+  // Refresh interval
+  setTimeout(update, update_time);
 }
 
 function broadcast(eventName, data) {
-    if (!data) return;
-    const event = new CustomEvent(eventName, { detail: data });
-    document.dispatchEvent(event);
+  if (!data) return;
+  const event = new CustomEvent(eventName, { detail: data });
+  document.dispatchEvent(event);
 }
 
 // Start the broadcast loop
