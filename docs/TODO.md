@@ -45,7 +45,7 @@ This document serves as the master blueprint for the Medcore Clinic Management S
 ### 🛡️ Backend Resilience & Specific Fixes
 - [x] **Standardized Response Envelopes:** 100% of endpoints follow the `{ success, data, error }` pattern.
 - [ ] **Self-Healing Storage:** Implement startup health-checks and automated daily JSON backups.
-- [ ] **Audit `NaN` Bug:** Finalize the investigation into periodic number formatting errors on the dashboard.
+- [x] **Audit `NaN` Bug:** Solved via unified locale and DOM-based translation (`data-value` mapping) and "N/A" fallbacks.
 
 ---
 
@@ -68,6 +68,19 @@ This document serves as the master blueprint for the Medcore Clinic Management S
 - [ ] **Patient Deep-Dive Page (`patient.html`):** Build the full medical profile view.
 - [ ] **Medical History Tracker:** Implement a log of all previous visits and diagnoses.
 - [ ] **Financial Reports:** PDF/Excel export for revenue and debt tracking.
+
+---
+
+## 🧪 Pillar 5: Frontend CRUD Logic & Modals
+*Goal: Fix broken user interactions and ensure data flow is reactive.*
+
+- [ ] **Modal Reliability:**
+    - [ ] Fix broken Modal opening/closing logic.
+    - [ ] Restore missing dynamic option lists (Insurance, Doctors, etc.) in modal forms.
+    - [ ] Ensure modals auto-close after a successful API action.
+- [ ] **Data Reactivity:**
+    - [ ] Fix broken "Delete" and "Edit" frontend actions.
+    - [ ] Trigger an immediate `sync-service` update after each successful modal action (Add/Edit/Delete) so the UI refreshes instantly.
 
 ---
 

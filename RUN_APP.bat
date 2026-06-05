@@ -4,20 +4,20 @@ title Medcore Master Runner
 echo ==========================================
 echo        STARTING MEDCORE SYSTEMS
 echo ==========================================
-
+cd commands
 echo - [1/4] Installing/Updating Requirements...
-call commands/install_requirements.bat
+call install_requirements.bat
 
 echo - [2/4] Launching Server Windows...
-call commands\start_backend.bat
-call commands\start_frontend.bat
+call start_backend.bat
+call start_frontend.bat
 
 
 echo - [3/4] Opening Web Page...
-call commands\open_frontend.bat
+call open_frontend.bat
 
 echo - [4/4] Opening Admin Page...
-call commands\open_backend_admin_panel.bat
+call open_backend_admin_panel.bat
 
 echo.
 echo ==========================================

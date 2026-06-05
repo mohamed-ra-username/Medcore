@@ -1,1 +1,1 @@
-start "Medcore Frontend Server" cmd /k "python commands/dev_server.py"
+start "Medcore Frontend Server" cmd /k "python -m http.server --directory ../frontend 5000"

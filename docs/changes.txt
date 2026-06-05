@@ -8,3 +8,6 @@
 - Standardized 100% of API endpoints to use the consistent { success, data, error } envelope.
 - Implemented professional Email Warning HTML templates in the core integration layer.
 - Moved all standalone batch scripts to the commands/ directory for a cleaner project root.
+- Restored missing UI tables (Appointments, Billing, Approvals, Patients) after the monolith transition.
+- Implemented a highly resilient DOM-based translation engine using `data-value`, `data-en`, and `data-ar` attributes.
+- Solved the persistent `NaN` bugs by enforcing strict unified `locale` checks and adding robust `N/A` or `0` fallbacks across all dynamic renders.

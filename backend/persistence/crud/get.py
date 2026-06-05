@@ -31,33 +31,31 @@ def get_homePatients(id: int | slice | Any = UNKNOWN):
     return _get_one_or_all(homePatients, id)
 
 def get_stats():
-    # Use internal logic to calculate stats from lists
-    # (Rest of get_stats logic stays the same)
     st = {
         "home": {
-            "patients": len([p for p in homePatients if p["status"] == status.ACTIVE]),
-            "appts": len([a for a in appointments if a["status"] == status.ACTIVE]),
-            "claims": len([c for c in claimsData if c["status"] == status.PENDING]),
-            "revenue": sum((c["amount"]) for c in claimsData if c["status"] == status.APPROVED)
+            "patients": len([p for p in homePatients if p.get("status") == status.ACTIVE]),
+            "appts": len([a for a in appointments if a.get("status") == status.ACTIVE]),
+            "claims": len([c for c in claimsData if c.get("status") == status.PENDING]),
+            "revenue": sum(int(c.get("amount", 0) or 0) for c in claimsData if c.get("status") == status.APPROVED)
         },
         "insurance": {
             "total": len(companies),
-            "claims": sum(c["claims"] for c in companies),
-            "active": len([c for c in companies if c["status"] == status.ACTIVE]),
-            "expiring": len([c for c in companies if c["status"] == status.EXPIRING]),
-            "pending": len([a for a in approvalsData if a["status"] == status.PENDING]),
+            "claims": sum(int(c.get("claims", 0) or 0) for c in companies),
+            "active": len([c for c in companies if c.get("status") == status.ACTIVE]),
+            "expiring": len([c for c in companies if c.get("status") == status.EXPIRING]),
+            "pending": len([a for a in approvalsData if a.get("status") == status.PENDING]),
         },
         "claims": {
-            "pending": len([c for c in claimsData if c["status"] == status.PENDING]),
-            "approved": len([c for c in claimsData if c["status"] == status.APPROVED]),
-            "rejected": len([c for c in claimsData if c["status"] == status.REJECTED]),
-            "total_amount": sum((c["amount"]) for c in claimsData)
+            "pending": len([c for c in claimsData if c.get("status") == status.PENDING]),
+            "approved": len([c for c in claimsData if c.get("status") == status.APPROVED]),
+            "rejected": len([c for c in claimsData if c.get("status") == status.REJECTED]),
+            "total_amount": sum(int(c.get("amount", 0) or 0) for c in claimsData)
         },
         "billing": {
-            "total": sum((v["amount"]) for v in invoices),
-            "collected": sum((v["amount"]) for v in invoices if v["status"] == status.DONE),
-            "ins_due": sum((v["amount"]) for v in invoices if v["status"] == status.PENDING),
-            "overdue": sum((v["amount"]) for v in invoices if v["status"] == status.REJECTED)
+            "total": sum(int(v.get("amount", 0) or 0) for v in invoices),
+            "collected": sum(int(v.get("amount", 0) or 0) for v in invoices if v.get("status") == status.DONE),
+            "ins_due": sum(int(v.get("amount", 0) or 0) for v in invoices if v.get("status") == status.PENDING),
+            "overdue": sum(int(v.get("amount", 0) or 0) for v in invoices if v.get("status") == status.REJECTED)
         }
     }
     return st

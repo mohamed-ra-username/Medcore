@@ -1,1 +1,1 @@
-start "Medcore Backend API" cmd /k "python backend\app.py"
+start "Medcore Backend API" cmd /k "python ../backend\app.py"
