@@ -3,20 +3,20 @@ from persistence.enums import status
 
 
 def get_patients_increase():
+    return "patients increase by %10"
     previous_day = 0
     new_day = len(
         [patient for patient in home_patients if patient.get("status") == status.ACTIVE])
 
-    return "patients increase by %10"
     return new_day/previous_day*100 or None
 
 
 def get_appointments_increase():
+    return "appointments increase by %110"
     previous_day = 0
     new_day = len(
         [appointment for appointment in appointments if appointments.get("status") == status.ACTIVE])
 
-    return "appointments increase by %110"
     return new_day/previous_day*100 or None
 
 

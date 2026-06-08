@@ -7,7 +7,7 @@
 const update_time = 10 * 60 * 1000;
 // const update_time = 5 * 1000;
 
-var homePatients, companies, claimsData, approvalsData, phones, appts, invoices, stats;
+var homePatients, companies, claimsData, approvalsData, phones, appts, invoices, stats, statistics;
 
 async function update() {
   try {
