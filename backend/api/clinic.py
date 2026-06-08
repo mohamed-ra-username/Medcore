@@ -4,6 +4,7 @@ from core.security.logic import make_response
 from core.middleware.timeout import token_required, permission_required
 from . import api_bp
 
+
 @api_bp.route("/appointments/")
 @api_bp.route("/appointments/<int:id>/")
 @token_required
@@ -11,12 +12,14 @@ from . import api_bp
 def get_appointments(id: int | slice | None = None):
     return make_response(data=data_handler.get_appointments(id))
 
+
 @api_bp.route("/appointments/", methods=["POST"])
 @token_required
 @permission_required("add_appointments")
 def add_appointment():
     res = data_handler.add_appointment(flask.request.json)
     return make_response(data=res.get("data"))
+
 
 @api_bp.route("/appointments/<int:id>/", methods=["PUT"])
 @token_required
@@ -27,6 +30,7 @@ def update_appointment(id: int):
         return make_response(data=res.get("data"))
     return make_response(error="Appointment not found", status_code=404)
 
+
 @api_bp.route("/appointments/<int:id>/", methods=["DELETE"])
 @token_required
 @permission_required("view_appointments")
@@ -36,6 +40,7 @@ def delete_appointment(id: int):
         return make_response(data=res.get("data"))
     return make_response(error="Appointment not found", status_code=404)
 
+
 @api_bp.route("/companies/")
 @api_bp.route("/companies/<int:id>/")
 @token_required
@@ -43,12 +48,14 @@ def delete_appointment(id: int):
 def get_companies(id: int | slice | None = None):
     return make_response(data=data_handler.get_companies(id))
 
+
 @api_bp.route("/companies/", methods=["POST"])
 @token_required
-@permission_required("*") 
+@permission_required("*")
 def add_company():
     res = data_handler.add_company(flask.request.json)
     return make_response(data=res.get("data"))
+
 
 @api_bp.route("/companies/<int:id>/", methods=["PUT"])
 @token_required
@@ -59,6 +66,7 @@ def update_company(id: int):
         return make_response(data=res.get("data"))
     return make_response(error="Company not found", status_code=404)
 
+
 @api_bp.route("/companies/<int:id>/", methods=["DELETE"])
 @token_required
 @permission_required("*")
@@ -67,9 +75,3 @@ def delete_company(id: int):
     if res:
         return make_response(data=res.get("data"))
     return make_response(error="Company not found", status_code=404)
-
-@api_bp.route("/stats/")
-@token_required
-@permission_required("view_revenue")
-def get_stats():
-    return make_response(data=data_handler.get_stats())

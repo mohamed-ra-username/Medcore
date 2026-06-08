@@ -1,28 +1,61 @@
 import flask
-from persistence import data_handler
-from core.security.logic import make_response
+from persistence import user_repository
+from core.security.logic import make_response, generate_token, ACCESS_CONTROL
 from core.middleware.timeout import token_required
+from werkzeug.security import generate_password_hash, check_password_hash
+from persistence.enums import role
 from . import api_bp
 
 @api_bp.route("/auth/register/", methods=["POST"])
 def register():
     data = flask.request.json
-    from persistence import user_repository
-    res, status_code = user_repository.register_user(data)
-    if status_code >= 400:
-        return make_response(error=res.get("error", "Registration failed"), status_code=status_code)
-    return make_response(data=res, status_code=status_code)
+    try:
+        email = data["email"]
+        password = data["password"]
+    except KeyError as e:
+        return make_response(error=f"{str(e).strip("'").capitalize()} is required", status_code=400)
+
+    user_role = data.get("role", role.USER)
+
+    if user_repository.get_user_by_email(email):
+        return make_response(error="User already exists", status_code=400)
+
+    hashed_password = generate_password_hash(password)
+
+    new_user = {
+        "email": email,
+        "password_hash": hashed_password,
+        "name": data.get("name", "New User")
+    }
+
+    if user_role != role.USER:
+        new_user["role"] = user_role
+
+    user_repository.add_user(new_user)
+    return make_response(data=new_user, status_code=201)
 
 @api_bp.route("/auth/login/", methods=["POST"])
 def login():
     data = flask.request.json
     email = data.get("email")
     password = data.get("password")
-    from persistence import user_repository
-    res, status_code = user_repository.login_user(email, password)
-    if status_code >= 400:
-        return make_response(error=res.get("error", "Login failed"), status_code=status_code)
-    return make_response(data=res, status_code=status_code)
+
+    if not email or not password:
+        return make_response(error="Email and password are required", status_code=400)
+
+    user = user_repository.get_user_by_email(email)
+
+    if user and check_password_hash(user["password_hash"], password):
+        user_role = user.get("role", role.USER)
+        token = generate_token(user['email'], user_role)
+
+        return make_response(data={
+            "token": token,
+            "role": user_role,
+            "permissions": ACCESS_CONTROL.get(user_role, [])
+        }, status_code=200)
+
+    return make_response(error="Invalid credentials", status_code=401)
 
 @api_bp.route("/me/", methods=["GET"])
 @token_required

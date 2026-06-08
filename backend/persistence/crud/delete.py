@@ -1,15 +1,19 @@
-from persistence.json_repository import homePatients, claimsData, invoices, companies, appointments, users, phones, approvalsData, save_data
+from persistence.json_repository import (
+    home_patients, claims_data, invoices, companies, 
+    appointments, phones, approvals_data, save_data
+)
+from persistence.user_repository import users
 
-def delete_homePatient(id: int):
-    if 0 <= id < len(homePatients):
-        deleted = homePatients.pop(id)
+def delete_home_patient(id: int):
+    if 0 <= id < len(home_patients):
+        deleted = home_patients.pop(id)
         save_data()
         return {"success": True, "data": deleted}
     return None
 
 def delete_claim(id: int):
-    if 0 <= id < len(claimsData):
-        deleted = claimsData.pop(id)
+    if 0 <= id < len(claims_data):
+        deleted = claims_data.pop(id)
         save_data()
         return {"success": True, "data": deleted}
     return None
@@ -38,7 +42,8 @@ def delete_appointment(id: int):
 def delete_user(id: int):
     if 0 <= id < len(users):
         deleted = users.pop(id)
-        save_data()
+        from persistence.user_repository import save_users
+        save_users()
         return {"success": True, "data": deleted}
     return None
 
@@ -50,8 +55,8 @@ def delete_phone(id: int):
     return None
 
 def delete_approval(id: int):
-    if 0 <= id < len(approvalsData):
-        deleted = approvalsData.pop(id)
+    if 0 <= id < len(approvals_data):
+        deleted = approvals_data.pop(id)
         save_data()
         return {"success": True, "data": deleted}
     return None

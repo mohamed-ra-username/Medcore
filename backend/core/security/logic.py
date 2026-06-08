@@ -3,8 +3,7 @@ import datetime
 from flask import jsonify
 from persistence.enums import role
 
-# Set secret key
-SECRET_KEY = "medcore-secret-key-change-me-later" #! In production, use a secure random key and store it safely
+SECRET_KEY = "medcore-secret-key" #! In production, use a secure random key and store it safely
 
 # --- PERMISSIONS MAP ---
 ACCESS_CONTROL = {

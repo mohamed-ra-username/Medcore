@@ -1,12 +1,16 @@
-from persistence.json_repository import homePatients, claimsData, invoices, companies, appointments, users, phones, approvalsData, save_data
+from persistence.json_repository import (
+    home_patients, claims_data, invoices, companies, 
+    appointments, phones, approvals_data, save_data
+)
+from persistence.user_repository import users
 
-def add_homePatient(data: dict):
-    homePatients.insert(0, data)
+def add_home_patient(data: dict):
+    home_patients.insert(0, data)
     save_data()
     return {"success": True, "data": data}
 
 def add_claim(data: dict):
-    claimsData.insert(0, data)
+    claims_data.insert(0, data)
     save_data()
     return {"success": True, "data": data}
 
@@ -27,7 +31,10 @@ def add_appointment(data: dict):
 
 def add_user(data: str):
     users.insert(0, data)
-    save_data()
+    # Note: user_repository.save_users() should probably be called instead of json_repository.save_data() 
+    # if users are in a separate file.
+    from persistence.user_repository import save_users
+    save_users()
     return {"success": True, "data": data}
 
 def add_phone(data: str):
@@ -36,6 +43,6 @@ def add_phone(data: str):
     return {"success": True, "data": data}
 
 def add_approval(data: dict):
-    approvalsData.insert(0, data)
+    approvals_data.insert(0, data)
     save_data()
     return {"success": True, "data": data}

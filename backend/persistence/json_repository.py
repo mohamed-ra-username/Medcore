@@ -4,34 +4,56 @@ import pathlib
 file_name = "data.json"
 data_base_folder_name = "data"
 project_root = pathlib.Path(__file__).parent.parent.parent
-file = project_root / data_base_folder_name / file_name
+data_file = project_root / data_base_folder_name / file_name
 
-# initialize variables
-users = appointments = companies = phones = invoices = claimsData = approvalsData = homePatients = []
+# Initialize variables separately to avoid shared reference bugs
+appointments = []
+companies = []
+phones = []
+invoices = []
+claims_data = []
+approvals_data = []
+home_patients = []
 
 def load_data():
-    global users, appointments, companies, phones, invoices, claimsData, approvalsData, homePatients
+    global appointments, companies, phones, invoices, claims_data, approvals_data, home_patients
 
     try:
-        with open(file, "r", encoding="utf-8") as f:
+        if not data_file.exists():
+            save_data()
+            return
+
+        with open(data_file, "r", encoding="utf-8") as f:
             data = json.load(f)
-            users = data.get("users", [])
             appointments = data.get("appointments", [])
             companies = data.get("companies", [])
             phones = data.get("phones", [])
             invoices = data.get("invoices", [])
-            claimsData = data.get("claimsData", [])
-            approvalsData = data.get("approvalsData", [])
-            homePatients = data.get("homePatients", [])
+            # Map camelCase JSON keys to snake_case Python variables
+            claims_data = data.get("claimsData", [])
+            approvals_data = data.get("approvalsData", [])
+            home_patients = data.get("homePatients", [])
     except (FileNotFoundError, json.JSONDecodeError):
-        users = appointments = companies = phones = invoices = claimsData = approvalsData = homePatients = []
+        appointments = []
+        companies = []
+        phones = []
+        invoices = []
+        claims_data = []
+        approvals_data = []
+        home_patients = []
 
 def save_data():
+    # Map snake_case Python variables back to camelCase JSON keys for frontend compatibility
     data = {
-        "users": users, "appointments": appointments, "companies": companies, "phones": phones,
-        "invoices": invoices, "claimsData": claimsData, "approvalsData": approvalsData, "homePatients": homePatients,
+        "appointments": appointments,
+        "companies": companies,
+        "phones": phones,
+        "invoices": invoices,
+        "claimsData": claims_data,
+        "approvalsData": approvals_data,
+        "homePatients": home_patients,
     }
-    with open(file, "w", encoding="utf-8") as f:
+    with open(data_file, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 load_data()
