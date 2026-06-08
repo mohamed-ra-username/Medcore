@@ -8,11 +8,12 @@ const Medcore = {
     user: null,
     permissions: JSON.parse(localStorage.getItem("permissions") || "[]"),
     patients: [],
-    stats: {}
+    stats: {},
+    statistics: {}
   },
-  
+
   can: (perm) => Medcore.state.permissions.includes(perm) || Medcore.state.permissions.includes("*"),
-  
+
   init: async () => {
     if (localStorage.getItem("token")) {
       const res = await GETRequest("/me/");
@@ -31,7 +32,7 @@ window.onload = async () => {
   setupSearch();
   updatePermissionsUI();
   setupEventListeners();
-  
+
   window.isUIReady = true;
   document.dispatchEvent(new CustomEvent("medcore:ui_ready"));
   console.info("🏛️ Monolith UI Initialized. Waiting for data...");
@@ -43,16 +44,17 @@ window.onload = async () => {
  * ==========================================
  */
 function setupEventListeners() {
-    document.addEventListener("medcore:patients_updated", (e) => {
-        syncPatientTable(e.detail);
-        renderPatients(e.detail);
-    });
-    document.addEventListener("medcore:stats_updated", (e) => updateDashboardStats(e.detail));
-    document.addEventListener("medcore:claims_updated", (e) => renderClaims(null, e.detail));
-    document.addEventListener("medcore:companies_updated", (e) => renderCompanies(e.detail));
-    document.addEventListener("medcore:approvals_updated", (e) => renderApprovals(e.detail));
-    document.addEventListener("medcore:appts_updated", (e) => renderAppts(e.detail));
-    document.addEventListener("medcore:billing_updated", (e) => renderBilling(e.detail));
+  document.addEventListener("medcore:patients_updated", (e) => {
+    syncPatientTable(e.detail);
+    renderPatients(e.detail);
+  });
+  document.addEventListener("medcore:stats_updated", (e) => updateDashboardStats(e.detail));
+  document.addEventListener("medcore:statistics_updated", (e) => updateDashboardStatistics(e.detail));
+  document.addEventListener("medcore:claims_updated", (e) => renderClaims(null, e.detail));
+  document.addEventListener("medcore:companies_updated", (e) => renderCompanies(e.detail));
+  document.addEventListener("medcore:approvals_updated", (e) => renderApprovals(e.detail));
+  document.addEventListener("medcore:appts_updated", (e) => renderAppts(e.detail));
+  document.addEventListener("medcore:billing_updated", (e) => renderBilling(e.detail));
 }
 
 /**
@@ -61,53 +63,53 @@ function setupEventListeners() {
  * ==========================================
  */
 function syncPatientTable(freshData) {
-    if (!freshData) return;
-    
-    const tbody = document.getElementById("home-tbody");
-    if (!tbody) return;
+  if (!freshData) return;
 
-    const existingRows = Array.from(tbody.querySelectorAll("tr[data-id]"));
-    const freshIds = freshData.map(p => p.id);
-    
-    existingRows.forEach(row => {
-        if (!freshIds.includes(row.dataset.id)) row.remove();
-    });
+  const tbody = document.getElementById("home-tbody");
+  if (!tbody) return;
 
-    const fragment = document.createDocumentFragment();
-    
-    freshData.forEach((p, index) => {
-        let row = tbody.querySelector(`tr[data-id="${p.id}"]`);
-        if (row) {
-            if (row.dataset.status !== p.status) {
-                row.dataset.status = p.status;
-                row.querySelector(".status-cell").innerHTML = `<span class="chip chip-${p.status}">${chip(p.status)}</span>`;
-            }
-        } else {
-            const newRow = createPatientRow(p, index);
-            fragment.appendChild(newRow);
-        }
-    });
+  const existingRows = Array.from(tbody.querySelectorAll("tr[data-id]"));
+  const freshIds = freshData.map(p => p.id);
 
-    if (tbody.innerText.includes("Loading")) tbody.innerHTML = "";
-    tbody.appendChild(fragment);
-    Medcore.state.patients = freshData;
+  existingRows.forEach(row => {
+    if (!freshIds.includes(row.dataset.id)) row.remove();
+  });
+
+  const fragment = document.createDocumentFragment();
+
+  freshData.forEach((p, index) => {
+    let row = tbody.querySelector(`tr[data-id="${p.id}"]`);
+    if (row) {
+      if (row.dataset.status !== p.status) {
+        row.dataset.status = p.status;
+        row.querySelector(".status-cell").innerHTML = `<span class="chip chip-${p.status}">${chip(p.status)}</span>`;
+      }
+    } else {
+      const newRow = createPatientRow(p, index);
+      fragment.appendChild(newRow);
+    }
+  });
+
+  if (tbody.innerText.includes("Loading")) tbody.innerHTML = "";
+  tbody.appendChild(fragment);
+  Medcore.state.patients = freshData;
 }
 
 function createPatientRow(p, index) {
-    const tr = document.createElement("tr");
-    tr.classList.add("clickable-row");
-    tr.dataset.id = p.id;
-    tr.dataset.status = p.status;
-    tr.onclick = () => viewPatient(index);
-    
-    const enName = p.name || 'N/A';
-    const arName = p.arName || enName;
-    const enDoc = p.doctor || 'N/A';
-    const arDoc = p.arDoc || enDoc;
-    const age = p.age || 'N/A';
-    const ins = p.ins || 'N/A';
-    
-    tr.innerHTML = `
+  const tr = document.createElement("tr");
+  tr.classList.add("clickable-row");
+  tr.dataset.id = p.id;
+  tr.dataset.status = p.status;
+  tr.onclick = () => viewPatient(index);
+
+  const enName = p.name || 'N/A';
+  const arName = p.arName || enName;
+  const enDoc = p.doctor || 'N/A';
+  const arDoc = p.arDoc || enDoc;
+  const age = p.age || 'N/A';
+  const ins = p.ins || 'N/A';
+
+  tr.innerHTML = `
       <td><div class="td-name"><div class="mini-avatar">${p.init || '??'}</div><span class="dyn-text" data-en="${enName}" data-ar="${arName}">${Utils.lang === "ar" ? arName : enName}</span></div></td>
       <td class="dyn-num" data-value="${age}">${age}</td>
       <td style="color:var(--muted)" class="dyn-text" data-en="${enDoc}" data-ar="${arDoc}">${Utils.lang === "ar" ? arDoc : enDoc}</td>
@@ -115,7 +117,7 @@ function createPatientRow(p, index) {
       <td style="color:var(--muted)" class="dyn-date" data-value="${p.date || 'N/A'}">${p.date ? Utils.formatDate(p.date) : 'N/A'}</td>
       <td class="status-cell"><span class="chip chip-${p.status || 'unknown'}">${chip(p.status || 'unknown')}</span></td>
     `;
-    return tr;
+  return tr;
 }
 
 /**
@@ -123,6 +125,29 @@ function createPatientRow(p, index) {
  * 🟢 UI UPDATERS
  * ==========================================
  */
+async function updateDashboardStatistics(st) {
+  console.info(st,"hello worl")
+
+  if (!st) return;
+  Medcore.state.statistics = st
+
+  const mapping = {
+    "statistics-patients": st.patients ?? "",
+    "statistics-revenue": st.revenue??"",
+    "statistics-appointments": st.appointments??""
+
+  };
+
+  for (const [id, val] of Object.entries(mapping)) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.textContent = val;
+    }
+    else
+      console.warn(`Could not find element ${el} of (id: ${id}) for to update`)
+  }
+}
+
 async function updateDashboardStats(st) {
   if (!st) return;
   Medcore.state.stats = st;
@@ -140,13 +165,14 @@ async function updateDashboardStats(st) {
     "c-approved-val": st.claims?.approved ?? 0,
     "c-rejected-val": st.claims?.rejected ?? 0,
     "c-amount-val": st.claims?.total_amount ?? 0
+
   };
 
   for (const [id, val] of Object.entries(mapping)) {
     const el = document.getElementById(id);
     if (el) {
-        el.setAttribute("data-value", val);
-        el.textContent = Utils.formatNumber(val);
+      el.setAttribute("data-value", val);
+      el.textContent = Utils.formatNumber(val);
     }
   }
 
@@ -165,10 +191,10 @@ function update_badge(elementId, value) {
 
 function setupSearch() {
   document.getElementById("home-search")?.addEventListener("input", (e) => {
-      renderHome(e.target.value.toLowerCase());
+    renderHome(e.target.value.toLowerCase());
   });
   document.getElementById("claims-search")?.addEventListener("input", (e) => {
-      renderClaims(e.target.value.toLowerCase());
+    renderClaims(e.target.value.toLowerCase());
   });
 }
 
@@ -198,7 +224,7 @@ async function renderCompanies(list) {
     const type = c.type || 'N/A';
     const claims = c.claims || 0;
     const limit = c.limit || 0;
-    
+
     return `
     <div class="company-card">
       <div class="cc-header">
@@ -255,7 +281,7 @@ async function renderApprovals(list) {
     const patName = a.patient || 'N/A';
     const proc = a.procedure || 'N/A';
     const ref = a.ref || 'N/A';
-    
+
     return `<tr>
       <td style="font-weight:700;color:var(--blue)">${ref}</td>
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
@@ -274,7 +300,7 @@ async function renderAppts(list) {
     const enDoc = a.doctor || 'N/A';
     const arDoc = a.arDoc || enDoc;
     const time = a.time || 'N/A';
-    
+
     return `<tr>
       <td>${time}</td>
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>

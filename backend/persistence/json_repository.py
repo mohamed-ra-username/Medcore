@@ -15,6 +15,7 @@ claims_data = []
 approvals_data = []
 home_patients = []
 
+
 def load_data():
     global appointments, companies, phones, invoices, claims_data, approvals_data, home_patients
 
@@ -42,6 +43,7 @@ def load_data():
         approvals_data = []
         home_patients = []
 
+
 def save_data():
     # Map snake_case Python variables back to camelCase JSON keys for frontend compatibility
     data = {
@@ -55,5 +57,6 @@ def save_data():
     }
     with open(data_file, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
+
 
 load_data()

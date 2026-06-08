@@ -21,13 +21,14 @@ async function update() {
       GETRequest("/phones/"),
       GETRequest("/appointments/"),
       GETRequest("/invoices/"),
-      GETRequest("/stats/")
+      GETRequest("/stats/"),
+      GETRequest("/statistics/")
     ]);
 
     console.log("📊 Broadcaster: Data fetched successfully.");
 
     // Extract data from standard envelopes
-    const [p, c, cl, a, ph, ap, inv, st] = results.map(res => (res && res.success) ? res.data : undefined);
+    const [p, c, cl, a, ph, ap, inv, st, sttc] = results.map(res => (res && res.success) ? res.data : undefined);
 
     // Update global state
     homePatients = p;
@@ -38,6 +39,7 @@ async function update() {
     appts = ap;
     invoices = inv;
     stats = st;
+    statistics = sttc;
 
     // 🛑 WAIT FOR UI TO BE READY
     if (!window.isUIReady) {
@@ -50,6 +52,7 @@ async function update() {
     // 📢 BROADCAST EVENTS
     broadcast("medcore:patients_updated", homePatients);
     broadcast("medcore:stats_updated", stats);
+    broadcast("medcore:statistics_updated", statistics);
     broadcast("medcore:claims_updated", claimsData);
     broadcast("medcore:companies_updated", companies);
     broadcast("medcore:approvals_updated", approvalsData);

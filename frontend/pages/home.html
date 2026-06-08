@@ -22,7 +22,7 @@
 
 <body>
   <div class="app" id="app">
-    
+
     <!-- 🟢 INLINED TOPBAR -->
     <header class="topbar">
       <a class="logo-wrap" href="#">
@@ -30,7 +30,8 @@
         <span class="logo-name">MEDCORE</span>
       </a>
       <div class="topbar-right">
-        <button class="lang-btn" onclick="toggleLang()" id="langBtn">🌐 <span data-langId="langBtn">العربية</span></button>
+        <button class="lang-btn" onclick="toggleLang()" id="langBtn">🌐 <span
+            data-langId="langBtn">العربية</span></button>
         <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7c93"
             stroke-width="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -41,7 +42,7 @@
     </header>
 
     <div class="main">
-      
+
       <!-- 🟢 INLINED SIDEBAR -->
       <nav class="sidebar">
         <button class="nav-item active" onclick="goPage('home',this)">
@@ -146,36 +147,54 @@
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg><span data-langId="home-addbtn">New Patient</span></button>
           </div>
-          
+
           <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-icon" style="background:#e0f8f4"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1AAB8A" stroke-width="2"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg></div>
+              <div class="stat-icon" style="background:#e0f8f4"><svg width="18" height="18" viewBox="0 0 24 24"
+                  fill="none" stroke="#1AAB8A" stroke-width="2">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                </svg></div>
               <div class="stat-lbl" data-langId="s1">Total Patients</div>
               <div class="stat-val" id="stat-patients">...</div>
-              <div class="stat-trend up" data-langId="s1t">↑ 12% this month</div>
+              <div class="stat-trend up" id="statistics-patients"></div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon" style="background:#e8f4ff"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B4F8A" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg></div>
+              <div class="stat-icon" style="background:#e8f4ff"><svg width="18" height="18" viewBox="0 0 24 24"
+                  fill="none" stroke="#1B4F8A" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg></div>
               <div class="stat-lbl" data-langId="s2">Today's Appts</div>
               <div class="stat-val" id="stat-appts">...</div>
-              <div class="stat-trend up" data-langId="s2t">↑ 3 from yesterday</div>
+              <div class="stat-trend up" id="statistics-appointments"></div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon" style="background:#FFF3E0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E65100" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg></div>
+              <div class="stat-icon" style="background:#FFF3E0"><svg width="18" height="18" viewBox="0 0 24 24"
+                  fill="none" stroke="#E65100" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg></div>
               <div class="stat-lbl" data-langId="s3">Pending Claims</div>
               <div class="stat-val" id="stat-claims">...</div>
-              <div class="stat-trend warn" data-langId="s3t">Needs action</div>
+              <div class="stat-trend warn" id="statistics-claims"></div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon" style="background:#f3e5f5"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B1FA2" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg></div>
+              <div class="stat-icon" style="background:#f3e5f5"><svg width="18" height="18" viewBox="0 0 24 24"
+                  fill="none" stroke="#7B1FA2" stroke-width="2">
+                  <rect x="1" y="4" width="22" height="16" rx="2" />
+                  <line x1="1" y1="10" x2="23" y2="10" />
+                </svg></div>
               <div class="stat-lbl" data-langId="s4">Revenue (EGP)</div>
               <div class="stat-val" id="stat-revenue">...</div>
-              <div class="stat-trend up purple" data-langId="s4t">↑ 8% this week</div>
+              <div class="stat-trend up purple" id="statistics-revenue"></div>
             </div>
           </div>
 
           <div class="card">
-            <div class="card-header"><span class="card-title"> <span data-langId="recent">Recent</span> <span data-langId="patients">Patients</span></span></div>
+            <div class="card-header"><span class="card-title"> <span data-langId="recent">Recent</span> <span
+                  data-langId="patients">Patients</span></span></div>
             <div class="tbl-wrap">
               <table>
                 <thead>
@@ -189,7 +208,10 @@
                   </tr>
                 </thead>
                 <tbody id="home-tbody">
-                    <tr><td colspan="6" style="text-align:center; padding: 40px; color: var(--muted)">Loading patients...</td></tr>
+                  <tr>
+                    <td colspan="6" style="text-align:center; padding: 40px; color: var(--muted)">Loading patients...
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -197,16 +219,29 @@
         </div>
 
         <div class="page" id="page-insurance">
-           <div class="ph">
-            <div><div class="ph-title" data-langId="ins">Insurance Companies</div><div class="ph-sub" data-langId="ins-sub">Manage contracts</div></div>
-            <button class="btn-primary" onclick="openModal('addCompany')"><span data-langId="ins-addbtn">Add Company</span></button>
+          <div class="ph">
+            <div>
+              <div class="ph-title" data-langId="ins">Insurance Companies</div>
+              <div class="ph-sub" data-langId="ins-sub">Manage contracts</div>
+            </div>
+            <button class="btn-primary" onclick="openModal('addCompany')"><span data-langId="ins-addbtn">Add
+                Company</span></button>
           </div>
           <div class="summary-bar">
-            <div class="sb-item"><div class="sb-lbl" data-langId="sb-total">Total Partners</div><div class="sb-val" id="sb-total-val">-</div></div>
+            <div class="sb-item">
+              <div class="sb-lbl" data-langId="sb-total">Total Partners</div>
+              <div class="sb-val" id="sb-total-val">-</div>
+            </div>
             <div class="sb-div"></div>
-            <div class="sb-item"><div class="sb-lbl" data-langId="sb-active">Active Contracts</div><div class="sb-val" id="sb-active-val">-</div></div>
+            <div class="sb-item">
+              <div class="sb-lbl" data-langId="sb-active">Active Contracts</div>
+              <div class="sb-val" id="sb-active-val">-</div>
+            </div>
             <div class="sb-div"></div>
-            <div class="sb-item"><div class="sb-lbl" data-langId="sb-expiring">Expiring Soon</div><div class="sb-val" id="sb-expiring-val">-</div></div>
+            <div class="sb-item">
+              <div class="sb-lbl" data-langId="sb-expiring">Expiring Soon</div>
+              <div class="sb-val" id="sb-expiring-val">-</div>
+            </div>
           </div>
           <div class="card">
             <div class="card-header"><span class="card-title" data-langId="ins-card-title">All Companies</span></div>
@@ -215,38 +250,140 @@
         </div>
 
         <div class="page" id="page-claims">
-          <div class="ph"><div><div class="ph-title" data-langId="claims-title">Claims Management</div></div><button class="btn-primary" onclick="openModal('addClaim')"><span data-langId="claims-addbtn">New Claim</span></button></div>
+          <div class="ph">
+            <div>
+              <div class="ph-title" data-langId="claims-title">Claims Management</div>
+            </div><button class="btn-primary" onclick="openModal('addClaim')"><span data-langId="claims-addbtn">New
+                Claim</span></button>
+          </div>
           <div class="card">
-            <div class="card-header"><span class="card-title" data-langId="claims-card-title">All Claims</span><input class="search-input" type="text" id="claims-search" placeholder="Search..."></div>
-            <div class="tbl-wrap"><table><thead><tr><th data-langId="lbl-claim-number">Claim #</th><th data-langId="lbl-patient">Patient</th><th data-langId="lbl-amount">Amount</th><th data-langId="lbl-status">Status</th><th data-langId="lbl-action">Action</th></tr></thead><tbody id="claims-tbody"></tbody></table></div>
+            <div class="card-header"><span class="card-title" data-langId="claims-card-title">All Claims</span><input
+                class="search-input" type="text" id="claims-search" placeholder="Search..."></div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-langId="lbl-claim-number">Claim #</th>
+                    <th data-langId="lbl-patient">Patient</th>
+                    <th data-langId="lbl-amount">Amount</th>
+                    <th data-langId="lbl-status">Status</th>
+                    <th data-langId="lbl-action">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="claims-tbody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
         <div class="page" id="page-approvals">
-          <div class="ph"><div><div class="ph-title" data-langId="appr-title">Approvals Review</div></div></div>
-          <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Ref #</th><th>Patient</th><th>Procedure</th><th>Status</th><th>Action</th></tr></thead><tbody id="approvals-tbody"></tbody></table></div></div>
+          <div class="ph">
+            <div>
+              <div class="ph-title" data-langId="appr-title">Approvals Review</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ref #</th>
+                    <th>Patient</th>
+                    <th>Procedure</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="approvals-tbody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div class="page" id="page-patients">
-          <div class="ph"><div><div class="ph-title" data-langId="pat-title">Patients</div></div><button class="btn-primary" onclick="openModal('addPatient')"><span>+ New Patient</span></button></div>
+          <div class="ph">
+            <div>
+              <div class="ph-title" data-langId="pat-title">Patients</div>
+            </div><button class="btn-primary" onclick="openModal('addPatient')"><span>+ New Patient</span></button>
+          </div>
           <div class="card">
-            <div class="card-header"><span class="card-title">Patient List</span><input class="search-input" type="text" id="home-search" placeholder="Search..."></div>
-            <div class="tbl-wrap"><table><thead><tr><th>Patient</th><th>Age</th><th>Phone</th><th>Status</th></tr></thead><tbody id="pat-tbody"></tbody></table></div>
+            <div class="card-header"><span class="card-title">Patient List</span><input class="search-input" type="text"
+                id="home-search" placeholder="Search..."></div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>Age</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="pat-tbody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
         <div class="page" id="page-appointments">
-          <div class="ph"><div><div class="ph-title" data-langId="appt-title">Appointments</div></div><button class="btn-primary" onclick="openModal('addAppointment')"><span>+ New Appointment</span></button></div>
-          <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Time</th><th>Patient</th><th>Doctor</th><th>Status</th></tr></thead><tbody id="appt-tbody"></tbody></table></div></div>
+          <div class="ph">
+            <div>
+              <div class="ph-title" data-langId="appt-title">Appointments</div>
+            </div><button class="btn-primary" onclick="openModal('addAppointment')"><span>+ New
+                Appointment</span></button>
+          </div>
+          <div class="card">
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="appt-tbody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div class="page" id="page-billing">
-          <div class="ph"><div><div class="ph-title" data-langId="billing">Billing & Payments</div></div><button class="btn-primary" onclick="openModal('addInvoice')"><span>+ New Invoice</span></button></div>
-          <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Invoice #</th><th>Patient</th><th>Amount</th><th>Status</th></tr></thead><tbody id="bill-tbody"></tbody></table></div></div>
+          <div class="ph">
+            <div>
+              <div class="ph-title" data-langId="billing">Billing & Payments</div>
+            </div><button class="btn-primary" onclick="openModal('addInvoice')"><span>+ New Invoice</span></button>
+          </div>
+          <div class="card">
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Invoice #</th>
+                    <th>Patient</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="bill-tbody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
-        <div class="page" id="page-reports"><div class="ph"><div class="ph-title" data-langId="rep-title">Reports</div></div><div class="card" style="padding:50px;text-align:center">Coming soon.</div></div>
-        <div class="page" id="page-settings"><div class="ph"><div class="ph-title" data-langId="set-title">Settings</div></div><div class="card" style="padding:50px;text-align:center">Coming soon.</div></div>
+        <div class="page" id="page-reports">
+          <div class="ph">
+            <div class="ph-title" data-langId="rep-title">Reports</div>
+          </div>
+          <div class="card" style="padding:50px;text-align:center">Coming soon.</div>
+        </div>
+        <div class="page" id="page-settings">
+          <div class="ph">
+            <div class="ph-title" data-langId="set-title">Settings</div>
+          </div>
+          <div class="card" style="padding:50px;text-align:center">Coming soon.</div>
+        </div>
 
       </main>
     </div>
@@ -260,7 +397,7 @@
           onclick="closeModal('addCompany')">×</button>
       </div>
       <div class="modal-body">
-          <div class="form-grid-2">
+        <div class="form-grid-2">
           <div class="form-row"><label id="m-coname" data-langId="m-coname">Company Name</label><input type="text"
               name="name" placeholder="e.g. Misr Insurance"></div>
           <div class="form-row"><label data-langId="lbl-type">Type</label><select name="type">
@@ -270,27 +407,32 @@
             </select></div>
         </div>
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-costart" data-langId="m-costart">Contract Start</label><input type="date" name="start"></div>
-          <div class="form-row"><label id="m-coend" data-langId="m-coend">Contract End</label><input type="date" name="end"></div>
+          <div class="form-row"><label id="m-costart" data-langId="m-costart">Contract Start</label><input type="date"
+              name="start"></div>
+          <div class="form-row"><label id="m-coend" data-langId="m-coend">Contract End</label><input type="date"
+              name="end"></div>
         </div>
-        <div class="form-row"><label id="m-colimit" data-langId="m-colimit">Coverage Limit (EGP)</label><input type="number" name="limit"
-            placeholder="500000"></div>
-        <div class="form-row"><label id="m-cocontact" data-langId="m-cocontact">Contact Person</label><input type="text" name="contact"
-            placeholder="Name &amp; phone"></div>
+        <div class="form-row"><label id="m-colimit" data-langId="m-colimit">Coverage Limit (EGP)</label><input
+            type="number" name="limit" placeholder="500000"></div>
+        <div class="form-row"><label id="m-cocontact" data-langId="m-cocontact">Contact Person</label><input type="text"
+            name="contact" placeholder="Name &amp; phone"></div>
       </div>
-      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addCompany')"
-          id="m-cancel" data-langId="m-cancel">Cancel</button><button class="btn-primary btn-sm" id="m-save" data-langId="m-save" onclick="saveModalData('addCompany')">Save Company</button></div>
+      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addCompany')" id="m-cancel"
+          data-langId="m-cancel">Cancel</button><button class="btn-primary btn-sm" id="m-save" data-langId="m-save"
+          onclick="saveModalData('addCompany')">Save Company</button></div>
     </div>
   </div>
 
   <div class="modal-bg" id="modal-addClaim">
     <div class="modal">
       <div class="modal-head">
-        <h3 id="m-addcl-title" data-langId="m-addcl-title">New Claim</h3><button class="modal-close" onclick="closeModal('addClaim')">×</button>
+        <h3 id="m-addcl-title" data-langId="m-addcl-title">New Claim</h3><button class="modal-close"
+          onclick="closeModal('addClaim')">×</button>
       </div>
       <div class="modal-body">
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-clpat" data-langId="m-clpat">Patient</label><input type="text" name="patient" placeholder="Patient name"></div>
+          <div class="form-row"><label id="m-clpat" data-langId="m-clpat">Patient</label><input type="text"
+              name="patient" placeholder="Patient name"></div>
           <div class="form-row"><label id="m-clins" data-langId="m-clins">Insurance Company</label><select name="ins">
               <option>Misr Insurance</option>
               <option>AXA Egypt</option>
@@ -299,14 +441,17 @@
             </select></div>
         </div>
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-clamt" data-langId="m-clamt">Amount (EGP)</label><input type="number" name="amount" placeholder="0"></div>
-          <div class="form-row"><label id="m-cldate" data-langId="m-cldate">Service Date</label><input type="date" name="date"></div>
+          <div class="form-row"><label id="m-clamt" data-langId="m-clamt">Amount (EGP)</label><input type="number"
+              name="amount" placeholder="0"></div>
+          <div class="form-row"><label id="m-cldate" data-langId="m-cldate">Service Date</label><input type="date"
+              name="date"></div>
         </div>
         <div class="form-row"><label id="m-clnotes" data-langId="m-clnotes">Notes</label><input type="text" name="notes"
             placeholder="Diagnosis / procedure..."></div>
       </div>
-      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addClaim')"
-          id="m-cancel2" data-langId="m-cancel2">Cancel</button><button class="btn-primary btn-sm" id="m-save2" data-langId="m-save2" onclick="saveModalData('addClaim')">Submit Claim</button></div>
+      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addClaim')" id="m-cancel2"
+          data-langId="m-cancel2">Cancel</button><button class="btn-primary btn-sm" id="m-save2" data-langId="m-save2"
+          onclick="saveModalData('addClaim')">Submit Claim</button></div>
     </div>
   </div>
 
@@ -318,19 +463,20 @@
       </div>
       <div class="modal-body">
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-patname" data-langId="m-patname">Name</label><input type="text" id="inp-patname" name="name"
-              placeholder="Patient Name"></div>
-          <div class="form-row"><label id="m-patage" data-langId="m-patage">Age</label><input type="number" id="inp-patage" name="age" placeholder="Age">
+          <div class="form-row"><label id="m-patname" data-langId="m-patname">Name</label><input type="text"
+              id="inp-patname" name="name" placeholder="Patient Name"></div>
+          <div class="form-row"><label id="m-patage" data-langId="m-patage">Age</label><input type="number"
+              id="inp-patage" name="age" placeholder="Age">
           </div>
         </div>
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-patphone" data-langId="m-patphone">Phone Number</label><input type="tel" id="inp-patphone" name="phone"
-              placeholder="01X-XXXX-XXXX"></div>
-          <div class="form-row"><label id="m-patwa" data-langId="m-patwa">Whatsapp Number</label><input type="tel" id="inp-patwa" name="wa"
-              placeholder="01X-XXXX-XXXX"></div>
+          <div class="form-row"><label id="m-patphone" data-langId="m-patphone">Phone Number</label><input type="tel"
+              id="inp-patphone" name="phone" placeholder="01X-XXXX-XXXX"></div>
+          <div class="form-row"><label id="m-patwa" data-langId="m-patwa">Whatsapp Number</label><input type="tel"
+              id="inp-patwa" name="wa" placeholder="01X-XXXX-XXXX"></div>
         </div>
-        <div class="form-row"><label id="m-patnid" data-langId="m-patnid">National ID</label><input type="text" id="inp-patnid" name="nid"
-            placeholder="14-digit National ID"></div>
+        <div class="form-row"><label id="m-patnid" data-langId="m-patnid">National ID</label><input type="text"
+            id="inp-patnid" name="nid" placeholder="14-digit National ID"></div>
         <div class="form-grid-2">
           <div class="form-row">
             <label id="m-patins" data-langId="m-patins">Insurance Company</label>
@@ -362,8 +508,9 @@
           </select>
         </div>
       </div>
-      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addPatient')"
-          id="m-cancel3" data-langId="m-cancel3">Cancel</button><button class="btn-primary btn-sm" id="m-save3" data-langId="m-save3" onclick="saveModalData('addPatient')">Save
+      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addPatient')" id="m-cancel3"
+          data-langId="m-cancel3">Cancel</button><button class="btn-primary btn-sm" id="m-save3" data-langId="m-save3"
+          onclick="saveModalData('addPatient')">Save
           Patient</button></div>
     </div>
   </div>
@@ -435,16 +582,20 @@
       </div>
       <div class="modal-body">
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-epatname" data-langId="m-epatname">Name</label><input type="text" id="edit-patname" name="name" disabled></div>
-          <div class="form-row"><label id="m-epatage" data-langId="m-epatage">Age</label><input type="number" id="edit-patage" name="age" disabled></div>
+          <div class="form-row"><label id="m-epatname" data-langId="m-epatname">Name</label><input type="text"
+              id="edit-patname" name="name" disabled></div>
+          <div class="form-row"><label id="m-epatage" data-langId="m-epatage">Age</label><input type="number"
+              id="edit-patage" name="age" disabled></div>
         </div>
         <div class="form-grid-2">
-          <div class="form-row"><label id="m-epatphone" data-langId="m-epatphone">Phone Number</label><input type="tel" id="edit-patphone" name="phone"
-              disabled></div>
-          <div class="form-row"><label id="m-epatwa" data-langId="m-epatwa">Whatsapp Number</label><input type="tel" id="edit-patwa" name="wa" disabled>
+          <div class="form-row"><label id="m-epatphone" data-langId="m-epatphone">Phone Number</label><input type="tel"
+              id="edit-patphone" name="phone" disabled></div>
+          <div class="form-row"><label id="m-epatwa" data-langId="m-epatwa">Whatsapp Number</label><input type="tel"
+              id="edit-patwa" name="wa" disabled>
           </div>
         </div>
-        <div class="form-row"><label id="m-epatnid" data-langId="m-epatnid">National ID</label><input type="text" id="edit-patnid" name="nid" disabled>
+        <div class="form-row"><label id="m-epatnid" data-langId="m-epatnid">National ID</label><input type="text"
+            id="edit-patnid" name="nid" disabled>
         </div>
         <div class="form-grid-2">
           <div class="form-row">
@@ -478,11 +629,12 @@
         </div>
       </div>
       <div class="modal-footer" style="justify-content: space-between;">
-        <button class="btn-outline" style="color:#C62828;border-color:#C62828" onclick="deletePatient()"
-          id="m-edel" data-langId="m-edel">Delete Patient</button>
+        <button class="btn-outline" style="color:#C62828;border-color:#C62828" onclick="deletePatient()" id="m-edel"
+          data-langId="m-edel">Delete Patient</button>
         <div style="display:flex;gap:10px">
           <button class="btn-outline" onclick="toggleEditPatient()" id="m-eedit" data-langId="m-eedit">Edit</button>
-          <button class="btn-primary btn-sm" id="m-esave" data-langId="m-esave" onclick="updatePatient()" style="display:none">Save
+          <button class="btn-primary btn-sm" id="m-esave" data-langId="m-esave" onclick="updatePatient()"
+            style="display:none">Save
             Changes</button>
         </div>
       </div>
@@ -490,4 +642,5 @@
   </div>
 
 </body>
+
 </html>
