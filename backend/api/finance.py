@@ -1,7 +1,7 @@
 import flask
 from persistence import data_handler
 from core.security.logic import make_response
-from core.middleware.timeout import token_required, permission_required
+from core.middleware.security import token_required, permission_required
 from . import api_bp
 
 @api_bp.route("/invoices/")

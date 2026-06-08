@@ -8,7 +8,7 @@ SECRET_KEY = "medcore-secret-key" #! In production, use a secure random key and 
 # --- PERMISSIONS MAP ---
 ACCESS_CONTROL = {
     role.ADMIN: ["*"],
-    role.DOCTOR: ["view_patients", "edit_patients", "view_appointments", "view_revenue", "view_claims", "view_approvals"],
+    role.DOCTOR: ["view_patients", "edit_patients","view_statistics", "view_appointments", "view_revenue", "view_claims", "view_approvals"],
     role.NURSE: ["view_patients", "view_appointments", "add_appointments"],
     role.RECEPTIONIST: ["view_patients", "add_patients", "view_appointments", "add_appointments"],
     role.USER: ["view_patients"]

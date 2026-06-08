@@ -1,7 +1,7 @@
 import flask
 from persistence import data_handler
 from core.security.logic import make_response
-from core.middleware.timeout import token_required, permission_required
+from core.middleware.security import token_required, permission_required
 from . import api_bp
 
 @api_bp.route("/homePatients/")
@@ -29,7 +29,7 @@ def update_home_patient(id: int):
 
 @api_bp.route("/homePatients/<int:id>/", methods=["DELETE"])
 @token_required
-@permission_required("*") 
+@permission_required("*")
 def delete_home_patient(id: int):
     res = data_handler.delete_home_patient(id)
     if res:

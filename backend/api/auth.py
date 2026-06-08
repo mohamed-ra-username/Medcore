@@ -1,7 +1,7 @@
 import flask
 from persistence import user_repository
 from core.security.logic import make_response, generate_token, ACCESS_CONTROL
-from core.middleware.timeout import token_required
+from core.middleware.security import token_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from persistence.enums import role
 from . import api_bp

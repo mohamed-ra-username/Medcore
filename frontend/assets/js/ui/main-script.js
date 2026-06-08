@@ -126,8 +126,6 @@ function createPatientRow(p, index) {
  * ==========================================
  */
 async function updateDashboardStatistics(st) {
-  console.info(st,"hello worl")
-
   if (!st) return;
   Medcore.state.statistics = st
 
