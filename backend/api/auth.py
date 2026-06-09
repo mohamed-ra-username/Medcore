@@ -1,3 +1,5 @@
+import uuid
+
 import flask
 from persistence import user_repository
 from core.security.logic import make_response, generate_token, ACCESS_CONTROL
@@ -23,9 +25,10 @@ def register():
     hashed_password = generate_password_hash(password)
 
     new_user = {
+        "id": uuid.uuid4(),
         "email": email,
+        "name": data.get("name", f"New User {len(user_repository.users)+1}"),
         "password_hash": hashed_password,
-        "name": data.get("name", "New User")
     }
 
     if user_role != role.USER:

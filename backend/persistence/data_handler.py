@@ -1,15 +1,20 @@
 # --- AGGREGATOR INTERFACE ---
 # This file is the one and only entry point for the rest of the backend.
 
-# 1. Import raw data lists
-from .json_repository import (
-    save_data, load_data, appointments, companies, 
-    phones, invoices, claims_data, approvals_data, home_patients, data_file
-)
-from .user_repository import (
-    users as auth_users, load_users, save_users, 
-    get_user_by_email, add_user as add_auth_user, get_all_users, users_file
-)
+from . import json_repository as json_db
+from . import user_repository as user_db
+
+# 1. Export raw data modules
+save_data = json_db.save_data
+load_data = json_db.load_data
+data_file = json_db.data_file
+
+load_users = user_db.load_users
+save_users = user_db.save_users
+users_file = user_db.users_file
+get_user_by_email = user_db.get_user_by_email
+add_auth_user = user_db.add_user
+get_all_users = user_db.get_all_users
 
 # 2. Import all CRUD functions
 from .crud.get import (
@@ -31,3 +36,4 @@ from .crud.delete import (
     delete_company, delete_appointment, delete_user, 
     delete_phone, delete_approval
 )
+

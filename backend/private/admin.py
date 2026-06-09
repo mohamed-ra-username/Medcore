@@ -2,7 +2,7 @@ import flask
 import json
 import shutil
 import datetime
-from persistence import data_handler, auth_users, user_repository
+from persistence import data_handler, user_repository
 
 interface_bp = flask.Blueprint(name="interface", import_name=__name__, url_prefix="/interface")
 from dotenv import load_dotenv
@@ -40,13 +40,13 @@ def dashboard():
     if not is_admin():
         return flask.redirect(flask.url_for("interface.login"))
     stats = {
-        "patients": len(data_handler.home_patients),
-        "appointments": len(data_handler.appointments),
-        "claims": len(data_handler.claims_data),
-        "invoices": len(data_handler.invoices),
-        "companies": len(data_handler.companies),
-        "users": len(auth_users),
-        "approvals": len(data_handler.approvals_data)
+        "patients": len(data_handler.json_db.home_patients),
+        "appointments": len(data_handler.json_db.appointments),
+        "claims": len(data_handler.json_db.claims_data),
+        "invoices": len(data_handler.json_db.invoices),
+        "companies": len(data_handler.json_db.companies),
+        "users": len(data_handler.user_db.users),
+        "approvals": len(data_handler.json_db.approvals_data)
     }
     return flask.render_template("admin/dashboard.html", stats=stats)
 
@@ -56,13 +56,13 @@ def list_category(category):
         return flask.redirect(flask.url_for("interface.login"))
 
     data_map = {
-        "patients": data_handler.home_patients,
-        "appointments": data_handler.appointments,
-        "claims": data_handler.claims_data,
-        "invoices": data_handler.invoices,
-        "companies": data_handler.companies,
-        "users": auth_users,
-        "approvals": data_handler.approvals_data
+        "patients": data_handler.json_db.home_patients,
+        "appointments": data_handler.json_db.appointments,
+        "claims": data_handler.json_db.claims_data,
+        "invoices": data_handler.json_db.invoices,
+        "companies": data_handler.json_db.companies,
+        "users": data_handler.user_db.users,
+        "approvals": data_handler.json_db.approvals_data
     }
 
     target_data = data_map.get(category)
@@ -77,13 +77,13 @@ def delete_item(category, index):
         return flask.redirect(flask.url_for("interface.login"))
 
     data_map = {
-        "patients": data_handler.home_patients,
-        "appointments": data_handler.appointments,
-        "claims": data_handler.claims_data,
-        "invoices": data_handler.invoices,
-        "companies": data_handler.companies,
-        "users": auth_users,
-        "approvals": data_handler.approvals_data
+        "patients": data_handler.json_db.home_patients,
+        "appointments": data_handler.json_db.appointments,
+        "claims": data_handler.json_db.claims_data,
+        "invoices": data_handler.json_db.invoices,
+        "companies": data_handler.json_db.companies,
+        "users": data_handler.user_db.users,
+        "approvals": data_handler.json_db.approvals_data
     }
 
     target_list = data_map.get(category)
