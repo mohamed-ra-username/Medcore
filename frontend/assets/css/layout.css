@@ -643,7 +643,7 @@ tfoot td {
   color: #fff
 }
 
-.act-view {
+.act-review {
   padding: 4px 12px;
   border-radius: 6px;
   font-size: 11px;
@@ -655,10 +655,18 @@ tfoot td {
   transition: .15s
 }
 
-.act-view:hover {
+.act-review:hover {
   background: var(--blue);
   color: #fff
 }
+
+.act-review:disabled,.act-approve:disabled,.act-reject:disabled {
+  background-color: #cccccc; /* Muted gray */
+  color: #666666;
+  cursor: not-allowed; /* Shows block cursor */
+  opacity: 0.6;
+}
+
 
 .company-grid {
   display: grid;

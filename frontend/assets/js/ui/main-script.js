@@ -251,12 +251,12 @@ async function renderClaims(filter, list) {
   tb.innerHTML = list.map((c, i) => {
     const patName = c.patient || 'N/A';
     const amount = c.amount || 0;
-    return `<tr>
+    return `<tr data-id="${c.id}">
       <td style="font-weight:700;color:var(--blue)">${c.id || 'N/A'}</td>
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
       <td style="font-weight:600" class="dyn-num" data-value="${amount}">${Utils.formatNumber(amount)}</td>
       <td><span class="chip chip-${c.status || 'pending'}">${chip(c.status || 'pending')}</span></td>
-      <td>${c.status === "pending" ? `<button onclick="setStatus(${i},'approved')">Approve</button> <button onclick="setStatus(${i},'denied')">Deny</button>` : ''}</td>
+      <td>${c.status === "pending" ? `<button class="act-approve" onclick="setStatus(this,'approved');this.disabled=true;">Approve</button> <button class="act-reject" onclick="setStatus(this,'denied');this.disabled=true;">Deny</button>` : ''}</td>
     </tr>`
   }).join("");
 }
@@ -269,7 +269,7 @@ async function renderPatients(list) {
     const arName = p.arName || enName;
     const phone = p.phone || 'N/A';
     const age = p.age || 'N/A';
-    return `<tr class="clickable-row" onclick="viewPatient(${i})">
+    return `<tr data-id=${p.id} class="clickable-row" onclick="viewPatient(${i})">
       <td><div class="td-name"><div class="mini-avatar">${p.init || '??'}</div><span class="dyn-text" data-en="${enName}" data-ar="${arName}">${Utils.lang === "ar" ? arName : enName}</span></div></td>
       <td class="dyn-num" data-value="${age}">${age}</td>
       <td style="color:var(--muted)">${phone}</td>
@@ -286,12 +286,12 @@ async function renderApprovals(list) {
     const proc = a.procedure || 'N/A';
     const ref = a.ref || 'N/A';
 
-    return `<tr>
+    return `<tr data-id="${ref}" >
       <td style="font-weight:700;color:var(--blue)">${ref}</td>
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
       <td class="dyn-text" data-en="${proc}" data-ar="${a.arProc || proc}">${Utils.lang === "ar" ? (a.arProc || proc) : proc}</td>
       <td><span class="chip chip-${a.status || 'pending'}">${chip(a.status || 'pending')}</span></td>
-      <td>${a.status === "pending" ? `<button onclick="approveAction(${i})">Review</button>` : ''}</td>
+      <td>${a.status === "pending" ? `<button class="act-review" onclick="openReview(this);this.disabled=true;">Review</button>` : ''}</td>
     </tr>`
   }).join("");
 }
@@ -338,4 +338,15 @@ function viewPatient(index) {
   const inputs = modal.querySelectorAll("input, select, textarea");
   inputs.forEach(input => { if (input.name && p[input.name] !== undefined) input.value = p[input.name]; });
   openModal("editPatient");
+}
+
+async function setStatus (target,status){
+  target_row = target.parent
+  target_id = target_row.dataset["id"]
+  await PUTRequest("/claims",[target_id,status])
+
+}
+function openReview (target){
+  target_row = target.parent
+
 }
