@@ -1,5 +1,4 @@
 {
-    "users": [],
     "appointments": [
         {
             "time": "08:30",
@@ -176,6 +175,14 @@
     ],
     "claimsData": [
         {
+            "patient": "test namer",
+            "ins": "AXA Egypt",
+            "amount": 123,
+            "date": "2023-12-31",
+            "notes": "exam brain damagge",
+            "status": "pending"
+        },
+        {
             "id": "CLM-2405",
             "patient": "Ahmed Hassan",
             "ins": "Misr Insurance",
@@ -197,7 +204,7 @@
             "ins": "MetLife Egypt",
             "amount": 5600,
             "date": "May 3",
-            "status": "pending"
+            "status": "approved"
         },
         {
             "id": "CLM-2402",

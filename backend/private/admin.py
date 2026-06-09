@@ -2,6 +2,7 @@ import flask
 import json
 import shutil
 import datetime
+from functools import wraps
 from persistence import data_handler, user_repository
 
 interface_bp = flask.Blueprint(name="interface", import_name=__name__, url_prefix="/interface")
@@ -13,6 +14,14 @@ MASTER_PASSWORD = "admin"
 
 def is_admin():
     return flask.session.get("is_admin") == True
+
+def ensure_admin(f):
+    @wraps(f)
+    def wrapper(*args,**kwargs):
+        if not is_admin():
+            return flask.redirect(flask.url_for("interface.login"))
+        return f(*args,**kwargs)
+    return wrapper
 
 @interface_bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -36,32 +45,30 @@ def logout():
 
 @interface_bp.route("/")
 @interface_bp.route("/dashboard")
+@ensure_admin
 def dashboard():
-    if not is_admin():
-        return flask.redirect(flask.url_for("interface.login"))
     stats = {
+        "users": len(data_handler.user_db.users),
         "patients": len(data_handler.json_db.home_patients),
         "appointments": len(data_handler.json_db.appointments),
         "claims": len(data_handler.json_db.claims_data),
         "invoices": len(data_handler.json_db.invoices),
         "companies": len(data_handler.json_db.companies),
-        "users": len(data_handler.user_db.users),
         "approvals": len(data_handler.json_db.approvals_data)
     }
     return flask.render_template("admin/dashboard.html", stats=stats)
 
 @interface_bp.route("/list/<category>")
+@ensure_admin
 def list_category(category):
-    if not is_admin():
-        return flask.redirect(flask.url_for("interface.login"))
 
     data_map = {
+        "users": data_handler.user_db.users,
         "patients": data_handler.json_db.home_patients,
         "appointments": data_handler.json_db.appointments,
         "claims": data_handler.json_db.claims_data,
         "invoices": data_handler.json_db.invoices,
         "companies": data_handler.json_db.companies,
-        "users": data_handler.user_db.users,
         "approvals": data_handler.json_db.approvals_data
     }
 
@@ -71,10 +78,9 @@ def list_category(category):
         return flask.redirect(flask.url_for("interface.dashboard"))
     return flask.render_template("admin/list.html", category=category, data=target_data)
 
-@interface_bp.route("/delete/<category>/<int:index>", methods=["POST"])
-def delete_item(category, index):
-    if not is_admin():
-        return flask.redirect(flask.url_for("interface.login"))
+@interface_bp.route("/delete/<category>/<id>", methods=["POST"])
+@ensure_admin
+def delete_item(category, id):
 
     data_map = {
         "patients": data_handler.json_db.home_patients,
@@ -87,24 +93,27 @@ def delete_item(category, index):
     }
 
     target_list = data_map.get(category)
-    if target_list is not None and 0 <= index < len(target_list):
-        target_list.pop(index)
+    if target_list is not None:
+        # Find and remove item by ID
+        item_to_remove = next((item for item in target_list if str(item.get("id")) == str(id)), None)
+        if item_to_remove:
+            target_list.remove(item_to_remove)
 
-        # Save based on which file was changed
-        if category == "users":
-            user_repository.save_users()
-        else:
-            data_handler.save_data()
+            # Save based on which file was changed
+            if category == "users":
+                user_repository.save_users()
+            else:
+                data_handler.save_data()
 
-        flask.flash(f"Removed item from {category}")
-    else:
-        flask.flash("Error: Could not delete item")
+            flask.flash(f"Removed item from {category}")
+            return flask.redirect(flask.url_for("interface.list_category", category=category))
+
+    flask.flash("Error: Could not delete item")
     return flask.redirect(flask.url_for("interface.list_category", category=category))
 
 @interface_bp.route("/raw", methods=["GET", "POST"])
+@ensure_admin
 def raw_editor():
-    if not is_admin():
-        return flask.redirect(flask.url_for("interface.login"))
 
     from persistence.data_handler import data_file, users_file
 
@@ -133,9 +142,8 @@ def raw_editor():
     return flask.render_template("admin/raw.html", json_content=content, file_type=file_type)
 
 @interface_bp.route("/backup", methods=["POST"])
+@ensure_admin
 def manual_backup():
-    if not is_admin():
-        return flask.redirect(flask.url_for("interface.login"))
 
     from persistence.data_handler import data_file, users_file
 

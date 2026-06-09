@@ -137,8 +137,8 @@ async function updateDashboardStatistics(st) {
 
   const mapping = {
     "statistics-patients": st.patients ?? "",
-    "statistics-revenue": st.revenue??"",
-    "statistics-appointments": st.appointments??""
+    "statistics-revenue": st.revenue ?? "",
+    "statistics-appointments": st.appointments ?? ""
 
   };
 
@@ -256,20 +256,22 @@ async function renderClaims(filter, list) {
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
       <td style="font-weight:600" class="dyn-num" data-value="${amount}">${Utils.formatNumber(amount)}</td>
       <td><span class="chip chip-${c.status || 'pending'}">${chip(c.status || 'pending')}</span></td>
-      <td>${c.status === "pending" ? `<button class="act-approve" onclick="setStatus(this,'approved');this.disabled=true;">Approve</button> <button class="act-reject" onclick="setStatus(this,'denied');this.disabled=true;">Deny</button>` : ''}</td>
+      <td>${c.status === "pending" ?
+        `<button class="act-approve" onclick="this.disabled=true;setStatus(this,'approved');">Approve</button> <button class="act-reject" onclick="this.disabled=true;setStatus(this,'rejected');">Reject</button>` :
+        `<button class="act-hold" onclick="this.disabled=true;setStatus(this,'pending');">Hold</button>`}</td>
     </tr>`
   }).join("");
 }
 
 async function renderPatients(list) {
   const tb = document.getElementById("pat-tbody");
-  if (!tb || !list) return;
-  tb.innerHTML = list.map((p, i) => {
+  if (!tb || !Array.isArray(list)) return;
+  tb.innerHTML = list.map((p) => {
     const enName = p.name || 'N/A';
     const arName = p.arName || enName;
     const phone = p.phone || 'N/A';
     const age = p.age || 'N/A';
-    return `<tr data-id=${p.id} class="clickable-row" onclick="viewPatient(${i})">
+    return `<tr class="clickable-row" data-id="${p.id}" onclick="viewPatient('${p.id}')">
       <td><div class="td-name"><div class="mini-avatar">${p.init || '??'}</div><span class="dyn-text" data-en="${enName}" data-ar="${arName}">${Utils.lang === "ar" ? arName : enName}</span></div></td>
       <td class="dyn-num" data-value="${age}">${age}</td>
       <td style="color:var(--muted)">${phone}</td>
@@ -277,6 +279,7 @@ async function renderPatients(list) {
     </tr>`
   }).join("");
 }
+
 
 async function renderApprovals(list) {
   const tb = document.getElementById("approvals-tbody");
@@ -291,7 +294,7 @@ async function renderApprovals(list) {
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
       <td class="dyn-text" data-en="${proc}" data-ar="${a.arProc || proc}">${Utils.lang === "ar" ? (a.arProc || proc) : proc}</td>
       <td><span class="chip chip-${a.status || 'pending'}">${chip(a.status || 'pending')}</span></td>
-      <td>${a.status === "pending" ? `<button class="act-review" onclick="openReview(this);this.disabled=true;">Review</button>` : ''}</td>
+      <td>${a.status === "pending" ? `<button class="act-review" onclick="this.disabled=true;openReview(this);">Review</button>` : ''}</td>
     </tr>`
   }).join("");
 }
@@ -329,10 +332,11 @@ async function renderBilling(list) {
   }).join("");
 }
 
-let currentPatientIndex = -1;
-function viewPatient(index) {
-  currentPatientIndex = index;
-  const p = Medcore.state.patients[index];
+let currentPatientId = null;
+function viewPatient(id) {
+  currentPatientId = id;
+  const p = Medcore.state.patients.find(p => p.id === id);
+  if (!p) return;
   const modal = document.getElementById("modal-editPatient");
   if (!modal) return;
   const inputs = modal.querySelectorAll("input, select, textarea");
@@ -340,13 +344,19 @@ function viewPatient(index) {
   openModal("editPatient");
 }
 
-async function setStatus (target,status){
-  target_row = target.parent
-  target_id = target_row.dataset["id"]
-  await PUTRequest("/claims",[target_id,status])
-
+async function setStatus(target, status) {
+  const row = target.closest("tr");
+  const id = row?.dataset.id;
+  if (!id) return;
+  const res = await PUTRequest(`/claims/${id}/status/`, { status });
+  if (res && res.success) {
+    showToast(`Claim ${status} successfully`);
+  } else {
+    alert("Failed to update status");
+    target.disabled = false;
+  }
 }
-function openReview (target){
+function openReview(target) {
   target_row = target.parent
 
 }

@@ -609,6 +609,23 @@ tfoot td {
   gap: 6px
 }
 
+.act-hold {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  background: #000000;
+  color: #d18c25;
+  transition: .15s
+}
+
+.act-hold:hover {
+  background: var(--teal);
+  color: #fff
+}
+
 .act-approve {
   padding: 4px 12px;
   border-radius: 6px;
@@ -660,10 +677,15 @@ tfoot td {
   color: #fff
 }
 
-.act-review:disabled,.act-approve:disabled,.act-reject:disabled {
-  background-color: #cccccc; /* Muted gray */
+.act-review:disabled,
+.act-hold:disabled,
+.act-approve:disabled,
+.act-reject:disabled {
+  background-color: #cccccc;
+  /* Muted gray */
   color: #666666;
-  cursor: not-allowed; /* Shows block cursor */
+  cursor: not-allowed;
+  /* Shows block cursor */
   opacity: 0.6;
 }
 

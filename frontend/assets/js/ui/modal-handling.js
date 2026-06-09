@@ -78,10 +78,14 @@ async function saveModalData(modalId) {
 }
 
 async function updatePatient() {
-  if (typeof currentPatientIndex === 'undefined' || currentPatientIndex < 0) return;
+  if (!currentPatientId) return;
   const modal = document.getElementById("modal-editPatient");
   const inputs = modal.querySelectorAll("input, select, textarea");
-  const p = { ...homePatients[currentPatientIndex] };
+
+  const original = Medcore.state.patients.find(p => p.id === currentPatientId);
+  if (!original) return;
+
+  const p = { ...original };
   inputs.forEach(input => {
     if (input.name) {
       if (input.type === "number")
@@ -91,10 +95,11 @@ async function updatePatient() {
     }
   });
   p.init = Utils.initials(p.name);
-  const result = await PUTRequest(`/homePatients/${currentPatientIndex}/`, p);
+  const result = await PUTRequest(`/homePatients/${currentPatientId}/`, p);
   if (result && result.success) {
-    homePatients[currentPatientIndex] = p;
-    renderHome(); renderPatients(); updateAllDashboards();
+    const idx = Medcore.state.patients.findIndex(item => item.id === currentPatientId);
+    if (idx !== -1) Medcore.state.patients[idx] = p;
+    renderHome(); renderPatients(Medcore.state.patients); updateAllDashboards();
     closeModal('editPatient');
   } else {
     alert("Failed to update patient.");
@@ -102,16 +107,18 @@ async function updatePatient() {
 }
 
 async function deletePatient() {
-  if (typeof currentPatientIndex === 'undefined' || currentPatientIndex < 0) return;
+  if (!currentPatientId) return;
   const confirmMsg = Utils.lang === "ar" ? "هل أنت متأكد من حذف المريض؟" : "Are you sure you want to delete this patient?";
   if (confirm(confirmMsg)) {
-    const result = await DELETERequest(`/homePatients/${currentPatientIndex}/`);
+    const result = await DELETERequest(`/homePatients/${currentPatientId}/`);
     if (result && result.success) {
-      homePatients.splice(currentPatientIndex, 1);
-      renderHome(); renderPatients(); updateAllDashboards();
+      const idx = Medcore.state.patients.findIndex(item => item.id === currentPatientId);
+      if (idx !== -1) Medcore.state.patients.splice(idx, 1);
+      renderHome(); renderPatients(Medcore.state.patients); updateAllDashboards();
       closeModal('editPatient');
     } else {
       alert("Failed to delete patient.");
     }
   }
 }
+

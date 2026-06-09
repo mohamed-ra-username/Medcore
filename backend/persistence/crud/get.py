@@ -6,17 +6,14 @@ from persistence import user_repository as user_db
 
 UNKNOWN = object()
 
-def _get_one_or_none(something: list, id: int | None):
-    try:
-        return something[id] # type: ignore
-    except (KeyError, IndexError, TypeError):
-        return None
+def _get_one_or_none(something: list, id: Any):
+    if id is None or id == UNKNOWN: return None
+    return next((item for item in something if str(item.get("id")) == str(id)), None)
 
-def _get_one_or_all(something: list, id: slice | int | None):
-    try:
-        return something[id] # type: ignore
-    except (KeyError, IndexError, TypeError):
-        return something
+def _get_one_or_all(something: list, id: Any):
+    if id is None or id == UNKNOWN: return something
+    item = next((item for item in something if str(item.get("id")) == str(id)), None)
+    return item if item else something
 
 def get_user(id=None): return _get_one_or_none(user_db.users, id)
 def get_users(id=None): return _get_one_or_all(user_db.users, id)
