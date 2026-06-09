@@ -8,6 +8,11 @@ const Medcore = {
     user: null,
     permissions: JSON.parse(localStorage.getItem("permissions") || "[]"),
     patients: [],
+    claims: [],
+    companies: [],
+    approvals: [],
+    appts: [],
+    invoices: [],
     stats: {},
     statistics: {}
   },
@@ -51,16 +56,32 @@ window.onload = async () => {
  */
 function setupEventListeners() {
   document.addEventListener("medcore:patients_updated", (e) => {
+    Medcore.state.patients = e.detail;
     syncPatientTable(e.detail);
     renderPatients(e.detail);
   });
   document.addEventListener("medcore:stats_updated", (e) => updateDashboardStats(e.detail));
   document.addEventListener("medcore:statistics_updated", (e) => updateDashboardStatistics(e.detail));
-  document.addEventListener("medcore:claims_updated", (e) => renderClaims(null, e.detail));
-  document.addEventListener("medcore:companies_updated", (e) => renderCompanies(e.detail));
-  document.addEventListener("medcore:approvals_updated", (e) => renderApprovals(e.detail));
-  document.addEventListener("medcore:appts_updated", (e) => renderAppts(e.detail));
-  document.addEventListener("medcore:billing_updated", (e) => renderBilling(e.detail));
+  document.addEventListener("medcore:claims_updated", (e) => {
+    Medcore.state.claims = e.detail;
+    renderClaims(null, e.detail);
+  });
+  document.addEventListener("medcore:companies_updated", (e) => {
+    Medcore.state.companies = e.detail;
+    renderCompanies(e.detail);
+  });
+  document.addEventListener("medcore:approvals_updated", (e) => {
+    Medcore.state.approvals = e.detail;
+    renderApprovals(e.detail);
+  });
+  document.addEventListener("medcore:appts_updated", (e) => {
+    Medcore.state.appts = e.detail;
+    renderAppts(e.detail);
+  });
+  document.addEventListener("medcore:billing_updated", (e) => {
+    Medcore.state.invoices = e.detail;
+    renderBilling(e.detail);
+  });
 }
 
 /**
@@ -83,72 +104,41 @@ function syncPatientTable(freshData) {
 
   const fragment = document.createDocumentFragment();
 
-  freshData.forEach((p, index) => {
+  freshData.forEach((p) => {
     let row = tbody.querySelector(`tr[data-id="${p.id}"]`);
     if (row) {
       if (row.dataset.status !== p.status) {
-        row.dataset.status = p.status;
-        row.querySelector(".status-cell").innerHTML = `<span class="chip chip-${p.status}">${chip(p.status)}</span>`;
+        row.outerHTML = drawPatientRow(p);
       }
     } else {
-      const newRow = createPatientRow(p, index);
-      fragment.appendChild(newRow);
+      const temp = document.createElement('tbody');
+      temp.innerHTML = drawPatientRow(p);
+      fragment.appendChild(temp.firstElementChild);
     }
   });
 
   if (tbody.innerText.includes("Loading")) tbody.innerHTML = "";
   tbody.appendChild(fragment);
-  Medcore.state.patients = freshData;
-}
-
-function createPatientRow(p, index) {
-  const tr = document.createElement("tr");
-  tr.classList.add("clickable-row");
-  tr.dataset.id = p.id;
-  tr.dataset.status = p.status;
-  tr.onclick = () => viewPatient(index);
-
-  const enName = p.name || 'N/A';
-  const arName = p.arName || enName;
-  const enDoc = p.doctor || 'N/A';
-  const arDoc = p.arDoc || enDoc;
-  const age = p.age || 'N/A';
-  const ins = p.ins || 'N/A';
-
-  tr.innerHTML = `
-      <td><div class="td-name"><div class="mini-avatar">${p.init || '??'}</div><span class="dyn-text" data-en="${enName}" data-ar="${arName}">${Utils.lang === "ar" ? arName : enName}</span></div></td>
-      <td class="dyn-num" data-value="${age}">${age}</td>
-      <td style="color:var(--muted)" class="dyn-text" data-en="${enDoc}" data-ar="${arDoc}">${Utils.lang === "ar" ? arDoc : enDoc}</td>
-      <td style="color:var(--muted)">${ins}</td>
-      <td style="color:var(--muted)" class="dyn-date" data-value="${p.date || 'N/A'}">${p.date ? Utils.formatDate(p.date) : 'N/A'}</td>
-      <td class="status-cell"><span class="chip chip-${p.status || 'unknown'}">${chip(p.status || 'unknown')}</span></td>
-    `;
-  return tr;
 }
 
 /**
  * ==========================================
- * 🟢 UI UPDATERS
+ * 🟢 UI UPDATERS (Logic Only)
  * ==========================================
  */
 async function updateDashboardStatistics(st) {
   if (!st) return;
-  Medcore.state.statistics = st
+  Medcore.state.statistics = st;
 
   const mapping = {
     "statistics-patients": st.patients ?? "",
     "statistics-revenue": st.revenue ?? "",
     "statistics-appointments": st.appointments ?? ""
-
   };
 
   for (const [id, val] of Object.entries(mapping)) {
     const el = document.getElementById(id);
-    if (el) {
-      el.textContent = val;
-    }
-    else
-      console.warn(`Could not find element ${el} of (id: ${id}) for to update`)
+    if (el) el.textContent = val;
   }
 }
 
@@ -169,7 +159,6 @@ async function updateDashboardStats(st) {
     "c-approved-val": st.claims?.approved ?? 0,
     "c-rejected-val": st.claims?.rejected ?? 0,
     "c-amount-val": st.claims?.total_amount ?? 0
-
   };
 
   for (const [id, val] of Object.entries(mapping)) {
@@ -195,10 +184,14 @@ function update_badge(elementId, value) {
 
 function setupSearch() {
   document.getElementById("home-search")?.addEventListener("input", (e) => {
-    renderHome(e.target.value.toLowerCase());
+    const term = e.target.value.toLowerCase();
+    const filtered = Medcore.state.patients.filter(p => p.name?.toLowerCase().includes(term));
+    renderPatients(filtered);
   });
   document.getElementById("claims-search")?.addEventListener("input", (e) => {
-    renderClaims(e.target.value.toLowerCase());
+    const term = e.target.value.toLowerCase();
+    const filtered = Medcore.state.claims.filter(c => c.patient?.toLowerCase().includes(term));
+    renderClaims(null, filtered);
   });
 }
 
@@ -219,118 +212,11 @@ function goPage(id, btn) {
 
 async function renderHome() { /* syncPatientTable handles this */ }
 
-async function renderCompanies(list) {
-  if (!list) return;
-  const grid = document.getElementById("company-grid");
-  if (!grid) return;
-  grid.innerHTML = list.map(c => {
-    const name = c.name || 'N/A';
-    const type = c.type || 'N/A';
-    const claims = c.claims || 0;
-    const limit = c.limit || 0;
-
-    return `
-    <div class="company-card">
-      <div class="cc-header">
-        <div class="cc-logo" style="background:${c.color || '#eee'}">${c.init || 'CO'}</div>
-        <div style="flex:1"><div class="cc-name">${name}</div><div class="cc-type">${type}</div></div>
-        <span class="chip ${c.status === "expiring" ? "chip-expiring" : "chip-active"}">${chip(c.status || 'active')}</span>
-      </div>
-      <div class="cc-row">
-        <div class="cc-kpi"><div class="cc-kpi-val dyn-num" data-value="${claims}">${Utils.formatNumber(claims)}</div><div class="cc-kpi-lbl">${t("claims")}</div></div>
-        <div class="cc-kpi"><div class="cc-kpi-val dyn-num" data-value="${limit}">${Utils.formatNumber(limit)}</div><div class="cc-kpi-lbl">${t("limit")}</div></div>
-        <div class="cc-kpi"><div class="cc-kpi-val dyn-date" data-value="${c.end || 'N/A'}" style="color:${c.status === "expiring" ? "#E65100" : "var(--teal)"}">${c.end ? Utils.formatDate(c.end) : 'N/A'}</div><div class="cc-kpi-lbl">${t("expires")}</div></div>
-      </div>
-    </div>`
-  }).join("");
-}
-
-async function renderClaims(filter, list) {
-  const tb = document.getElementById("claims-tbody");
-  if (!tb || !list) return;
-  tb.innerHTML = list.map((c, i) => {
-    const patName = c.patient || 'N/A';
-    const amount = c.amount || 0;
-    return `<tr data-id="${c.id}">
-      <td style="font-weight:700;color:var(--blue)">${c.id || 'N/A'}</td>
-      <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
-      <td style="font-weight:600" class="dyn-num" data-value="${amount}">${Utils.formatNumber(amount)}</td>
-      <td><span class="chip chip-${c.status || 'pending'}">${chip(c.status || 'pending')}</span></td>
-      <td>${c.status === "pending" ?
-        `<button class="act-approve" onclick="this.disabled=true;setStatus(this,'approved');">Approve</button> <button class="act-reject" onclick="this.disabled=true;setStatus(this,'rejected');">Reject</button>` :
-        `<button class="act-hold" onclick="this.disabled=true;setStatus(this,'pending');">Hold</button>`}</td>
-    </tr>`
-  }).join("");
-}
-
-async function renderPatients(list) {
-  const tb = document.getElementById("pat-tbody");
-  if (!tb || !Array.isArray(list)) return;
-  tb.innerHTML = list.map((p) => {
-    const enName = p.name || 'N/A';
-    const arName = p.arName || enName;
-    const phone = p.phone || 'N/A';
-    const age = p.age || 'N/A';
-    return `<tr class="clickable-row" data-id="${p.id}" onclick="viewPatient('${p.id}')">
-      <td><div class="td-name"><div class="mini-avatar">${p.init || '??'}</div><span class="dyn-text" data-en="${enName}" data-ar="${arName}">${Utils.lang === "ar" ? arName : enName}</span></div></td>
-      <td class="dyn-num" data-value="${age}">${age}</td>
-      <td style="color:var(--muted)">${phone}</td>
-      <td class="status-cell"><span class="chip chip-${p.status || 'unknown'}">${chip(p.status || 'unknown')}</span></td>
-    </tr>`
-  }).join("");
-}
-
-
-async function renderApprovals(list) {
-  const tb = document.getElementById("approvals-tbody");
-  if (!tb || !list) return;
-  tb.innerHTML = list.map((a, i) => {
-    const patName = a.patient || 'N/A';
-    const proc = a.procedure || 'N/A';
-    const ref = a.ref || 'N/A';
-
-    return `<tr data-id="${ref}" >
-      <td style="font-weight:700;color:var(--blue)">${ref}</td>
-      <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
-      <td class="dyn-text" data-en="${proc}" data-ar="${a.arProc || proc}">${Utils.lang === "ar" ? (a.arProc || proc) : proc}</td>
-      <td><span class="chip chip-${a.status || 'pending'}">${chip(a.status || 'pending')}</span></td>
-      <td>${a.status === "pending" ? `<button class="act-review" onclick="this.disabled=true;openReview(this);">Review</button>` : ''}</td>
-    </tr>`
-  }).join("");
-}
-
-async function renderAppts(list) {
-  const tb = document.getElementById("appt-tbody");
-  if (!tb || !list) return;
-  tb.innerHTML = list.map((a, i) => {
-    const patName = a.patient || 'N/A';
-    const enDoc = a.doctor || 'N/A';
-    const arDoc = a.arDoc || enDoc;
-    const time = a.time || 'N/A';
-
-    return `<tr>
-      <td>${Utils.formatTime(time)}</td>
-      <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
-      <td style="color:var(--muted)" class="dyn-text" data-en="${enDoc}" data-ar="${arDoc}">${Utils.lang === "ar" ? arDoc : enDoc}</td>
-      <td><span class="chip chip-${a.status || 'unknown'}">${chip(a.status || 'unknown')}</span></td>
-    </tr>`
-  }).join("");
-}
-
-async function renderBilling(list) {
-  const tb = document.getElementById("bill-tbody");
-  if (!tb || !list) return;
-  tb.innerHTML = list.map((v, i) => {
-    const patName = v.patient || 'N/A';
-    const amount = v.amount || 0;
-    return `<tr>
-      <td style="font-weight:700;color:var(--blue)">${v.id || 'N/A'}</td>
-      <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
-      <td style="font-weight:600" class="dyn-num" data-value="${amount}">${Utils.formatNumber(amount)}</td>
-      <td><span class="chip chip-${v.status || 'pending'}">${chip(v.status || 'pending')}</span></td>
-    </tr>`
-  }).join("");
-}
+/**
+ * ==========================================
+ * ⚡ ACTION HANDLERS
+ * ==========================================
+ */
 
 let currentPatientId = null;
 function viewPatient(id) {
@@ -348,14 +234,26 @@ async function setStatus(target, status) {
   const row = target.closest("tr");
   const id = row?.dataset.id;
   if (!id) return;
+  
   const res = await PUTRequest(`/claims/${id}/status/`, { status });
+  
   if (res && res.success) {
     showToast(`Claim ${status} successfully`);
+    
+    // Update local state
+    const claim = Medcore.state.claims.find(c => c.id === id);
+    if (claim) {
+      claim.status = status;
+      // Surgical UI Update using Rendering Engine
+      row.outerHTML = drawClaimRow(claim);
+    }
   } else {
-    alert("Failed to update status");
+    alert("Failed to update status: " + (res?.error || "Server Error"));
+    // Re-enable the specific button that was clicked
     target.disabled = false;
   }
 }
+
 function openReview(target) {
   target_row = target.parent
 

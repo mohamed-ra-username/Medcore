@@ -196,7 +196,7 @@
             "ins": "AXA Egypt",
             "amount": 1800,
             "date": "May 4",
-            "status": "approved"
+            "status": "pending"
         },
         {
             "id": "CLM-2403",
@@ -204,7 +204,7 @@
             "ins": "MetLife Egypt",
             "amount": 5600,
             "date": "May 3",
-            "status": "approved"
+            "status": "pending"
         },
         {
             "id": "CLM-2402",
@@ -212,7 +212,7 @@
             "ins": "Allianz Egypt",
             "amount": 2100,
             "date": "May 3",
-            "status": "approved"
+            "status": "pending"
         },
         {
             "id": "CLM-2401",
@@ -220,7 +220,7 @@
             "ins": "GlobeMed",
             "amount": 4300,
             "date": "May 2",
-            "status": "rejected"
+            "status": "pending"
         },
         {
             "id": "CLM-2400",
@@ -228,7 +228,7 @@
             "ins": "Misr Insurance",
             "amount": 900,
             "date": "May 2",
-            "status": "approved"
+            "status": "pending"
         },
         {
             "id": "CLM-2399",

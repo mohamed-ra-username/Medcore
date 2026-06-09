@@ -616,13 +616,13 @@ tfoot td {
   font-weight: 700;
   border: none;
   cursor: pointer;
-  background: #000000;
-  color: #d18c25;
+  background: #9c9c9c94;
+  color: #ffffff;
   transition: .15s
 }
 
 .act-hold:hover {
-  background: var(--teal);
+  background: black;
   color: #fff
 }
 
