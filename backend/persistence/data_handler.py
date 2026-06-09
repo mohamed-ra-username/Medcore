@@ -18,22 +18,21 @@ get_all_users = user_db.get_all_users
 
 # 2. Import all CRUD functions
 from .crud.get import (
-    get_user, get_users, get_invoices, get_phones, 
-    get_appointments, get_companies, get_claims, 
+    get_user, get_users, get_invoices,
+    get_appointments, get_companies, get_claims,
     get_approvals, get_home_patients, get_stats
 )
 from .crud.post import (
-    add_home_patient, add_claim, add_invoice, 
-    add_company, add_appointment, add_user, add_phone, add_approval
+    add_home_patient, add_claim, add_invoice,
+    add_company, add_appointment, add_user,  add_approval
 )
 from .crud.put import (
-    update_home_patient, update_claim_status, update_claim, 
-    update_appointment, update_company, update_invoice, 
-    update_approval, update_user, update_phone
-)
+    update_home_patient, update_claim_status, update_claim,
+    update_appointment, update_company, update_invoice,
+    update_approval, update_user, )
 from .crud.delete import (
-    delete_home_patient, delete_claim, delete_invoice, 
-    delete_company, delete_appointment, delete_user, 
-    delete_phone, delete_approval
+    delete_home_patient, delete_claim, delete_invoice,
+    delete_company, delete_appointment, delete_user,
+     delete_approval
 )
 

@@ -9,7 +9,6 @@ data_file = project_root / data_base_folder_name / file_name
 # Initialize variables separately to avoid shared reference bugs
 appointments = []
 companies = []
-phones = []
 invoices = []
 claims_data = []
 approvals_data = []
@@ -17,7 +16,7 @@ home_patients = []
 
 
 def load_data():
-    global appointments, companies, phones, invoices, claims_data, approvals_data, home_patients
+    global appointments, companies, invoices, claims_data, approvals_data, home_patients
 
     try:
         if not data_file.exists():
@@ -28,7 +27,6 @@ def load_data():
             data = json.load(f)
             appointments = data.get("appointments", [])
             companies = data.get("companies", [])
-            phones = data.get("phones", [])
             invoices = data.get("invoices", [])
             # Map camelCase JSON keys to snake_case Python variables
             claims_data = data.get("claimsData", [])
@@ -37,7 +35,6 @@ def load_data():
     except (FileNotFoundError, json.JSONDecodeError):
         appointments = []
         companies = []
-        phones = []
         invoices = []
         claims_data = []
         approvals_data = []
@@ -49,7 +46,6 @@ def save_data():
     data = {
         "appointments": appointments,
         "companies": companies,
-        "phones": phones,
         "invoices": invoices,
         "claimsData": claims_data,
         "approvalsData": approvals_data,

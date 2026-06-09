@@ -33,6 +33,12 @@ window.onload = async () => {
   updatePermissionsUI();
   setupEventListeners();
 
+  // Update dynamic date in header
+  const headerDate = document.getElementById("header-date");
+  if (headerDate) {
+    headerDate.textContent = Utils.formatFullDate();
+  }
+
   window.isUIReady = true;
   document.dispatchEvent(new CustomEvent("medcore:ui_ready"));
   console.info("🏛️ Monolith UI Initialized. Waiting for data...");
@@ -250,7 +256,7 @@ async function renderClaims(filter, list) {
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
       <td style="font-weight:600" class="dyn-num" data-value="${amount}">${Utils.formatNumber(amount)}</td>
       <td><span class="chip chip-${c.status || 'pending'}">${chip(c.status || 'pending')}</span></td>
-      <td>${c.status === "pending" ? `<button onclick="closeClaim(${i},'approved')">Approve</button>` : ''}</td>
+      <td>${c.status === "pending" ? `<button onclick="setStatus(${i},'approved')">Approve</button> <button onclick="setStatus(${i},'denied')">Deny</button>` : ''}</td>
     </tr>`
   }).join("");
 }
@@ -300,7 +306,7 @@ async function renderAppts(list) {
     const time = a.time || 'N/A';
 
     return `<tr>
-      <td>${time}</td>
+      <td>${Utils.formatTime(time)}</td>
       <td><div class="td-name"><div class="mini-avatar">${Utils.initials(patName)}</div>${patName}</div></td>
       <td style="color:var(--muted)" class="dyn-text" data-en="${enDoc}" data-ar="${arDoc}">${Utils.lang === "ar" ? arDoc : enDoc}</td>
       <td><span class="chip chip-${a.status || 'unknown'}">${chip(a.status || 'unknown')}</span></td>

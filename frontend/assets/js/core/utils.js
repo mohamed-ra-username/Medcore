@@ -36,9 +36,26 @@ const Utils = {
     formatDate: (dateStr) => {
         if (!dateStr || dateStr === "N/A") return "N/A";
         const d = new Date(dateStr);
-        // If it's a simple string like "May 4", just return it
         if (isNaN(d.getTime())) return dateStr;
-        return d.toLocaleDateString(Utils.locale, { month: 'short', day: 'numeric' });
+        return d.toLocaleDateString(Utils.locale, { month: 'long', day: 'numeric' });
+    },
+
+    // Get long localized date for headers (e.g. Monday, June 8, 2026)
+    formatFullDate: (date = new Date()) => {
+        return date.toLocaleDateString(Utils.locale, { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    },
+
+    // Get localized time (e.g. 14:30)
+    formatTime: (dateStr) => {
+        if (!dateStr || dateStr === "N/A") return "N/A";
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        return d.toLocaleTimeString(Utils.locale, { hour: '2-digit', minute: '2-digit', hour12: false });
     }
 };
 

@@ -31,10 +31,6 @@ def add_user(data: str):
     user_db.save_users()
     return {"success": True, "data": data}
 
-def add_phone(data: str):
-    json_db.phones.insert(0, data)
-    json_db.save_data()
-    return {"success": True, "data": data}
 
 def add_approval(data: dict):
     json_db.approvals_data.insert(0, data)

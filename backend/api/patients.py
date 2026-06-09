@@ -36,9 +36,3 @@ def delete_home_patient(id: int):
         return make_response(data=res.get("data"))
     return make_response(error="Patient not found", status_code=404)
 
-@api_bp.route("/phones/")
-@api_bp.route("/phones/<int:id>/")
-@token_required
-@permission_required("view_patients")
-def get_phones(id: int | slice | None = None):
-    return make_response(data=data_handler.get_phones(id))

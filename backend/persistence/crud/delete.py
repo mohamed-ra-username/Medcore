@@ -43,13 +43,6 @@ def delete_user(id: int):
         return {"success": True, "data": deleted}
     return None
 
-def delete_phone(id: int):
-    if 0 <= id < len(json_db.phones):
-        deleted = json_db.phones.pop(id)
-        json_db.save_data()
-        return {"success": True, "data": deleted}
-    return None
-
 def delete_approval(id: int):
     if 0 <= id < len(json_db.approvals_data):
         deleted = json_db.approvals_data.pop(id)

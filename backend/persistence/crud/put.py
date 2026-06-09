@@ -57,9 +57,3 @@ def update_user(id: int, data: str):
         return {"success": True, "data": data}
     return None
 
-def update_phone(id: int, data: str):
-    if 0 <= id < len(json_db.phones):
-        json_db.phones[id] = data
-        json_db.save_data()
-        return {"success": True, "data": data}
-    return None

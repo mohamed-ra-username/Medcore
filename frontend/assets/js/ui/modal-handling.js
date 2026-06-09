@@ -38,15 +38,14 @@ async function saveModalData(modalId) {
   switch (modalId) {
     case 'addPatient':
       endpoint = "/homePatients/";
-      data.init = initials(data.name || "NP");
+      data.init = Utils.initials(data.name || "NP");
       data.status = "active";
-      const today = new Date();
-      data.date = `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][today.getMonth()]} ${today.getDate()}`;
+      data.date = new Date().toISOString();
       successCallback = (res) => { homePatients.unshift(res.data); renderHome(); renderPatients(); };
       break;
     case 'addCompany':
       endpoint = "/companies/";
-      data.init = initials(data.name || "CO");
+      data.init = Utils.initials(data.name || "CO");
       data.claims = 0;
       data.status = "active";
       successCallback = (res) => { companies.push(res.data); renderCompanies(); };
@@ -91,7 +90,7 @@ async function updatePatient() {
         p[input.name] = input.value;
     }
   });
-  p.init = initials(p.name);
+  p.init = Utils.initials(p.name);
   const result = await PUTRequest(`/homePatients/${currentPatientIndex}/`, p);
   if (result && result.success) {
     homePatients[currentPatientIndex] = p;

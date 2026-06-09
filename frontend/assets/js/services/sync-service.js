@@ -7,7 +7,7 @@
 const update_time = 10 * 60 * 1000; // 1 minute
 // const update_time = 5 * 1000; // 5 seconds
 
-var homePatients, companies, claimsData, approvalsData, phones, appts, invoices, stats, statistics;
+var homePatients, companies, claimsData, approvalsData,  appts, invoices, stats, statistics;
 
 
 async function update() {
@@ -19,7 +19,6 @@ async function update() {
       GETRequest("/companies/"),
       GETRequest("/claims/"),
       GETRequest("/approvals/"),
-      GETRequest("/phones/"),
       GETRequest("/appointments/"),
       GETRequest("/invoices/"),
       GETRequest("/stats/"),
@@ -28,14 +27,13 @@ async function update() {
 
     console.log("📊 Broadcaster: Data fetched successfully.");
     // Extract data from standard envelopes
-    const [p, c, cl, a, ph, ap, inv, st, sttc] = results.map(res => (res && res.success) ? res.data : undefined);
+    const [p, c, cl, a, ap, inv, st, sttc] = results.map(res => (res && res.success) ? res.data : undefined);
 
     // Update global state
     homePatients = p;
     companies = c;
     claimsData = cl;
     approvalsData = a;
-    phones = ph;
     appts = ap;
     invoices = inv;
     stats = st;
