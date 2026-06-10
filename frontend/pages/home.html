@@ -197,7 +197,7 @@
             <div class="card-header">
               <span class="card-title"><span data-langId="recent">Recent</span> <span
                   data-langId="patients">Patients</span></span>
-                  <button>Edit</button>
+                  <button onclick="toggleEditMode()" class="btn-toggle-edit">Edit</button>
             </div>
             <div class="tbl-wrap">
               <table>
@@ -250,7 +250,7 @@
           <div class="card">
             <div class="card-header">
               <span class="card-title" data-langId="ins-card-title">All Companies</span>
-              <button>Edit</button>
+              <button onclick="toggleEditMode()" class="btn-toggle-edit">Edit</button>
             </div>
             <div class="company-grid" id="company-grid"></div>
           </div>
@@ -267,7 +267,7 @@
             <div class="card-header">
               <span class="card-title" data-langId="claims-card-title">All Claims</span>
               <input class="search-input" type="text" id="claims-search" placeholder="Search...">
-              <button>Edit</button>
+              <button onclick="toggleEditMode()" class="btn-toggle-edit">Edit</button>
             </div>
             <div class="tbl-wrap">
               <table>
@@ -320,7 +320,7 @@
             <div class="card-header">
               <span class="card-title">Patient List</span>
               <input class="search-input" type="text" id="home-search" placeholder="Search...">
-              <button>Edit</button>
+              <button onclick="toggleEditMode()" class="btn-toggle-edit">Edit</button>
             </div>
             <div class="tbl-wrap">
               <table>

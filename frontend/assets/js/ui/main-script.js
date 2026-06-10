@@ -14,7 +14,8 @@ const Medcore = {
     appts: [],
     invoices: [],
     stats: {},
-    statistics: {}
+    statistics: {},
+    isEditMode: false
   },
 
   can: (perm) => Medcore.state.permissions.includes(perm) || Medcore.state.permissions.includes("*"),
@@ -220,6 +221,7 @@ async function renderHome() { /* syncPatientTable handles this */ }
 
 let currentPatientId = null;
 function viewPatient(id) {
+  if (!Medcore.state.isEditMode) return;
   currentPatientId = id;
   const p = Medcore.state.patients.find(p => p.id === id);
   if (!p) return;
@@ -257,4 +259,14 @@ async function setStatus(target, status) {
 function openReview(target) {
   target_row = target.parent
 
+}
+
+function toggleEditMode() {
+  Medcore.state.isEditMode = !Medcore.state.isEditMode;
+  const btns = document.querySelectorAll(".btn-toggle-edit");
+  btns.forEach(btn => {
+    btn.textContent = Medcore.state.isEditMode ? "Done" : "Edit";
+    btn.classList.toggle("active", Medcore.state.isEditMode);
+  });
+  document.body.classList.toggle("edit-mode-active", Medcore.state.isEditMode);
 }

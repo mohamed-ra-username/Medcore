@@ -905,8 +905,12 @@ tfoot td {
   transition: background 0.2s;
 }
 
-.clickable-row:hover {
+body.edit-mode-active .clickable-row:hover {
   background: #f0f7ff;
-  /* or var(--bg-hover) if you defined it */
   cursor: pointer;
+}
+
+.btn-toggle-edit.active {
+  background: var(--blue);
+  color: white;
 }
