@@ -5,18 +5,27 @@
  * Handles Login, Registration, and UI View Toggling.
  */
 
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("permissions");
+
+    showSuccess();
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1500);
+}
+
 async function handleLogin() {
   const email = document.getElementById("login-email").value;
   const pass = document.getElementById("login-pass").value;
-  let ok = true;
 
-  if (!email || !email.includes("@")) { showErr("err-login-email", "login-email"); ok = false; }
+  if (!email || !email.includes("@")) { showErr("err-login-email", "login-email"); return; }
   else clearErr("err-login-email", "login-email");
 
-  if (!pass) { showErr("err-login-pass", "login-pass"); ok = false; }
+  if (!pass) { showErr("err-login-pass", "login-pass"); return; }
   else clearErr("err-login-pass", "login-pass");
 
-  if (!ok) return;
 
   const btn = document.getElementById("btn-login");
   btn.classList.add("loading");
@@ -27,8 +36,8 @@ async function handleLogin() {
 
   if (response && response.success) {
     // Correctly unwrap the data from the standard envelope
-    const authData = response.data; 
-    
+    const authData = response.data;
+
     console.log("Login successful. Storing session...");
     localStorage.setItem("token", authData.token);
     localStorage.setItem("role", authData.role);
@@ -47,20 +56,18 @@ async function handleRegister() {
   const email = document.getElementById("reg-email").value;
   const pass = document.getElementById("reg-pass").value;
   const terms = document.getElementById("terms-check").checked;
-  let ok = true;
 
-  if (!email || !email.includes("@")) { showErr("err-reg-email", "reg-email"); ok = false; }
+  if (!email || !email.includes("@")) { showErr("err-reg-email", "reg-email"); return; }
   else clearErr("err-reg-email", "reg-email");
 
-  if (!pass || pass.length < 8) { showErr("err-reg-pass", "reg-pass"); ok = false; }
+  if (!pass || pass.length < 8) { showErr("err-reg-pass", "reg-pass"); return; }
   else clearErr("err-reg-pass", "reg-pass");
 
   if (!terms) {
     alert(Utils.lang === "ar" ? "يجب الموافقة على الشروط أولاً" : "Please accept the terms first");
-    ok = false;
+    return;
   }
 
-  if (!ok) return;
 
   const btn = document.getElementById("btn-register");
   btn.classList.add("loading");
@@ -94,7 +101,7 @@ function toggleView(view) {
   const isLogin = view === "login";
   const viewLogin = document.getElementById("view-login");
   const viewRegister = document.getElementById("view-register");
-  
+
   if (viewLogin) viewLogin.style.display = isLogin ? "block" : "none";
   if (viewRegister) viewRegister.style.display = isLogin ? "none" : "block";
 
@@ -134,7 +141,7 @@ function showSuccess() {
   const viewRegister = document.getElementById("view-register");
   if (viewLogin) viewLogin.style.display = "none";
   if (viewRegister) viewRegister.style.display = "none";
-  
+
   const sc = document.getElementById("success-screen");
   if (sc) {
     sc.classList.add("show");

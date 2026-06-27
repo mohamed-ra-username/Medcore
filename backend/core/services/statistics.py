@@ -39,6 +39,6 @@ def get_appointments_increase():
 
 
 def get_revenue():
-    """TODO"""
-    ...
+    """Requires implementation"""
+    # TODO
     return "you are millionaire!🎉"

@@ -1,6 +1,14 @@
 {
     "appointments": [
         {
+            "patient": "ahmed",
+            "doctor": "Dr. Mostafa",
+            "time": "10:00",
+            "type": "Surgery",
+            "status": "active",
+            "id": "4b4c1717-1475-4072-b140-74af49ac96e3"
+        },
+        {
             "time": "08:30",
             "patient": "Ahmed Hassan",
             "doctor": "Dr. Nour",
@@ -42,6 +50,30 @@
         }
     ],
     "companies": [
+        {
+            "name": "second company",
+            "type": "International",
+            "start": "2006-02-01",
+            "end": "2030-12-01",
+            "limit": 5000000,
+            "contact": "mohamed ragab 010213",
+            "init": "SC",
+            "claims": 0,
+            "status": "active",
+            "id": "26c9db27-3775-4698-b696-ca37ae115125"
+        },
+        {
+            "name": "mohamed ourworld",
+            "type": "Private",
+            "start": "0001-01-01",
+            "end": "0001-02-02",
+            "limit": 50,
+            "contact": "010",
+            "init": "MO",
+            "claims": 0,
+            "status": "active",
+            "id": "8cf9120b-f3e7-415a-bea2-8066d9bfcde1"
+        },
         {
             "name": "Misr Insurance",
             "type": "National",
@@ -133,6 +165,14 @@
     ],
     "invoices": [
         {
+            "patient": "ahmed",
+            "amount": 20,
+            "ins": "AXA Egypt",
+            "date": "0010-01-01",
+            "status": "pending",
+            "id": "9b0a9e77-b982-4e01-a1e2-327e7c454621"
+        },
+        {
             "id": "INV-1042",
             "patient": "Ahmed Hassan",
             "date": "May 4",
@@ -175,12 +215,13 @@
     ],
     "claimsData": [
         {
-            "patient": "test namer",
-            "ins": "AXA Egypt",
-            "amount": 123,
-            "date": "2023-12-31",
-            "notes": "exam brain damagge",
-            "status": "pending"
+            "patient": "ahmed",
+            "ins": "Allianz Egypt",
+            "amount": 10,
+            "date": "0001-01-01",
+            "notes": "check up",
+            "status": "approved",
+            "id": "c992aed4-8f79-4a99-a76b-295962638094"
         },
         {
             "id": "CLM-2405",
@@ -188,7 +229,7 @@
             "ins": "Misr Insurance",
             "amount": 3200,
             "date": "May 4",
-            "status": "pending"
+            "status": "rejected"
         },
         {
             "id": "CLM-2404",
@@ -196,7 +237,7 @@
             "ins": "AXA Egypt",
             "amount": 1800,
             "date": "May 4",
-            "status": "pending"
+            "status": "approved"
         },
         {
             "id": "CLM-2403",
@@ -236,7 +277,7 @@
             "ins": "Egypt Insurance",
             "amount": 7200,
             "date": "May 1",
-            "status": "pending"
+            "status": "rejected"
         },
         {
             "id": "CLM-2398",
@@ -244,7 +285,7 @@
             "ins": "Solidarity",
             "amount": 1500,
             "date": "Apr 30",
-            "status": "pending"
+            "status": "approved"
         }
     ],
     "approvalsData": [
@@ -295,6 +336,20 @@
         }
     ],
     "homePatients": [
+        {
+            "name": "mohamed ourworld",
+            "age": 10,
+            "phone": "010",
+            "wa": "011",
+            "nid": "11111111111111",
+            "ins": "Misr Insurance",
+            "ins2": "AXA Egypt",
+            "doctor": "Dr. Mostafa",
+            "init": "MO",
+            "status": "active",
+            "date": "2026-06-12T22:22:00.755Z",
+            "id": "07be8ddf-b1c0-40f7-b28d-ef8021005563"
+        },
         {
             "name": "Ahmed Hassan",
             "phone": "01012345678",

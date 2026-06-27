@@ -914,3 +914,13 @@ body.edit-mode-active .clickable-row:hover {
   background: var(--blue);
   color: white;
 }
+
+.settings-button{
+  anchor-name: --settings-button;
+}
+
+#settings-menu{
+  position: absolute;
+  position-anchor: --settings-button;
+  position-area: bottom ;
+}
