@@ -63,8 +63,8 @@ async function update() {
     console.error("❌ Broadcaster Error:", error);
   }
 
-  // Refresh interval
-  setTimeout(update, update_time);
+  // !Refresh interval
+  // setTimeout(update, update_time);
 }
 
 function broadcast(eventName, data) {
