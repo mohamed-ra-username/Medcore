@@ -6,14 +6,15 @@
  */
 
 function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("permissions");
+    // localStorage.removeItem("token");
+    // localStorage.removeItem("role");
+    // localStorage.removeItem("permissions");
 
-    showSuccess();
+
     setTimeout(() => {
       window.location.href = "login.html";
     }, 0);
+    showToast("Successfully logged out")
 }
 
 async function handleLogin() {

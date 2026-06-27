@@ -624,8 +624,12 @@ tfoot td {
 }
 
 .act-hold:hover {
-  background: black;
-  color: #fff
+  background: rgb(237, 162, 12);
+}
+
+.act-hold:active {
+  color: black;
+  background: orange;
 }
 
 .act-approve {
@@ -644,6 +648,10 @@ tfoot td {
   background: var(--teal);
   color: #fff
 }
+.act-approve:active {
+  background: green;
+  color: black
+}
 
 .act-reject {
   padding: 4px 12px;
@@ -653,13 +661,17 @@ tfoot td {
   border: none;
   cursor: pointer;
   background: #FFEBEE;
-  color: #C62828;
+  color: #841414;
   transition: .15s
 }
 
 .act-reject:hover {
   background: #e53935;
   color: #fff
+}
+.act-reject:active {
+  background: red;
+  color: black
 }
 
 .act-review {
