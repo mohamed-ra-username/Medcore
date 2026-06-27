@@ -13,7 +13,7 @@ function logout() {
     showSuccess();
     setTimeout(() => {
       window.location.href = "login.html";
-    }, 1500);
+    }, 0);
 }
 
 async function handleLogin() {

@@ -27,6 +27,8 @@ const Medcore = {
         Medcore.state.user = res.data.user;
         Medcore.state.permissions = res.data.permissions;
         localStorage.setItem("permissions", JSON.stringify(Medcore.state.permissions));
+        const element_user_email = document.getElementById("user-email");
+        element_user_email.textContent = Medcore.state.user;
       }
     }
   }

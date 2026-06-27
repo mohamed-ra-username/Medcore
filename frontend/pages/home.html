@@ -34,24 +34,48 @@
       <div class="topbar-right">
         <button class="lang-btn" onclick="toggleLang()" id="langBtn">🌐 <span
             data-langId="langBtn">العربية</span></button>
-        <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7c93"
-            stroke-width="2">
+        <button class="icon-btn notifications-button" popovertarget="notifications-menu">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7c93" stroke-width="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg><span class="notif-dot"></span></div>
+          </svg>
+          <span id='notif-dot' class="notif-dot">
+          </span>
+        </button>
         <button class="avatar settings-button" popovertarget="settings-menu">DR</button>
       </div>
     </header>
 
     <div class="main">
-      <div id="settings-menu" popover>
-        DR. Ahmed Galal
+      <div id="notifications-menu" popover>
         <br>
-        <sub id="user-email">hello</sub>
         <script>
-          const element_user_email = document.getElementById("user-email");
-          element_user_email.textContent = Medcore.state.user;
+          function clearNotifs() {
+            document.getElementById("notif-dot").hidden = true
+            const notifsList = document.getElementById('notifications-list')
+            notifsList.innerHTML="No notifications."
+          }
         </script>
+
+        <span id="notifications-list">
+          <li>
+            <b>*</b> You've got a new insurance scam!
+          </li>
+          <li>
+            <b>*</b> Patient died! :(
+          </li>
+        </span>
+        <hr>
+        <button onclick="clearNotifs()">
+          Clear all
+        </button>
+      </div>
+      <div id="settings-menu" popover>
+        <b>
+          DR. Ahmed Galal
+        </b>
+        <br>
+        <sub id="user-email">...</sub>
         <hr>
         <button onclick="alert('Not implemented')">Settings</button>
         <br>
@@ -690,7 +714,7 @@
         </button>
         <div style="display:flex;gap:10px">
           <button class="btn-primary btn-sm" id="m-esave" data-langId="m-esave" command="close"
-            commandfor="modal-editPatient" onclick="updatePatient();broadcast('medcore:patients_updated', homePatients);">
+            commandfor="modal-editPatient" onclick="updatePatient();">
             Save Changes
           </button>
         </div>

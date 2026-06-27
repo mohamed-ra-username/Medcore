@@ -102,8 +102,9 @@ async function updatePatient() {
   if (result && result.success) {
     const idx = Medcore.state.patients.findIndex(item => item.id === currentPatientId);
     if (idx !== -1) Medcore.state.patients[idx] = p;
-    renderHome();
+    // broadcast('medcore:patients_updated', homePatients);
     renderPatients(Medcore.state.patients);
+    // renderHome();
     closeModal('editPatient');
   } else {
     alert("Failed to update patient.");

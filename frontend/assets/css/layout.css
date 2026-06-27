@@ -919,3 +919,14 @@ body.edit-mode-active .clickable-row:hover {
   position-anchor: --settings-button;
   position-area: bottom span-left;
 }
+
+.notifications-button{
+  anchor-name: --notifications-button;
+}
+
+#notifications-menu{
+  position: absolute;
+  position-anchor: --notifications-button;
+  position-area: bottom span-left;
+
+}
