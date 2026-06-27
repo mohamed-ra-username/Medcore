@@ -1,23 +1,27 @@
 
 function openModal(id) {
   const modal = document.getElementById("modal-" + id);
-  if (!modal) return;
-  modal.classList.add("show");
-  if (!id.includes('edit')) {
-    const inputs = modal.querySelectorAll("input, select, textarea");
-    inputs.forEach(input => {
-      if (input.type === "checkbox" || input.type === "radio") input.checked = false;
-      else input.value = "";
-    });
-  }
+  modal.showModal()
+  //! Deprecated found better method
+  // const modal = document.getElementById("modal-" + id);
+  // if (!modal) return;
+  // modal.classList.add("show");
+  // if (!id.includes('edit')) {
+  //   const inputs = modal.querySelectorAll("input, select, textarea");
+  //   inputs.forEach(input => {
+  //     if (input.type === "checkbox" || input.type === "radio") input.checked = false;
+  //     else input.value = "";
+  //   });
+  // }
 }
 
 function closeModal(id) {
   const modal = document.getElementById("modal-" + id);
-  if (modal) modal.classList.remove("show");
+  modal.close()
+  // if (modal) modal.classList.remove("show");
 }
 
-document.querySelectorAll(".modal-bg").forEach(m => m.addEventListener("click", e => { if (e.target === m) m.classList.remove("show"); }));
+// document.querySelectorAll(".modal-bg").forEach(m => m.addEventListener("click", e => { if (e.target === m) m.classList.remove("show"); }));
 
 async function saveModalData(modalId) {
   const modal = document.getElementById("modal-" + modalId);
@@ -70,7 +74,6 @@ async function saveModalData(modalId) {
   const result = await POSTRequest(endpoint, data);
   if (result && result.success) {
     if (successCallback) successCallback(result);
-    updateAllDashboards();
     closeModal(modalId);
   } else {
     alert("Failed to save data: " + (result?.error || "Unknown Error"));
@@ -99,7 +102,8 @@ async function updatePatient() {
   if (result && result.success) {
     const idx = Medcore.state.patients.findIndex(item => item.id === currentPatientId);
     if (idx !== -1) Medcore.state.patients[idx] = p;
-    renderHome(); renderPatients(Medcore.state.patients); updateAllDashboards();
+    renderHome();
+    renderPatients(Medcore.state.patients);
     closeModal('editPatient');
   } else {
     alert("Failed to update patient.");
@@ -114,7 +118,8 @@ async function deletePatient() {
     if (result && result.success) {
       const idx = Medcore.state.patients.findIndex(item => item.id === currentPatientId);
       if (idx !== -1) Medcore.state.patients.splice(idx, 1);
-      renderHome(); renderPatients(Medcore.state.patients); updateAllDashboards();
+      renderHome();
+      renderPatients(Medcore.state.patients);
       closeModal('editPatient');
     } else {
       alert("Failed to delete patient.");

@@ -154,10 +154,10 @@
         <div class="page active" id="page-home">
           <div class="ph">
             <div>
-              <div class="ph-title" data-langId="home-title">Dashboard Overview</div>
+              <div class="ph-title" data-langId="home-tibtle">Dashboard Overview</div>
               <div class="ph-sub" data-langId="home-sub" id="header-date">Monday, 5 May 2026</div>
             </div>
-            <button class="btn-primary" onclick="openModal('addPatient')"><svg width="14" height="14"
+            <button class="btn-primary" commandfor="modal-addPatient" command="show-modal"><svg width="14" height="14"
                 viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
@@ -212,7 +212,7 @@
             <div class="card-header">
               <span class="card-title"><span data-langId="recent">Recent</span> <span
                   data-langId="patients">Patients</span></span>
-                  <button onclick="toggleEditMode()" class="btn-toggle-edit">Edit</button>
+              <button onclick="toggleEditMode()" class="btn-toggle-edit">Edit</button>
             </div>
             <div class="tbl-wrap">
               <table>
@@ -418,11 +418,11 @@
   </div>
 
   <!-- 🟢 INLINED MODALS -->
-  <div class="modal-bg" id="modal-addCompany">
+  <dialog closedby="any" class="modal-bg" id="modal-addCompany">
     <div class="modal">
       <div class="modal-head">
         <h3 id="m-addco-title" data-langId="m-addco-title">Add Insurance Company</h3><button class="modal-close"
-          onclick="closeModal('addCompany')">×</button>
+          command="close" commandfor="modal-addCompany">×</button>
       </div>
       <div class="modal-body">
         <div class="form-grid-2">
@@ -445,17 +445,23 @@
         <div class="form-row"><label id="m-cocontact" data-langId="m-cocontact">Contact Person</label><input type="text"
             name="contact" placeholder="Name &amp; phone"></div>
       </div>
-      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addCompany')" id="m-cancel"
-          data-langId="m-cancel">Cancel</button><button class="btn-primary btn-sm" id="m-save" data-langId="m-save"
-          onclick="saveModalData('addCompany')">Save Company</button></div>
+      <div class="modal-footer">
+        <button class="btn-outline" commandfor="modal-addCompany" command="close" id="m-cancel" data-langId="m-cancel">
+          Cancel
+        </button>
+        <button class="btn-primary btn-sm" id="m-save" data-langId="m-save" commandfor="modal-addCompany"
+          command="close" onclick="saveModalData('addCompany')">
+          Save Company
+        </button>
+      </div>
     </div>
-  </div>
+  </dialog closedby="any">
 
-  <div class="modal-bg" id="modal-addClaim">
+  <dialog closedby="any" class="modal-bg" id="modal-addClaim">
     <div class="modal">
       <div class="modal-head">
-        <h3 id="m-addcl-title" data-langId="m-addcl-title">New Claim</h3><button class="modal-close"
-          onclick="closeModal('addClaim')">×</button>
+        <h3 id="m-addcl-title" data-langId="m-addcl-title">New Claim</h3><button class="modal-close" command="close"
+          commandfor="modal-addClaim">×</button>
       </div>
       <div class="modal-body">
         <div class="form-grid-2">
@@ -477,17 +483,20 @@
         <div class="form-row"><label id="m-clnotes" data-langId="m-clnotes">Notes</label><input type="text" name="notes"
             placeholder="Diagnosis / procedure..."></div>
       </div>
-      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addClaim')" id="m-cancel2"
-          data-langId="m-cancel2">Cancel</button><button class="btn-primary btn-sm" id="m-save2" data-langId="m-save2"
-          onclick="saveModalData('addClaim')">Submit Claim</button></div>
+      <div class="modal-footer">
+        <button class="btn-outline" commandfor="modal-addClaim" command="close" id="m-cancel2"
+          data-langId="m-cancel2">Cancel</button>
+        <button class="btn-primary btn-sm" id="m-save2" data-langId="m-save2" onclick="saveModalData('addClaim')">Submit
+          Claim</button>
+      </div>
     </div>
-  </div>
+  </dialog closedby="any">
 
-  <div class="modal-bg" id="modal-addPatient">
+  <dialog closedby="any" class="modal-bg" id="modal-addPatient">
     <div class="modal">
       <div class="modal-head">
-        <h3 id="m-addpat-title" data-langId="m-addpat-title">New Patient</h3><button class="modal-close"
-          onclick="closeModal('addPatient')">×</button>
+        <h3 id="m-addpat-title" data-langId="m-addpat-title">New Patient</h3><button class="modal-close" command="close"
+          commandfor="modal-addPatient">×</button>
       </div>
       <div class="modal-body">
         <div class="form-grid-2">
@@ -536,18 +545,24 @@
           </select>
         </div>
       </div>
-      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addPatient')" id="m-cancel3"
-          data-langId="m-cancel3">Cancel</button><button class="btn-primary btn-sm" id="m-save3" data-langId="m-save3"
-          onclick="saveModalData('addPatient')">Save
-          Patient</button></div>
+      <div class="modal-footer">
+        <button class="btn-outline" commandfor="modal-addPatient" command="close" id="m-cancel3"
+          data-langId="m-cancel3">
+          Cancel
+        </button>
+        <button class="btn-primary btn-sm" id="m-save3" data-langId="m-save3" commandfor="modal-addPatient"
+          command="close" onclick="saveModalData('addPatient')">
+          Save Patient
+        </button>
+      </div>
     </div>
-  </div>
+  </dialog closedby="any">
 
-  <div class="modal-bg" id="modal-addAppointment">
+  <dialog closedby="any" class="modal-bg" id="modal-addAppointment">
     <div class="modal">
       <div class="modal-head">
-        <h3 id="m-addappt-title" data-langId="appt-addbtn">New Appointment</h3><button class="modal-close"
-          onclick="closeModal('addAppointment')">×</button>
+        <h3 id="m-addappt-title" data-langId="appt-addbtn">New Appointment</h3>
+        <button class="modal-close" command="close" commandfor="modal-addAppointment">×</button>
       </div>
       <div class="modal-body">
         <div class="form-grid-2">
@@ -568,17 +583,23 @@
             </select></div>
         </div>
       </div>
-      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addAppointment')"
-          data-langId="m-cancel">Cancel</button><button class="btn-primary btn-sm"
-          onclick="saveModalData('addAppointment')">Save Appointment</button></div>
+      <div class="modal-footer">
+        <button class="btn-outline" commandfor="modal-addAppointment" command="close" data-langId="m-cancel">
+          Cancel
+        </button>
+        <button class="btn-primary btn-sm" commandfor="modal-addAppointment" command="close"
+          onclick="saveModalData('addAppointment')">
+          Save Appointment
+        </button>
+      </div>
     </div>
-  </div>
+  </dialog closedby="any">
 
-  <div class="modal-bg" id="modal-addInvoice">
+  <dialog closedby="any" class="modal-bg" id="modal-addInvoice">
     <div class="modal">
       <div class="modal-head">
-        <h3 data-langId="bill-addbtn">New Invoice</h3><button class="modal-close"
-          onclick="closeModal('addInvoice')">×</button>
+        <h3 data-langId="bill-addbtn">New Invoice</h3>
+        <button class="modal-close" command="close" commandfor="modal-addInvoice">×</button>
       </div>
       <div class="modal-body">
         <div class="form-row"><label data-langId="lbl-patient">Patient</label><input type="text" name="patient"
@@ -596,17 +617,23 @@
         </div>
         <div class="form-row"><label data-langId="lbl-date">Date</label><input type="date" name="date"></div>
       </div>
-      <div class="modal-footer"><button class="btn-outline" onclick="closeModal('addInvoice')"
-          data-langId="m-cancel">Cancel</button><button class="btn-primary btn-sm"
-          onclick="saveModalData('addInvoice')">Create Invoice</button></div>
+      <div class="modal-footer">
+        <button class="btn-outline" command="close" commandfor="modal-addInvoice" data-langId="m-cancel">
+          Cancel
+        </button>
+        <button class="btn-primary btn-sm" command="close" commandfor="modal-addInvoice"
+          onclick="saveModalData('addInvoice')">
+          Create Invoice
+        </button>
+      </div>
     </div>
-  </div>
+  </dialog closedby="any">
 
-  <div class="modal-bg" id="modal-editPatient">
+  <dialog closedby="any" class="modal-bg" id="modal-editPatient">
     <div class="modal">
       <div class="modal-head">
         <h3 id="m-editpat-title" data-langId="m-editpat-title">Patient Details</h3>
-        <button class="modal-close" onclick="closeModal('editPatient')">×</button>
+        <button class="modal-close" command="close" commandfor="modal-editPatient">×</button>
       </div>
       <div class="modal-body">
         <div class="form-grid-2">
@@ -657,17 +684,19 @@
         </div>
       </div>
       <div class="modal-footer" style="justify-content: space-between;">
-        <button class="btn-outline" style="color:#C62828;border-color:#C62828" onclick="deletePatient()" id="m-edel"
-          data-langId="m-edel">Delete Patient</button>
+        <button class="btn-outline" style="color:#C62828;border-color:#C62828" command="close"
+          commandfor="modal-editPatient" onclick="deletePatient()" id="m-edel" data-langId="m-edel">
+          Delete Patient
+        </button>
         <div style="display:flex;gap:10px">
-          <button class="btn-outline" onclick="toggleEditPatient()" id="m-eedit" data-langId="m-eedit">Edit</button>
-          <button class="btn-primary btn-sm" id="m-esave" data-langId="m-esave" onclick="updatePatient()"
-            style="display:none">Save
-            Changes</button>
+          <button class="btn-primary btn-sm" id="m-esave" data-langId="m-esave" command="close"
+            commandfor="modal-editPatient" onclick="updatePatient()">
+            Save Changes
+          </button>
         </div>
       </div>
     </div>
-  </div>
+  </dialog closedby="any">
 
 </body>
 
