@@ -690,7 +690,7 @@
         </button>
         <div style="display:flex;gap:10px">
           <button class="btn-primary btn-sm" id="m-esave" data-langId="m-esave" command="close"
-            commandfor="modal-editPatient" onclick="updatePatient()">
+            commandfor="modal-editPatient" onclick="updatePatient();broadcast('medcore:patients_updated', homePatients);">
             Save Changes
           </button>
         </div>

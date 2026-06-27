@@ -65,7 +65,7 @@ function setupEventListeners() {
   document.addEventListener("medcore:statistics_updated", (e) => updateDashboardStatistics(e.detail));
   document.addEventListener("medcore:claims_updated", (e) => {
     Medcore.state.claims = e.detail;
-    renderClaims(null, e.detail);
+    renderClaims(e.detail);
   });
   document.addEventListener("medcore:companies_updated", (e) => {
     Medcore.state.companies = e.detail;
@@ -192,7 +192,7 @@ function setupSearch() {
   document.getElementById("claims-search")?.addEventListener("input", (e) => {
     const term = e.target.value.toLowerCase();
     const filtered = Medcore.state.claims.filter(c => c.patient?.toLowerCase().includes(term));
-    renderClaims(null, filtered);
+    renderClaims( filtered);
   });
 }
 

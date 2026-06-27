@@ -107,38 +107,61 @@ function drawBillingRow(v) {
 // --- 📊 TABLE RENDERERS (Bulk List Rendering) ---
 
 function renderPatients(list) {
+  if (!Array.isArray(list)) {
+    console.error(`Expected iterable for "renderPatients" got "${list}" of type "${typeof list}"`);
+    return;
+  }
   const tb = document.getElementById("pat-tbody");
-  if (!tb || !Array.isArray(list)) return;
+  if (!tb) return;
   tb.innerHTML = list.map(p => drawPatientRow(p)).join("");
 }
 
-function renderClaims(filter, list) {
+function renderClaims(list) {
+  if (!Array.isArray(list)) {
+    console.error(`Expected iterable for "renderClaims" got "${list}" of type "${typeof list}"`);
+    return;
+  }
   const tb = document.getElementById("claims-tbody");
-  if (!tb || !Array.isArray(list)) return;
-  // Note: search/filter logic remains in main-script, this just renders the provided list
+  if (!tb) return;
   tb.innerHTML = list.map(c => drawClaimRow(c)).join("");
 }
 
 function renderCompanies(list) {
-  const grid = document.getElementById("company-grid");
-  if (!grid || !Array.isArray(list)) return;
-  grid.innerHTML = list.map(c => drawCompanyRow(c)).join("");
+  if (!Array.isArray(list)) {
+    console.error(`Expected iterable for "renderCompanies" got "${list}" of type "${typeof list}"`);
+    return;
+  }
+  const tb = document.getElementById("company-grid");
+  if (!tb) return;
+  tb.innerHTML = list.map(c => drawCompanyRow(c)).join("");
 }
 
 function renderApprovals(list) {
+  if (!Array.isArray(list)) {
+    console.error(`Expected iterable for "renderApprovals" got "${list}" of type "${typeof list}"`);
+    return;
+  }
   const tb = document.getElementById("approvals-tbody");
-  if (!tb || !Array.isArray(list)) return;
+  if (!tb) return;
   tb.innerHTML = list.map(a => drawApprovalRow(a)).join("");
 }
 
 function renderAppts(list) {
+  if (!Array.isArray(list)) {
+    console.error(`Expected iterable for "renderAppts" got "${list}" of type "${typeof list}"`);
+    return;
+  }
   const tb = document.getElementById("appt-tbody");
-  if (!tb || !Array.isArray(list)) return;
+  if (!tb) return;
   tb.innerHTML = list.map(a => drawApptRow(a)).join("");
 }
 
 function renderBilling(list) {
+  if (!Array.isArray(list)) {
+    console.error(`Expected iterable for "renderBilling" got "${list}" of type "${typeof list}"`);
+    return;
+  }
   const tb = document.getElementById("bill-tbody");
-  if (!tb || !Array.isArray(list)) return;
+  if (!tb) return;
   tb.innerHTML = list.map(v => drawBillingRow(v)).join("");
 }
