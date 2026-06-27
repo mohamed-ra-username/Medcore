@@ -37,7 +37,6 @@ const Medcore = {
 let notifDot
 window.onload = async () => {
   notifDot = document.getElementById("notif-dot");
-
   loadDummyNotifications();
   loadNotifications()
   await Medcore.init();
