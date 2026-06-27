@@ -45,9 +45,13 @@
 
     <div class="main">
       <div id="settings-menu" popover>
-        <sub>
-          DR. Ahmed Galal
-        </sub>
+        DR. Ahmed Galal
+        <br>
+        <sub id="user-email">hello</sub>
+        <script>
+          const element_user_email = document.getElementById("user-email");
+          element_user_email.textContent = Medcore.state.user;
+        </script>
         <hr>
         <button onclick="alert('Not implemented')">Settings</button>
         <br>

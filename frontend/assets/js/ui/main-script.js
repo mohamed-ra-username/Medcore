@@ -236,12 +236,12 @@ async function setStatus(target, status) {
   const row = target.closest("tr");
   const id = row?.dataset.id;
   if (!id) return;
-  
+
   const res = await PUTRequest(`/claims/${id}/status/`, { status });
-  
+
   if (res && res.success) {
     showToast(`Claim ${status} successfully`);
-    
+
     // Update local state
     const claim = Medcore.state.claims.find(c => c.id === id);
     if (claim) {

@@ -922,5 +922,5 @@ body.edit-mode-active .clickable-row:hover {
 #settings-menu{
   position: absolute;
   position-anchor: --settings-button;
-  position-area: bottom ;
+  position-area: bottom span-left;
 }
