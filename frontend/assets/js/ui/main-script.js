@@ -7,6 +7,7 @@ const Medcore = {
   state: {
     user: null,
     permissions: JSON.parse(localStorage.getItem("permissions") || "[]"),
+    notifications: [],
     patients: [],
     claims: [],
     companies: [],
@@ -33,8 +34,12 @@ const Medcore = {
     }
   }
 };
-
+let notifDot
 window.onload = async () => {
+  notifDot = document.getElementById("notif-dot");
+
+  loadDummyNotifications();
+  loadNotifications()
   await Medcore.init();
   applyLang();
   setupSearch();

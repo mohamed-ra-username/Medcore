@@ -17,6 +17,7 @@
   <script src="../../assets/js/services/translations-table.js"></script>
   <script src="../../assets/js/services/translation.js"></script>
   <script src="../../assets/js/ui/auth-controller.js"></script>
+  <script src="../../assets/js/ui/notifications.js"></script>
   <script src="../../assets/js/ui/rendering.js"></script>
   <script src="../../assets/js/ui/main-script.js"></script>
   <script src="../../assets/js/ui/modal-handling.js"></script>
@@ -40,6 +41,7 @@
             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </svg>
           <span id='notif-dot' class="notif-dot">
+            -
           </span>
         </button>
         <button class="avatar settings-button" popovertarget="settings-menu">DR</button>
@@ -49,21 +51,7 @@
     <div class="main">
       <div id="notifications-menu" popover>
         <br>
-        <script>
-          function clearNotifs() {
-            document.getElementById("notif-dot").hidden = true
-            const notifsList = document.getElementById('notifications-list')
-            notifsList.innerHTML="No notifications."
-          }
-        </script>
-
         <span id="notifications-list">
-          <li>
-            <b>*</b> You've got a new insurance scam!
-          </li>
-          <li>
-            <b>*</b> Patient died! :(
-          </li>
         </span>
         <hr>
         <button onclick="clearNotifs()">

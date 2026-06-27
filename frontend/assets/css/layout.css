@@ -118,13 +118,14 @@ body {
 
 .notif-dot {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 8px;
-  height: 8px;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
   border-radius: 50%;
-  background: var(--teal);
-  border: 2px solid #fff
+  padding: 2px 6px;
+  font-size: 12px;
+  font-family: sans-serif;
 }
 
 .avatar {
@@ -941,4 +942,14 @@ body.edit-mode-active .clickable-row:hover {
   position-anchor: --notifications-button;
   position-area: bottom span-left;
 
+}
+
+#notifications-list > .unread:hover{
+    cursor: pointer;
+}
+#notifications-list > .unread{
+  background-color: cyan;
+}
+#notifications-list > .read{
+  background: turquoise;
 }

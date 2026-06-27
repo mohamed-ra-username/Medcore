@@ -55,6 +55,7 @@ This document serves as the master blueprint for the Medcore Clinic Management S
 ### 📢 Event-Driven State
 - [x] **The "Radio Station" Fetcher:** `sync-service.js` uses `dispatchEvent` to update UI components.
 - [ ] **Reactive Store:** Move all global variables into a centralized `Medcore.state` object.
+- [ ] **Real-Time Push Sync:** Replace the polling `setTimeout` method in [sync-service.js](file:///C:/Users/mrmmo/Desktop/python/college%20procjets/websites/Medcore/frontend/assets/js/services/sync-service.js) with Server-Sent Events (SSE) or WebSockets in the Flask backend to achieve push-based real-time UI updates.
 
 ### 🔔 User Feedback Loops
 - [x] **Toast Notification System:** Implement success/error alerts.

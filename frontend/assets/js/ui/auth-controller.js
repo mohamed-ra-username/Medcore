@@ -6,15 +6,14 @@
  */
 
 function logout() {
-    // localStorage.removeItem("token");
-    // localStorage.removeItem("role");
-    // localStorage.removeItem("permissions");
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  localStorage.removeItem("permissions");
 
 
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 0);
-    showToast("Successfully logged out")
+  // setTimeout(() => {
+  window.location.href = "login.html";
+  // }, 0);
 }
 
 async function handleLogin() {
