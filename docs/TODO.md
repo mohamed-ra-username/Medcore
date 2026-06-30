@@ -95,3 +95,17 @@ This document serves as the master blueprint for the Medcore Clinic Management S
     - [x] **Category Viewers:** Table views for all JSON entities.
     - [x] **Data Actions:** Delete individual rows directly.
     - [x] **Raw Editor:** Manually edit and overwrite `data.json` and `users.json`.
+
+---
+
+## 🏛️ Pillar 7: Modern Monolith Re-Architecture (SQLite + Alpine.js + Tailwind) (Planned)
+*Goal: Re-engineer the application to run fully offline using relational database transactions, HTML-native template reactivity, and local style utilities.*
+
+### 💾 Backend: SQLite Database Migration
+- [ ] **Database Setup:** Create `medcore.db` schemas for Patients, Invoices, Claims, Approvals, and Appointments.
+- [ ] **CRUD API Refactor:** Modify persistence handlers (`sqlite_repository.py`) to run SQL queries instead of reading/writing raw `data.json` files.
+
+### ⚡ Frontend: Alpine.js Template Integration
+- [ ] **Vendor Assets Setup:** Download and commit local `alpine.min.js` and `tailwind.min.css` files to the assets directory for 100% offline security.
+- [ ] **HTML Bindings:** Replace JS template renderers in `rendering.js` with declarative `x-for` and `x-text` loops inside `home.html`.
+- [ ] **Live Edit Modals:** Implement live-typing previews in modals using direct object references, with automated rollback backups if the user Cancels or the API fails.
