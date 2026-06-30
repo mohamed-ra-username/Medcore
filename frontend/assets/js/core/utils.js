@@ -164,6 +164,8 @@ export class Store {
     }
 }
 
+const delegatedContainers = new WeakSet();
+
 export function syncList(parentEl, list, {
     getKey = (item) => item.id,
     columns = [],
@@ -227,8 +229,8 @@ export function syncList(parentEl, list, {
     }
 
     // 4. Event Delegation: Single click listener bound once
-    if (!parentEl.dataset.hasDelegation) {
-        parentEl.dataset.hasDelegation = "true";
+    if (!delegatedContainers.has(parentEl)) {
+        delegatedContainers.add(parentEl);
         parentEl.addEventListener("click", (e) => {
             const btn = e.target.closest("[data-action]");
             const row = e.target.closest("[data-key]");
