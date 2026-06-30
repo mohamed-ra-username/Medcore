@@ -35,7 +35,8 @@ const Medcore = {
   }
 };
 let notifDot
-window.onload = async () => {
+// Initialize immediately since the script is deferred and the DOM is already fully loaded
+const initApp = async () => {
   notifDot = document.getElementById("notif-dot");
   loadDummyNotifications();
   loadNotifications()
@@ -51,10 +52,13 @@ window.onload = async () => {
     headerDate.textContent = Utils.formatFullDate();
   }
 
-  window.isUIReady = true;
-  document.dispatchEvent(new CustomEvent("medcore:ui_ready"));
+  if (typeof window.resolveUIReady === "function") {
+    window.resolveUIReady();
+  }
   console.info("🏛️ Monolith UI Initialized. Waiting for data...");
 };
+
+initApp();
 
 /**
  * ==========================================

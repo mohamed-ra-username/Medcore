@@ -7,6 +7,13 @@
 const update_time = 10 * 60 * 1000; // 1 minute
 // const update_time = 5 * 1000; // 5 seconds
 
+// Setup global UI Ready Promise
+let resolveUIReady;
+window.uiReadyPromise = new Promise(resolve => {
+  resolveUIReady = resolve;
+});
+window.resolveUIReady = resolveUIReady;
+
 var homePatients, companies, claimsData, approvalsData,  appts, invoices, stats, statistics;
 
 
@@ -40,12 +47,7 @@ async function update() {
     statistics = sttc;
 
     // 🛑 WAIT FOR UI TO BE READY
-    if (!window.isUIReady) {
-      console.warn("⌛ Broadcaster: UI not ready. Waiting for signal...");
-      await new Promise(resolve => {
-        document.addEventListener("medcore:ui_ready", resolve, { once: true });
-      });
-    }
+    await window.uiReadyPromise;
 
     // 📢 BROADCAST EVENTS
     broadcast("medcore:patients_updated", homePatients);
