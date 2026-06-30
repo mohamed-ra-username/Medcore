@@ -1,3 +1,6 @@
+import { POSTRequest } from '../core/api-client.js';
+import { Utils } from '../core/utils.js';
+
 /**
  * ==========================================
  * 🔐 AUTH CONTROLLER
@@ -5,18 +8,7 @@
  * Handles Login, Registration, and UI View Toggling.
  */
 
-function logout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  localStorage.removeItem("permissions");
-
-
-  // setTimeout(() => {
-  window.location.href = "login.html";
-  // }, 0);
-}
-
-async function handleLogin() {
+export async function handleLogin() {
   const email = document.getElementById("login-email").value;
   const pass = document.getElementById("login-pass").value;
 
@@ -26,7 +18,6 @@ async function handleLogin() {
   if (!pass) { showErr("err-login-pass", "login-pass"); return; }
   else clearErr("err-login-pass", "login-pass");
 
-
   const btn = document.getElementById("btn-login");
   btn.classList.add("loading");
 
@@ -35,7 +26,6 @@ async function handleLogin() {
   btn.classList.remove("loading");
 
   if (response && response.success) {
-    // Correctly unwrap the data from the standard envelope
     const authData = response.data;
 
     console.log("Login successful. Storing session...");
@@ -52,7 +42,7 @@ async function handleLogin() {
   }
 }
 
-async function handleRegister() {
+export async function handleRegister() {
   const email = document.getElementById("reg-email").value;
   const pass = document.getElementById("reg-pass").value;
   const terms = document.getElementById("terms-check").checked;
@@ -67,7 +57,6 @@ async function handleRegister() {
     alert(Utils.lang === "ar" ? "يجب الموافقة على الشروط أولاً" : "Please accept the terms first");
     return;
   }
-
 
   const btn = document.getElementById("btn-register");
   btn.classList.add("loading");
@@ -97,7 +86,7 @@ async function handleRegister() {
 
 /* ── UI HELPERS ── */
 
-function toggleView(view) {
+export function toggleView(view) {
   const isLogin = view === "login";
   const viewLogin = document.getElementById("view-login");
   const viewRegister = document.getElementById("view-register");
@@ -114,29 +103,29 @@ function toggleView(view) {
   }
 }
 
-function switchTab(tab, btn) {
+export function switchTab(tab, btn) {
   toggleView(tab);
 }
 
-function switchTabByName(tab) {
+export function switchTabByName(tab) {
   toggleView(tab);
 }
 
-function showErr(errId, inputId) {
+export function showErr(errId, inputId) {
   const errEl = document.getElementById(errId);
   const inputEl = document.getElementById(inputId);
   if (errEl) errEl.classList.add("show");
   if (inputEl) inputEl.classList.add("error");
 }
 
-function clearErr(errId, inputId) {
+export function clearErr(errId, inputId) {
   const errEl = document.getElementById(errId);
   const inputEl = document.getElementById(inputId);
   if (errEl) errEl.classList.remove("show");
   if (inputEl) inputEl.classList.remove("error");
 }
 
-function showSuccess() {
+export function showSuccess() {
   const viewLogin = document.getElementById("view-login");
   const viewRegister = document.getElementById("view-register");
   if (viewLogin) viewLogin.style.display = "none";
@@ -150,19 +139,19 @@ function showSuccess() {
   }
 }
 
-function selectRole(card) {
+export function selectRole(card) {
   document.querySelectorAll(".role-card").forEach(c => c.classList.remove("selected"));
   card.classList.add("selected");
   const radio = card.querySelector("input");
   if (radio) radio.checked = true;
 }
 
-function togglePass(inputId, btn) {
+export function togglePass(inputId, btn) {
   const inp = document.getElementById(inputId);
   if (inp) inp.type = inp.type === "password" ? "text" : "password";
 }
 
-function checkStrength(val) {
+export function checkStrength(val) {
   let score = -1;
   if (val.length >= 8) score++;
   if (/[A-Z]/.test(val)) score++;

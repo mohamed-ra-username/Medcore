@@ -1,3 +1,5 @@
+
+
 const API_BASE_URL = "http://localhost:5001/api";
 
 async function baseRequest(endpoint, method = 'GET', data = null) {
@@ -13,8 +15,7 @@ async function baseRequest(endpoint, method = 'GET', data = null) {
     try {
         const response = await fetch(url, config);
         if (response.status === 401) {
-            localStorage.removeItem("token");
-            window.location.href = "login.html";
+            logout();
             return null;
         }
         return await response.json();
@@ -24,7 +25,15 @@ async function baseRequest(endpoint, method = 'GET', data = null) {
     }
 }
 
-async function GETRequest(endpoint) { return await baseRequest(endpoint, 'GET'); }
-async function POSTRequest(endpoint, data) { return await baseRequest(endpoint, 'POST', data); }
-async function PUTRequest(endpoint, data) { return await baseRequest(endpoint, 'PUT', data); }
-async function DELETERequest(endpoint) { return await baseRequest(endpoint, 'DELETE'); }
+export function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("permissions");
+
+    window.location.href = "login.html";
+}
+
+export async function GETRequest(endpoint) { return await baseRequest(endpoint, 'GET'); }
+export async function POSTRequest(endpoint, data) { return await baseRequest(endpoint, 'POST', data); }
+export async function PUTRequest(endpoint, data) { return await baseRequest(endpoint, 'PUT', data); }
+export async function DELETERequest(endpoint) { return await baseRequest(endpoint, 'DELETE'); }

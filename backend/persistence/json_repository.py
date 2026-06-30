@@ -12,11 +12,11 @@ companies = []
 invoices = []
 claims_data = []
 approvals_data = []
-home_patients = []
+patients = []
 
 
 def load_data():
-    global appointments, companies, invoices, claims_data, approvals_data, home_patients
+    global appointments, companies, invoices, claims_data, approvals_data, patients
 
     try:
         if not data_file.exists():
@@ -31,14 +31,14 @@ def load_data():
             # Map camelCase JSON keys to snake_case Python variables
             claims_data = data.get("claimsData", [])
             approvals_data = data.get("approvalsData", [])
-            home_patients = data.get("homePatients", [])
+            patients = data.get("patients", [])
     except (FileNotFoundError, json.JSONDecodeError):
         appointments = []
         companies = []
         invoices = []
         claims_data = []
         approvals_data = []
-        home_patients = []
+        patients = []
 
 
 def save_data():
@@ -49,7 +49,7 @@ def save_data():
         "invoices": invoices,
         "claimsData": claims_data,
         "approvalsData": approvals_data,
-        "homePatients": home_patients,
+        "patients": patients,
     }
     with open(data_file, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)

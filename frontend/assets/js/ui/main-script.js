@@ -1,26 +1,52 @@
+import { GETRequest, PUTRequest } from '../core/api-client.js';
+import { Utils, debounce } from '../core/utils.js';
+import { applyLang } from '../services/translation.js';
+import { loadDummyNotifications, loadNotifications } from './notifications.js';
+import { openModal } from './modal-handling.js';
+import {
+  renderPatients,
+  renderHomePatients,
+  renderClaims,
+  renderCompanies,
+  renderApprovals,
+  renderAppts,
+  renderBilling,
+  drawPatientRow,
+  drawClaimRow
+} from './rendering.js';
+
 /**
  * ==========================================
- * 🔴 CORE LOGIC - MEDCORE STATE STORE
+ * 🔴 CORE LOGIC - MEDCORE STATE STORE (Reactive Store)
  * ==========================================
  */
-const Medcore = {
-  state: {
-    user: null,
-    permissions: JSON.parse(localStorage.getItem("permissions") || "[]"),
-    notifications: [],
-    patients: [],
-    claims: [],
-    companies: [],
-    approvals: [],
-    appts: [],
-    invoices: [],
-    stats: {},
-    statistics: {},
-    isEditMode: false
-  },
 
+const storeSubscribers = {};
+
+export function subscribeState(key, callback) {
+  if (!storeSubscribers[key]) storeSubscribers[key] = [];
+  storeSubscribers[key].push(callback);
+}
+
+const rawState = {
+  user: null,
+  permissions: JSON.parse(localStorage.getItem("permissions") || "[]"),
+  notifications: [],
+  patients: [],
+  claims: [],
+  companies: [],
+  approvals: [],
+  appts: [],
+  invoices: [],
+  stats: {},
+  statistics: {},
+  isEditMode: false,
+  currentPatientId: null
+};
+
+export const Medcore = {
+  state: {},
   can: (perm) => Medcore.state.permissions.includes(perm) || Medcore.state.permissions.includes("*"),
-
   init: async () => {
     if (localStorage.getItem("token")) {
       const res = await GETRequest("/me/");
@@ -29,17 +55,60 @@ const Medcore = {
         Medcore.state.permissions = res.data.permissions;
         localStorage.setItem("permissions", JSON.stringify(Medcore.state.permissions));
         const element_user_email = document.getElementById("user-email");
-        element_user_email.textContent = Medcore.state.user;
+        if (element_user_email) element_user_email.textContent = Medcore.state.user;
       }
     }
   }
 };
-let notifDot
-// Initialize immediately since the script is deferred and the DOM is already fully loaded
-const initApp = async () => {
-  notifDot = document.getElementById("notif-dot");
+
+// Define reactive property getters/setters on state
+for (const key of Object.keys(rawState)) {
+  Object.defineProperty(Medcore.state, key, {
+    get() {
+      return rawState[key];
+    },
+    set(newVal) {
+      if (JSON.stringify(rawState[key]) === JSON.stringify(newVal)) return;
+      rawState[key] = newVal;
+      if (storeSubscribers[key]) {
+        storeSubscribers[key].forEach(cb => cb(newVal));
+      }
+    },
+    configurable: true,
+    enumerable: true
+  });
+}
+
+export async function initUI() {
+  // Register state subscribers reactively mapping store changes to rendering.js
+  subscribeState("patients", (list) => {
+    renderHomePatients(list);
+    renderPatients(list);
+    recalculateStats();
+  });
+  subscribeState("claims", (list) => {
+    renderClaims(list);
+    recalculateStats();
+  });
+  subscribeState("companies", (list) => {
+    renderCompanies(list);
+    recalculateStats();
+  });
+  subscribeState("approvals", (list) => {
+    renderApprovals(list);
+    recalculateStats();
+  });
+  subscribeState("appts", (list) => {
+    renderAppts(list);
+    recalculateStats();
+  });
+  subscribeState("invoices", (list) => {
+    renderBilling(list);
+    recalculateStats();
+  });
+
   loadDummyNotifications();
-  loadNotifications()
+  loadNotifications();
   await Medcore.init();
   applyLang();
   setupSearch();
@@ -52,13 +121,8 @@ const initApp = async () => {
     headerDate.textContent = Utils.formatFullDate();
   }
 
-  if (typeof window.resolveUIReady === "function") {
-    window.resolveUIReady();
-  }
   console.info("🏛️ Monolith UI Initialized. Waiting for data...");
-};
-
-initApp();
+}
 
 /**
  * ==========================================
@@ -68,69 +132,25 @@ initApp();
 function setupEventListeners() {
   document.addEventListener("medcore:patients_updated", (e) => {
     Medcore.state.patients = e.detail;
-    syncPatientTable(e.detail);
-    renderPatients(e.detail);
   });
-  document.addEventListener("medcore:stats_updated", (e) => updateDashboardStats(e.detail));
   document.addEventListener("medcore:statistics_updated", (e) => updateDashboardStatistics(e.detail));
   document.addEventListener("medcore:claims_updated", (e) => {
     Medcore.state.claims = e.detail;
-    renderClaims(e.detail);
   });
   document.addEventListener("medcore:companies_updated", (e) => {
     Medcore.state.companies = e.detail;
-    renderCompanies(e.detail);
   });
   document.addEventListener("medcore:approvals_updated", (e) => {
     Medcore.state.approvals = e.detail;
-    renderApprovals(e.detail);
   });
   document.addEventListener("medcore:appts_updated", (e) => {
     Medcore.state.appts = e.detail;
-    renderAppts(e.detail);
   });
   document.addEventListener("medcore:billing_updated", (e) => {
     Medcore.state.invoices = e.detail;
-    renderBilling(e.detail);
   });
 }
 
-/**
- * ==========================================
- * ⚡ SMART SYNC ENGINE
- * ==========================================
- */
-function syncPatientTable(freshData) {
-  if (!freshData) return;
-
-  const tbody = document.getElementById("home-tbody");
-  if (!tbody) return;
-
-  const existingRows = Array.from(tbody.querySelectorAll("tr[data-id]"));
-  const freshIds = freshData.map(p => p.id);
-
-  existingRows.forEach(row => {
-    if (!freshIds.includes(row.dataset.id)) row.remove();
-  });
-
-  const fragment = document.createDocumentFragment();
-
-  freshData.forEach((p) => {
-    let row = tbody.querySelector(`tr[data-id="${p.id}"]`);
-    if (row) {
-      if (row.dataset.status !== p.status) {
-        row.outerHTML = drawPatientRow(p);
-      }
-    } else {
-      const temp = document.createElement('tbody');
-      temp.innerHTML = drawPatientRow(p);
-      fragment.appendChild(temp.firstElementChild);
-    }
-  });
-
-  if (tbody.innerText.includes("Loading")) tbody.innerHTML = "";
-  tbody.appendChild(fragment);
-}
 
 /**
  * ==========================================
@@ -153,37 +173,89 @@ async function updateDashboardStatistics(st) {
   }
 }
 
-async function updateDashboardStats(st) {
-  if (!st) return;
-  Medcore.state.stats = st;
+export function recalculateStats() {
+  const patients = Medcore.state.patients;
+  const appts = Medcore.state.appts;
+  const claims = Medcore.state.claims;
+  const companies = Medcore.state.companies;
+  const approvals = Medcore.state.approvals;
 
-  const mapping = {
-    "stat-patients": st.home?.patients ?? 0,
-    "stat-appts": st.home?.appts ?? 0,
-    "stat-claims": st.home?.claims ?? 0,
-    "stat-revenue": st.home?.revenue ?? 0,
-    "sb-total-val": st.insurance?.total ?? 0,
-    "sb-active-val": st.insurance?.active ?? 0,
-    "sb-expiring-val": st.insurance?.expiring ?? 0,
-    "sb-claims-total-val": st.insurance?.claims ?? 0,
-    "c-pending-val": st.claims?.pending ?? 0,
-    "c-approved-val": st.claims?.approved ?? 0,
-    "c-rejected-val": st.claims?.rejected ?? 0,
-    "c-amount-val": st.claims?.total_amount ?? 0
-  };
+  // 1. Home Dashboard Stats & Badges
+  if (patients !== undefined && patients !== null) {
+    const activePatients = patients.filter(p => p.status === "active").length;
+    const el = document.getElementById("stat-patients");
+    if (el) el.textContent = Utils.formatNumber(activePatients);
+    
+    update_badge("patients-badge", activePatients);
+  }
 
-  for (const [id, val] of Object.entries(mapping)) {
-    const el = document.getElementById(id);
-    if (el) {
-      el.setAttribute("data-value", val);
-      el.textContent = Utils.formatNumber(val);
+  if (appts !== undefined && appts !== null) {
+    const activeAppts = appts.filter(a => a.status === "active").length;
+    const el = document.getElementById("stat-appts");
+    if (el) el.textContent = Utils.formatNumber(activeAppts);
+    
+    update_badge("appointments-badge", activeAppts);
+  }
+
+  if (claims !== undefined && claims !== null) {
+    const pendingClaims = claims.filter(c => c.status === "pending").length;
+    const el = document.getElementById("stat-claims");
+    if (el) el.textContent = Utils.formatNumber(pendingClaims);
+    
+    const approvedClaims = claims.filter(c => c.status === "approved");
+    const revenue = approvedClaims.reduce((sum, c) => sum + (parseInt(c.amount) || 0), 0);
+    const revEl = document.getElementById("stat-revenue");
+    if (revEl) revEl.textContent = Utils.formatNumber(revenue);
+    
+    update_badge("claims-badge", pendingClaims);
+
+    // Claims Tab Sub-metrics
+    const approvedCount = approvedClaims.length;
+    const rejectedCount = claims.filter(c => c.status === "rejected").length;
+    const totalAmount = claims.reduce((sum, c) => sum + (parseInt(c.amount) || 0), 0);
+
+    const mapping = {
+      "c-pending-val": pendingClaims,
+      "c-approved-val": approvedCount,
+      "c-rejected-val": rejectedCount,
+      "c-amount-val": totalAmount
+    };
+    for (const [id, val] of Object.entries(mapping)) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.setAttribute("data-value", val);
+        el.textContent = Utils.formatNumber(val);
+      }
     }
   }
 
-  update_badge("patients-badge", st.home?.patients ?? 0);
-  update_badge("appointments-badge", st.home?.appts ?? 0);
-  update_badge("claims-badge", st.claims?.pending ?? 0);
-  update_badge("approvals-badge", st.insurance?.pending ?? 0);
+  // 2. Insurance Tab Sub-metrics
+  if (companies !== undefined && companies !== null) {
+    const total = companies.length;
+    const active = companies.filter(c => c.status === "active").length;
+    const expiring = companies.filter(c => c.status === "expiring").length;
+    const totalClaims = companies.reduce((sum, c) => sum + (parseInt(c.claims) || 0), 0);
+
+    const mapping = {
+      "sb-total-val": total,
+      "sb-active-val": active,
+      "sb-expiring-val": expiring,
+      "sb-claims-total-val": totalClaims
+    };
+    for (const [id, val] of Object.entries(mapping)) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.setAttribute("data-value", val);
+        el.textContent = Utils.formatNumber(val);
+      }
+    }
+  }
+
+  // 3. Approvals Sidebar Badge
+  if (approvals !== undefined && approvals !== null) {
+    const pendingApprovals = approvals.filter(a => a.status === "pending").length;
+    update_badge("approvals-badge", pendingApprovals);
+  }
 }
 
 function update_badge(elementId, value) {
@@ -194,16 +266,16 @@ function update_badge(elementId, value) {
 }
 
 function setupSearch() {
-  document.getElementById("home-search")?.addEventListener("input", (e) => {
+  document.getElementById("home-search")?.addEventListener("input", debounce((e) => {
     const term = e.target.value.toLowerCase();
     const filtered = Medcore.state.patients.filter(p => p.name?.toLowerCase().includes(term));
     renderPatients(filtered);
-  });
-  document.getElementById("claims-search")?.addEventListener("input", (e) => {
+  }));
+  document.getElementById("claims-search")?.addEventListener("input", debounce((e) => {
     const term = e.target.value.toLowerCase();
     const filtered = Medcore.state.claims.filter(c => c.patient?.toLowerCase().includes(term));
-    renderClaims( filtered);
-  });
+    renderClaims(filtered);
+  }));
 }
 
 function updatePermissionsUI() {
@@ -213,7 +285,7 @@ function updatePermissionsUI() {
   }
 }
 
-function goPage(id, btn) {
+export function goPage(id, btn) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
   const target = document.getElementById("page-" + id);
@@ -221,18 +293,9 @@ function goPage(id, btn) {
   if (btn) btn.classList.add("active");
 }
 
-async function renderHome() { /* syncPatientTable handles this */ }
-
-/**
- * ==========================================
- * ⚡ ACTION HANDLERS
- * ==========================================
- */
-
-let currentPatientId = null;
-function viewPatient(id) {
+export function viewPatient(id) {
   if (!Medcore.state.isEditMode) return;
-  currentPatientId = id;
+  Medcore.state.currentPatientId = id;
   const p = Medcore.state.patients.find(p => p.id === id);
   if (!p) return;
   const modal = document.getElementById("modal-editPatient");
@@ -242,36 +305,30 @@ function viewPatient(id) {
   openModal("editPatient");
 }
 
-async function setStatus(target, status) {
+export async function setStatus(target, status) {
   const row = target.closest("tr");
-  const id = row?.dataset.id;
+  const id = row?.dataset.key || row?.dataset.id;
   if (!id) return;
 
   const res = await PUTRequest(`/claims/${id}/status/`, { status });
 
   if (res && res.success) {
-    showToast(`Claim ${status} successfully`);
-
-    // Update local state
     const claim = Medcore.state.claims.find(c => c.id === id);
     if (claim) {
       claim.status = status;
-      // Surgical UI Update using Rendering Engine
-      row.outerHTML = drawClaimRow(claim);
+      Medcore.state.claims = [...Medcore.state.claims]; // Reactively update UI
     }
   } else {
     alert("Failed to update status: " + (res?.error || "Server Error"));
-    // Re-enable the specific button that was clicked
     target.disabled = false;
   }
 }
 
-function openReview(target) {
-  target_row = target.parent
-
+export function openReview(target) {
+  // target_row = target.parent
 }
 
-function toggleEditMode() {
+export function toggleEditMode() {
   Medcore.state.isEditMode = !Medcore.state.isEditMode;
   const btns = document.querySelectorAll(".btn-toggle-edit");
   btns.forEach(btn => {

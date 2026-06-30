@@ -5,7 +5,7 @@
  * Shared logic for formatting and common tasks.
  */
 
-const Utils = {
+export const Utils = {
     // Single Source of Truth
     get locale() {
         return localStorage.getItem("locale") ?? "en-US";
@@ -42,11 +42,11 @@ const Utils = {
 
     // Get long localized date for headers (e.g. Monday, June 8, 2026)
     formatFullDate: (date = new Date()) => {
-        return date.toLocaleDateString(Utils.locale, { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+        return date.toLocaleDateString(Utils.locale, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         });
     },
 
@@ -60,11 +60,10 @@ const Utils = {
 };
 
 /**
- * ==========================================
- * 🔔 TOAST NOTIFICATION SYSTEM
- * ==========================================
+(message, type{success,error,info,warn})
+ Display toast notification
  */
-function showToast(message, type = "success") {
+export function showToast(message, type = "success") {
     let container = document.getElementById("toast-container");
     if (!container) {
         container = document.createElement("div");
@@ -98,7 +97,7 @@ function showToast(message, type = "success") {
         toast.style.opacity = "0";
         setTimeout(() => toast.remove(), 300);
     };
-    
+
     toast.onclick = remove;
     container.appendChild(toast);
     setTimeout(remove, 4000);
@@ -112,3 +111,134 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+export function debounce(func, delay = 150) {
+    let timeoutId;
+    return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func(...args);
+        }, delay);
+    };
+}
+
+/**
+ * ==========================================
+ * 🛡️ MICRO-FRAMEWORK CORE HELPERS
+ * ==========================================
+ */
+
+export function escapeHTML(str) {
+    if (typeof str !== "string") return str;
+    return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+    }[m]));
+}
+
+export function resolvePath(obj, path) {
+    if (!path) return "";
+    return path.split('.').reduce((acc, part) => {
+        return acc !== undefined && acc !== null ? acc[part] : "";
+    }, obj);
+}
+
+export class Store {
+    constructor(initialState = {}) {
+        this.state = initialState;
+        this.subscribers = {};
+    }
+
+    subscribe(key, callback) {
+        if (!this.subscribers[key]) this.subscribers[key] = [];
+        this.subscribers[key].push(callback);
+        return () => {
+            this.subscribers[key] = this.subscribers[key].filter(cb => cb !== callback);
+        };
+    }
+
+    set(key, newValue) {
+        this.state[key] = newValue;
+        if (this.subscribers[key]) {
+            this.subscribers[key].forEach(callback => callback(newValue));
+        }
+    }
+}
+
+export function syncList(parentEl, list, {
+    getKey = (item) => item.id,
+    columns = [],
+    rowAttrs = () => ({}),
+    actions = {}
+}) {
+    if (!parentEl) return;
+
+    const freshKeys = list.map(item => String(getKey(item)));
+
+    // 1. Remove deleted rows in one pass
+    Array.from(parentEl.children).forEach(child => {
+        const key = child.dataset.key;
+        if (key && !freshKeys.includes(key)) {
+            child.remove();
+        }
+    });
+
+    // 2. Off-screen layout staging (Document Fragment)
+    const fragment = document.createDocumentFragment();
+
+    // 3. Row Reconciliation (DOM Diffing)
+    list.forEach(item => {
+        const key = String(getKey(item));
+        let row = parentEl.querySelector(`[data-key="${key}"]`);
+
+        if (row) {
+            // Row exists: Update individual cells if contents differ
+            columns.forEach(col => {
+                const cell = row.querySelector(`[data-col="${col.key || col.header}"]`);
+                if (cell) {
+                    const rawVal = col.render ? col.render(item) : resolvePath(item, col.key);
+                    const freshContent = col.render ? rawVal : escapeHTML(rawVal);
+                    
+                    if (cell.innerHTML !== freshContent) {
+                        cell.innerHTML = freshContent; // Surgical DOM edit!
+                    }
+                }
+            });
+        } else {
+            // Row is new: Build element in memory
+            const tr = document.createElement("tr");
+            tr.setAttribute("data-key", key);
+            
+            const attrs = rowAttrs(item);
+            Object.entries(attrs).forEach(([attr, val]) => tr.setAttribute(attr, val));
+
+            tr.innerHTML = columns.map(col => {
+                const rawVal = col.render ? col.render(item) : resolvePath(item, col.key);
+                const freshContent = col.render ? rawVal : escapeHTML(rawVal);
+                return `<td data-col="${col.key || col.header}">${freshContent}</td>`;
+            }).join("");
+
+            fragment.appendChild(tr);
+        }
+    });
+
+    // Append all new rows in one single reflow
+    if (fragment.children.length > 0) {
+        parentEl.appendChild(fragment);
+    }
+
+    // 4. Event Delegation: Single click listener bound once
+    if (!parentEl.dataset.hasDelegation) {
+        parentEl.dataset.hasDelegation = "true";
+        parentEl.addEventListener("click", (e) => {
+            const btn = e.target.closest("[data-action]");
+            const row = e.target.closest("[data-key]");
+            if (btn && row) {
+                const action = btn.dataset.action;
+                const id = row.dataset.key;
+                if (actions[action]) {
+                    actions[action](id, btn, row, e);
+                }
+            }
+        });
+    }
+}

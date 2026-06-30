@@ -5,7 +5,7 @@ from persistence.enums import status
 def get_patients_increase():
     previous_day = 0
     new_day = len(
-        [patient for patient in json_db.home_patients if patient.get("status") == status.ACTIVE])
+        [patient for patient in json_db.patients if patient.get("status") == status.ACTIVE])
 
     if new_day == previous_day:
         return

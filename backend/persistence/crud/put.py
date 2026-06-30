@@ -8,10 +8,10 @@ def _find_index_by_id(something: list, id: Any):
             return i
     return -1
 
-def update_home_patient(id: Any, data: dict):
-    idx = _find_index_by_id(json_db.home_patients, id)
+def update_patient(id: Any, data: dict):
+    idx = _find_index_by_id(json_db.patients, id)
     if idx != -1:
-        json_db.home_patients[idx] = data
+        json_db.patients[idx] = data
         json_db.save_data()
         return {"success": True, "data": data}
     return None

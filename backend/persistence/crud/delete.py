@@ -8,10 +8,10 @@ def _find_index_by_id(something: list, id: Any):
             return i
     return -1
 
-def delete_home_patient(id: Any):
-    idx = _find_index_by_id(json_db.home_patients, id)
+def delete_patient(id: Any):
+    idx = _find_index_by_id(json_db.patients, id)
     if idx != -1:
-        deleted = json_db.home_patients.pop(idx)
+        deleted = json_db.patients.pop(idx)
         json_db.save_data()
         return {"success": True, "data": deleted}
     return None

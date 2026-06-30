@@ -49,7 +49,7 @@ def logout():
 def dashboard():
     stats = {
         "users": len(data_handler.user_db.users),
-        "patients": len(data_handler.json_db.home_patients),
+        "patients": len(data_handler.json_db.patients),
         "appointments": len(data_handler.json_db.appointments),
         "claims": len(data_handler.json_db.claims_data),
         "invoices": len(data_handler.json_db.invoices),
@@ -64,7 +64,7 @@ def list_category(category):
 
     data_map = {
         "users": data_handler.user_db.users,
-        "patients": data_handler.json_db.home_patients,
+        "patients": data_handler.json_db.patients,
         "appointments": data_handler.json_db.appointments,
         "claims": data_handler.json_db.claims_data,
         "invoices": data_handler.json_db.invoices,
@@ -83,7 +83,7 @@ def list_category(category):
 def delete_item(category, id):
 
     data_map = {
-        "patients": data_handler.json_db.home_patients,
+        "patients": data_handler.json_db.patients,
         "appointments": data_handler.json_db.appointments,
         "claims": data_handler.json_db.claims_data,
         "invoices": data_handler.json_db.invoices,

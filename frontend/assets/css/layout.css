@@ -943,13 +943,71 @@ body.edit-mode-active .clickable-row:hover {
   position-area: bottom span-left;
 
 }
+/* #notifications-list>span{
 
-#notifications-list > .unread:hover{
+} */
+span:has(.unread-notification:hover){
     cursor: pointer;
 }
-#notifications-list > .unread{
+span:has(.unread-notification){
   background-color: cyan;
 }
-#notifications-list > .read{
+span:has(.read-notification){
   background: turquoise;
 }
+
+/* ==========================================
+ * ☠️ SKELETON SHIMMER PLACEHOLDERS
+ * ==========================================
+ */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.skeleton-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-text {
+  height: 12px;
+  width: 100%;
+  display: inline-block;
+}
+
+.skeleton-avatar {
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.skeleton-chip {
+  height: 20px;
+  width: 60px;
+  border-radius: 12px;
+  display: inline-block;
+}
+

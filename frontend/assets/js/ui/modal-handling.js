@@ -1,29 +1,20 @@
+import { Utils } from '../core/utils.js';
+import { POSTRequest, PUTRequest, DELETERequest } from '../core/api-client.js';
+import { Medcore } from './main-script.js';
+import { renderPatients } from './rendering.js';
+import { syncData } from '../services/sync-service.js';
 
-function openModal(id) {
+export function openModal(id) {
   const modal = document.getElementById("modal-" + id);
-  modal.showModal()
-  //! Deprecated found better method
-  // const modal = document.getElementById("modal-" + id);
-  // if (!modal) return;
-  // modal.classList.add("show");
-  // if (!id.includes('edit')) {
-  //   const inputs = modal.querySelectorAll("input, select, textarea");
-  //   inputs.forEach(input => {
-  //     if (input.type === "checkbox" || input.type === "radio") input.checked = false;
-  //     else input.value = "";
-  //   });
-  // }
+  if (modal) modal.showModal();
 }
 
-function closeModal(id) {
+export function closeModal(id) {
   const modal = document.getElementById("modal-" + id);
-  modal.close()
-  // if (modal) modal.classList.remove("show");
+  if (modal) modal.close();
 }
 
-// document.querySelectorAll(".modal-bg").forEach(m => m.addEventListener("click", e => { if (e.target === m) m.classList.remove("show"); }));
-
-async function saveModalData(modalId) {
+export async function saveModalData(modalId) {
   const modal = document.getElementById("modal-" + modalId);
   if (!modal) return;
   const inputs = modal.querySelectorAll("input, select, textarea");
@@ -41,51 +32,52 @@ async function saveModalData(modalId) {
 
   switch (modalId) {
     case 'addPatient':
-      endpoint = "/homePatients/";
+      endpoint = "/patients/";
       data.init = Utils.initials(data.name || "NP");
       data.status = "active";
       data.date = new Date().toISOString();
-      successCallback = (res) => { homePatients.unshift(res.data); renderHome(); renderPatients(); };
+      successCallback = () => { syncData(); };
       break;
     case 'addCompany':
       endpoint = "/companies/";
       data.init = Utils.initials(data.name || "CO");
       data.claims = 0;
       data.status = "active";
-      successCallback = (res) => { companies.push(res.data); renderCompanies(); };
+      successCallback = () => { syncData(); };
       break;
     case 'addClaim':
       endpoint = "/claims/";
       data.status = "pending";
-      successCallback = (res) => { claimsData.unshift(res.data); renderClaims(); };
+      successCallback = () => { syncData(); };
       break;
     case 'addAppointment':
       endpoint = "/appointments/";
       data.status = "active";
-      successCallback = (res) => { appts.push(res.data); renderAppts(); };
+      successCallback = () => { syncData(); };
       break;
     case 'addInvoice':
       endpoint = "/invoices/";
       data.status = "pending";
-      successCallback = (res) => { invoices.unshift(res.data); renderBilling(); };
+      successCallback = () => { syncData(); };
       break;
   }
 
   const result = await POSTRequest(endpoint, data);
   if (result && result.success) {
-    if (successCallback) successCallback(result);
+    if (successCallback) successCallback();
     closeModal(modalId);
   } else {
     alert("Failed to save data: " + (result?.error || "Unknown Error"));
   }
 }
 
-async function updatePatient() {
-  if (!currentPatientId) return;
+export async function updatePatient() {
+  const currentId = Medcore.state.currentPatientId;
+  if (!currentId) return;
   const modal = document.getElementById("modal-editPatient");
   const inputs = modal.querySelectorAll("input, select, textarea");
 
-  const original = Medcore.state.patients.find(p => p.id === currentPatientId);
+  const original = Medcore.state.patients.find(p => p.id === currentId);
   if (!original) return;
 
   const p = { ...original };
@@ -98,33 +90,33 @@ async function updatePatient() {
     }
   });
   p.init = Utils.initials(p.name);
-  const result = await PUTRequest(`/homePatients/${currentPatientId}/`, p);
+  const result = await PUTRequest(`/patients/${currentId}/`, p);
   if (result && result.success) {
-    const idx = Medcore.state.patients.findIndex(item => item.id === currentPatientId);
-    if (idx !== -1) Medcore.state.patients[idx] = p;
-    // broadcast('medcore:patients_updated', homePatients);
-    renderPatients(Medcore.state.patients);
-    // renderHome();
+    const idx = Medcore.state.patients.findIndex(item => item.id === currentId);
+    if (idx !== -1) {
+      const updated = [...Medcore.state.patients];
+      updated[idx] = p;
+      Medcore.state.patients = updated;
+    }
     closeModal('editPatient');
   } else {
     alert("Failed to update patient.");
   }
 }
 
-async function deletePatient() {
-  if (!currentPatientId) return;
+export async function deletePatient() {
+  const currentId = Medcore.state.currentPatientId;
+  if (!currentId) return;
   const confirmMsg = Utils.lang === "ar" ? "هل أنت متأكد من حذف المريض؟" : "Are you sure you want to delete this patient?";
   if (confirm(confirmMsg)) {
-    const result = await DELETERequest(`/homePatients/${currentPatientId}/`);
+    const result = await DELETERequest(`/patients/${currentId}/`);
     if (result && result.success) {
-      const idx = Medcore.state.patients.findIndex(item => item.id === currentPatientId);
-      if (idx !== -1) Medcore.state.patients.splice(idx, 1);
-      renderHome();
-      renderPatients(Medcore.state.patients);
+      const updated = Medcore.state.patients.filter(item => item.id !== currentId);
+      Medcore.state.patients = updated;
       closeModal('editPatient');
+      syncData(); // Re-sync stats and claims too
     } else {
       alert("Failed to delete patient.");
     }
   }
 }
-

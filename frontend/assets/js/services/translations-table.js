@@ -1,4 +1,4 @@
-const T = {
+export const T = {
   en: {
     "dir": "ltr",
     "langBtn": "العربية",

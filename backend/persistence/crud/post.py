@@ -7,11 +7,11 @@ def _ensure_id(data: dict):
         data["id"] = str(uuid.uuid4())
     return data
 
-def add_home_patient(data: dict):
+def add_patient(data: dict):
     data = _ensure_id(data)
     if not data.get("name"):
         return {"success":False,"error":"No name"}
-    json_db.home_patients.insert(0, data)
+    json_db.patients.insert(0, data)
     json_db.save_data()
     return {"success": True, "data": data}
 

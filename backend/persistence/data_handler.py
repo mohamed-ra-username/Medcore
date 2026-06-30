@@ -20,18 +20,18 @@ get_all_users = user_db.get_all_users
 from .crud.get import (
     get_user, get_users, get_invoices,
     get_appointments, get_companies, get_claims,
-    get_approvals, get_home_patients, get_stats
+    get_approvals, get_patients
 )
 from .crud.post import (
-    add_home_patient, add_claim, add_invoice,
+    add_patient, add_claim, add_invoice,
     add_company, add_appointment, add_user,  add_approval
 )
 from .crud.put import (
-    update_home_patient, update_claim_status, update_claim,
+    update_patient, update_claim_status, update_claim,
     update_appointment, update_company, update_invoice,
     update_approval, update_user, )
 from .crud.delete import (
-    delete_home_patient, delete_claim, delete_invoice,
+    delete_patient, delete_claim, delete_invoice,
     delete_company, delete_appointment, delete_user,
      delete_approval
 )

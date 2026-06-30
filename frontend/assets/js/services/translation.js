@@ -1,17 +1,20 @@
+import { T } from './translations-table.js';
+import { Utils } from '../core/utils.js';
+
 // --- OPTIMIZED TRANSLATION ENGINE ---
 
 function d() { return T[Utils.lang]; }
 
-function chip(k) {
+export function chip(k) {
   const chipsObj = d().chips;
   return (chipsObj && chipsObj[k]) ? chipsObj[k] : k;
 }
 
-function t(k) {
+export function t(k) {
   return d()[k] || k;
 }
 
-function applyLang() {
+export function applyLang() {
   const dictionary = d();
   document.documentElement.dir = dictionary.dir;
   document.documentElement.lang = Utils.lang;
@@ -67,7 +70,7 @@ function applyLang() {
   });
 }
 
-function toggleLang() {
+export function toggleLang() {
   // 1. Flip Language & Save
   const newLocale = Utils.lang === "en" ? "ar-EG" : "en-US";
   localStorage.setItem("locale", newLocale);
@@ -75,4 +78,3 @@ function toggleLang() {
   // 2. DOM-Based Translation (No Re-renders needed!)
   applyLang();
 }
-// ------------------------------------

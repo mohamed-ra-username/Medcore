@@ -1,9 +1,8 @@
 const noNotificationsText = "<small>No notifications.</small>";
 
-let notificationTemplate = function (item) {
-  // FIXED: Changed 'this.parent' to 'this.parentElement'
+const notificationTemplate = function (item) {
   return `<span>
-  <label class="${item.isRead ? "read" : "unread"}" onclick="markNotifRead(this)">
+  <label class="${item.isRead ? "read-notification" : "unread-notification"}" onclick="markNotifRead(this)">
   <b>*</b>
   ${item.text}
   </label>
@@ -12,8 +11,8 @@ let notificationTemplate = function (item) {
   `;
 }
 
-const notificationsStore = {
-  list: [],
+export const notificationsStore = {
+  list: [], // list of strings
   asHTML() {
     return this.list.map(notificationTemplate).join("");
   },
@@ -23,32 +22,30 @@ const notificationsStore = {
   get unreadCount() {
     return this.list.filter(item => !item.isRead).length;
   },
-  storeToStorage() {
-    localStorage.setItem("notifications", JSON.stringify(this.list));
-  }
 }
 
-function updateBadge() {
-  if (typeof notifDot === "undefined" || !notifDot) return;
+export function updateBadge() {
+  const notifDot = document.getElementById("notif-dot");
+  if (!notifDot) return;
   notifDot.textContent = notificationsStore.unreadCount;
   notifDot.hidden = notificationsStore.unreadCount <= 0;
 }
 
-function markNotifRead(notif) {
+export function markNotifRead(notif) {
   notif.removeAttribute("onclick");
-  notif.classList.replace("unread", "read");
+  notif.classList.replace("unread-notification", "read-notification");
 
   const cleanText = notif.lastChild.textContent.trim();
 
   const item = notificationsStore.list.find(notif => notif.text === cleanText);
   if (item) {
     item.isRead = true;
-    notificationsStore.storeToStorage();
+    cacheNotifications();
     updateBadge(); // Keep badge in sync when an item is read
   }
 }
 
-function loadDummyNotifications() {
+export function loadDummyNotifications() {
   const stored = localStorage.getItem("notifications");
   if (!stored) {
     const tempList = [
@@ -56,20 +53,24 @@ function loadDummyNotifications() {
       { isRead: false, text: "Patient died! :(" }
     ];
     notificationsStore.list = tempList;
-    notificationsStore.storeToStorage();
+    cacheNotifications();
   } else {
     notificationsStore.list = JSON.parse(stored);
   }
   updateBadge();
 }
 
-function loadNotifications() {
+export function cacheNotifications() {
+  localStorage.setItem("notifications", JSON.stringify(notificationsStore.list));
+}
+
+export function loadNotifications() {
   const notifContainer = document.getElementById("notifications-list");
   if (!notifContainer) return;
   notifContainer.innerHTML = notificationsStore.list.length ? notificationsStore.asHTML() : noNotificationsText;
 }
 
-function removeNotification(target) {
+export function removeNotification(target) {
   if (!target) return;
 
   // 1. Get the container dynamically from the target itself
@@ -81,7 +82,7 @@ function removeNotification(target) {
 
   if (index !== -1) {
     notificationsStore.list.splice(index, 1);
-    notificationsStore.storeToStorage();
+    cacheNotifications();
     updateBadge();
   }
 
@@ -94,8 +95,7 @@ function removeNotification(target) {
   }
 }
 
-
-function clearNotifs() {
+export function clearNotifs() {
   localStorage.removeItem("notifications");
   notificationsStore.list.length = 0;
   const notifsList = document.getElementById('notifications-list');

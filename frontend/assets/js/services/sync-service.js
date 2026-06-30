@@ -1,72 +1,36 @@
+import { GETRequest } from '../core/api-client.js';
+
 /**
  * ==========================================
  * 📢 THE RADIO STATION (Data Fetcher)
  * ==========================================
  * Fetches data and broadcasts "Shouts" (Events) to the app.
  */
-const update_time = 10 * 60 * 1000; // 1 minute
-// const update_time = 5 * 1000; // 5 seconds
 
-// Setup global UI Ready Promise
-let resolveUIReady;
-window.uiReadyPromise = new Promise(resolve => {
-  resolveUIReady = resolve;
-});
-window.resolveUIReady = resolveUIReady;
+const ENDPOINTS = [
+  { url: "/patients/", event: "medcore:patients_updated" },
+  { url: "/statistics/", event: "medcore:statistics_updated" },
+  { url: "/appointments/", event: "medcore:appts_updated" },
+  { url: "/companies/", event: "medcore:companies_updated" },
+  { url: "/claims/", event: "medcore:claims_updated" },
+  { url: "/approvals/", event: "medcore:approvals_updated" },
+  { url: "/invoices/", event: "medcore:billing_updated" }
+];
 
-var homePatients, companies, claimsData, approvalsData,  appts, invoices, stats, statistics;
-
-
-async function update() {
+async function fetchAndBroadcast(ep) {
   try {
-    console.info("📡 Broadcaster: Fetching fresh data...");
-
-    const results = await Promise.all([
-      GETRequest("/homePatients/"),
-      GETRequest("/companies/"),
-      GETRequest("/claims/"),
-      GETRequest("/approvals/"),
-      GETRequest("/appointments/"),
-      GETRequest("/invoices/"),
-      GETRequest("/stats/"),
-      GETRequest("/statistics/")
-    ]);
-
-    console.log("📊 Broadcaster: Data fetched successfully.");
-    // Extract data from standard envelopes
-    const [p, c, cl, a, ap, inv, st, sttc] = results.map(res => (res && res.success) ? res.data : undefined);
-
-    // Update global state
-    homePatients = p;
-    companies = c;
-    claimsData = cl;
-    approvalsData = a;
-    appts = ap;
-    invoices = inv;
-    stats = st;
-    statistics = sttc;
-
-    // 🛑 WAIT FOR UI TO BE READY
-    await window.uiReadyPromise;
-
-    // 📢 BROADCAST EVENTS
-    broadcast("medcore:patients_updated", homePatients);
-    broadcast("medcore:stats_updated", stats);
-    broadcast("medcore:statistics_updated", statistics);
-    broadcast("medcore:claims_updated", claimsData);
-    broadcast("medcore:companies_updated", companies);
-    broadcast("medcore:approvals_updated", approvalsData);
-    broadcast("medcore:appts_updated", appts);
-    broadcast("medcore:billing_updated", invoices);
-
-    console.info("✅ Broadcaster: All signals sent.");
-
+    const res = await GETRequest(ep.url);
+    if (res && res.success) {
+      broadcast(ep.event, res.data);
+    }
   } catch (error) {
-    console.error("❌ Broadcaster Error:", error);
+    console.error(`Fetch failed for ${ep.url}:`, error);
   }
+}
 
-  // !Refresh interval
-  // setTimeout(update, update_time);
+export async function syncData() {
+  // Fetch all collections in parallel in background
+  ENDPOINTS.forEach(ep => fetchAndBroadcast(ep));
 }
 
 function broadcast(eventName, data) {
@@ -74,6 +38,3 @@ function broadcast(eventName, data) {
   const event = new CustomEvent(eventName, { detail: data });
   document.dispatchEvent(event);
 }
-
-// Start the broadcast loop
-update();
