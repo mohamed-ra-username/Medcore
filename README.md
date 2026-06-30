@@ -44,7 +44,11 @@ The **Medcore** system automates core clinical workflows:
 
 **🔒 Tiered Security:** Granular Permission-Based Access Control (PBAC) using JWT tokens.
 
-**🚀 Zero-Cache Dev Server:** Custom server ensures instant UI updates during development.
+**⚡ Reactive State Engine:** Global state proxy automatically triggers UI redrawing and metrics recalculations without layout delays.
+
+**🧩 Headless Column Configurations:** Reusable column schemas decouple database properties from HTML layouts.
+
+**🚀 Surgical DOM Reconciliation:** Key-value diffing and Document Fragment buffers only paint active cell changes.
 
 **🌍 Full Localization:** LTR/RTL support for English and Arabic with locale-aware number formatting.
 
@@ -58,6 +62,8 @@ The **Medcore** system automates core clinical workflows:
 - ✅ **Diamond Persistence Architecture:** Resolved all circular import and stability issues.
 - ✅ **Standardized API Envelope:** 100% of endpoints return consistent JSON wrappers.
 - ✅ **Monolith HTML UI:** Eliminated async race conditions for sidebar/modal loading.
+- ✅ **Unified Reactive Store:** Integrated state observers and automatic DOM diffing.
+- ✅ **Headless Reconciler Engine:** Dynamic property path resolvers, XSS sanitization, and WeakSet click delegation.
 - ✅ **PBAC Engine:** Advanced permission maps for Doctors, Nurses, and Staff.
 - ✅ **Custom Dev Server:** Built-in CORS and Anti-Cache support.
 

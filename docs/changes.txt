@@ -10,4 +10,11 @@
 - Moved all standalone batch scripts to the commands/ directory for a cleaner project root.
 - Restored missing UI tables (Appointments, Billing, Approvals, Patients) after the monolith transition.
 - Implemented a highly resilient DOM-based translation engine using `data-value`, `data-en`, and `data-ar` attributes.
-- Solved the persistent `NaN` bugs by enforcing strict unified `locale` checks and adding robust `N/A` or `0` fallbacks across all dynamic renders.
+- Converted the database, backend, and frontend from separate "homePatients" and "patients" schemas to a single consolidated "patients" collection, with client-side slicing.
+- Replaced the "/stats/" API with client-side KPI calculations inside `recalculateStats()` to reduce backend load.
+- Disabled SWR local storage caching to ensure 100% data freshness and eliminate stale data risks on page reload.
+- Implemented a unified reactive state store in `Medcore.state` using getters/setters, making UI updates fully automatic.
+- Migrated all tables to the headless configuration-driven Column Schema Pattern (`PATIENT_COLUMNS`, `CLAIM_COLUMNS`, etc.).
+- Built the `syncList()` reconciler featuring key-value DOM diffing, off-screen DocumentFragment buffering, and nested dot-path resolvers.
+- Implemented Event Delegation using `data-action` mappings on interactive buttons to purge inline `onclick` script injection.
+- Added a memory-safe `WeakSet` (`delegatedContainers`) to track initialized click-listeners off-DOM, preventing memory leaks.

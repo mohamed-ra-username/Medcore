@@ -38,8 +38,8 @@ This document serves as the master blueprint for the Medcore Clinic Management S
 *Goal: Make the app feel fast and "smart" even with thousands of records.*
 
 ### 🚀 The "Smart Sync" Engine
-- [ ] **Smart DOM Reconciliation:** Refactor tables to only update rows that changed (using unique IDs).
-- [ ] **Document Fragments:** Build large lists "off-screen" before injecting for maximum speed.
+- [x] **Smart DOM Reconciliation:** Refactor tables to only update rows that changed (using unique IDs).
+- [x] **Document Fragments:** Build large lists "off-screen" before injecting for maximum speed.
 - [ ] **Pagination Logic:** Implement a 20-items-per-page limit with "Next/Prev" controls.
 
 ### 🛡️ Backend Resilience & Specific Fixes
@@ -54,7 +54,7 @@ This document serves as the master blueprint for the Medcore Clinic Management S
 
 ### 📢 Event-Driven State
 - [x] **The "Radio Station" Fetcher:** `sync-service.js` uses `dispatchEvent` to update UI components.
-- [ ] **Reactive Store:** Move all global variables into a centralized `Medcore.state` object.
+- [x] **Reactive Store:** Move all global variables into a centralized `Medcore.state` object.
 - [ ] **Real-Time Push Sync:** Replace the polling `setTimeout` method in [sync-service.js](file:///C:/Users/mrmmo/Desktop/python/college%20procjets/websites/Medcore/frontend/assets/js/services/sync-service.js) with Server-Sent Events (SSE) or WebSockets in the Flask backend to achieve push-based real-time UI updates.
 
 ### 🔔 User Feedback Loops
@@ -75,13 +75,13 @@ This document serves as the master blueprint for the Medcore Clinic Management S
 ## 🧪 Pillar 5: Frontend CRUD Logic & Modals
 *Goal: Fix broken user interactions and ensure data flow is reactive.*
 
-- [ ] **Modal Reliability:**
-    - [ ] Fix broken Modal opening/closing logic.
-    - [ ] Restore missing dynamic option lists (Insurance, Doctors, etc.) in modal forms.
-    - [ ] Ensure modals auto-close after a successful API action.
-- [ ] **Data Reactivity:**
-    - [ ] Fix broken "Delete" and "Edit" frontend actions.
-    - [ ] Trigger an immediate `sync-service` update after each successful modal action (Add/Edit/Delete) so the UI refreshes instantly.
+- [x] **Modal Reliability:**
+    - [x] Fix broken Modal opening/closing logic.
+    - [x] Restore missing dynamic option lists (Insurance, Doctors, etc.) in modal forms.
+    - [x] Ensure modals auto-close after a successful API action.
+- [x] **Data Reactivity:**
+    - [x] Fix broken "Delete" and "Edit" frontend actions.
+    - [x] Trigger an immediate `sync-service` update after each successful modal action (Add/Edit/Delete) so the UI refreshes instantly.
 
 ---
 
